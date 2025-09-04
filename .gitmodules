@@ -1,0 +1,9 @@
+[submodule "sanvi-backend"]
+	path = backend
+	url = ./sanvi-backend
+	branch = main
+
+[submodule "sanvi-frontend"]
+	path = frontend
+	url = ./sanvi-frontend
+	branch = main
