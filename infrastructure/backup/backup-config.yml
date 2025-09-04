@@ -1,0 +1,98 @@
+# Backup Configuration for Sanvi Machinery
+
+# General configuration
+backup:
+  name: sanvi-backup
+  description: "Automated backup for Sanvi Machinery application"
+  retention:
+    days: 30
+    policy: 
+      daily: 7    # Keep daily backups for 7 days
+      weekly: 4   # Keep weekly backups for 4 weeks
+      monthly: 12 # Keep monthly backups for 12 months
+      yearly: 3   # Keep yearly backups for 3 years
+
+# Backup schedules
+schedules:
+  database:
+    cron: "0 1 * * *"  # Daily at 1:00 AM
+    type: postgres
+    description: "Daily database backup"
+  file_storage:
+    cron: "0 2 * * *"  # Daily at 2:00 AM
+    type: s3
+    description: "Daily file storage backup"
+  application_state:
+    cron: "0 3 * * 0"  # Weekly on Sundays at 3:00 AM
+    type: application
+    description: "Weekly application state backup"
+
+# Database backup configuration
+database:
+  type: postgres
+  host: ${DB_HOST}
+  port: 5432
+  database: sanvi
+  username: ${DB_USERNAME}
+  password: ${DB_PASSWORD}
+  options:
+    format: custom
+    compress: 9
+    jobs: 4
+    exclude_schemas:
+      - pg_temp_*
+      - pg_toast*
+    exclude_tables:
+      - audit_logs_archive
+
+# Storage configuration
+storage:
+  primary:
+    type: s3
+    bucket: ${BACKUP_BUCKET}
+    region: ${AWS_REGION}
+    path: backups/
+    encryption: AES256
+  secondary:
+    type: s3
+    bucket: ${DR_BACKUP_BUCKET}
+    region: ${DR_AWS_REGION}
+    path: backups/
+    encryption: AES256
+
+# Notification configuration
+notifications:
+  success:
+    email:
+      enabled: true
+      recipients:
+        - devops@sanvi-machinery.com
+      subject: "Sanvi Backup Completed Successfully"
+    slack:
+      enabled: true
+      webhook: ${SLACK_WEBHOOK_URL}
+      channel: "#backup-alerts"
+  failure:
+    email:
+      enabled: true
+      recipients:
+        - devops@sanvi-machinery.com
+        - admin@sanvi-machinery.com
+      subject: "ALERT: Sanvi Backup Failed"
+    slack:
+      enabled: true
+      webhook: ${SLACK_WEBHOOK_URL}
+      channel: "#backup-alerts"
+
+# Disaster recovery configuration
+disaster_recovery:
+  rpo: 24  # Recovery Point Objective in hours
+  rto: 4   # Recovery Time Objective in hours
+  testing:
+    schedule: "0 0 1 * *"  # Monthly on the 1st at midnight
+    environment: dr-test
+    validation:
+      - database_integrity
+      - application_startup
+      - api_health_check
+      - critical_business_functions

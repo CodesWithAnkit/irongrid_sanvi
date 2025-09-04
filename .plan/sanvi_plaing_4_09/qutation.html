@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quotation Builder — Sanvi Machinery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #0ea5e9; } /* change brand color here */
+    @media print {
+      body { -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      header, footer, .controls { display: none !important; }
+      .page { margin: 0; box-shadow: none; }
+    }
+    .page { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 6px 20px rgba(15,23,42,.08); }
+    .input, .select, .textarea { @apply border rounded px-3 py-2; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between gap-3 mb-6 no-print">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded bg-[color:var(--brand)] text-white grid place-items-center font-bold">S</div>
+        <div>
+          <div class="text-lg font-semibold">Shanvi Machinery — Quotation Builder</div>
+          <div class="text-sm text-slate-500">Create, preview, print and export quotations</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="saveJson" class="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">Save Draft (JSON)</button>
+        <button id="copyJson" class="px-4 py-2 border rounded">Copy JSON</button>
+        <button id="printBtn" class="px-4 py-2 bg-sky-600 text-white rounded">Print / PDF</button>
+      </div>
+    </div>
+
+    <!-- Page -->
+    <div class="page bg-white">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
+        <div class="flex gap-4 items-start">
+          <div class="h-20 w-20 rounded-lg bg-[color:var(--brand)] text-white grid place-items-center text-xl font-bold">S</div>
+          <div>
+            <input id="companyName" class="w-full border-b pb-1 text-xl font-semibold" value="SHANVI MACHINERY" />
+            <div class="text-sm text-slate-600 mt-1">
+              <input id="companyAddress" class="w-full text-sm" value="New Magadh Colony, Ward No 23, Bihar Sarif, Nalanda, Bihar,803101" />
+            </div>
+            <div class="text-sm text-slate-600 mt-2">
+              Ph: <input id="companyPhone" class="inline w-36 text-sm" value="7677614547" />
+              &nbsp; GSTIN: <input id="companyGST" class="inline w-44 text-sm" value="10FIUPS1815LIZU" />
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full md:w-80">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm text-slate-600">Date</label>
+              <input id="quoteDate" type="date" class="w-full border rounded px-3 py-2" />
+            </div>
+            <div>
+              <label class="block text-sm text-slate-600">Quote No.</label>
+              <input id="quoteNo" class="w-full border rounded px-3 py-2" />
+            </div>
+          </div>
+
+          <div class="mt-3 text-right text-sm text-slate-500">
+            <div>Prepared by: <input id="preparedBy" class="inline w-36 border-b" value="Suruchi Sinha" /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quote To -->
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div class="p-4 border rounded">
+          <div class="text-xs text-slate-500">QUOTE TO</div>
+          <input id="custName" class="w-full border-b py-1 font-semibold" value="MS ARADHYA MINERAL WATER" />
+          <div class="mt-2 text-sm">
+            Contact: <input id="custContact" class="border-b w-40" value="VIKASH KUMAR" /><br />
+            Address: <input id="custAddress" class="border-b w-full" value="VIKASH NAGER, BIHARSHARIF NALANDA 803101" />
+          </div>
+        </div>
+
+        <div class="p-4 border rounded">
+          <div class="text-xs text-slate-500">BANK DETAILS</div>
+          <div class="mt-2 text-sm space-y-1">
+            <div>Bank Name: <input id="bankName" class="border-b w-56" value="State Bank of India" /></div>
+            <div>Account Holder: <input id="bankHolder" class="border-b w-56" value="Shanvi Machinery Account" /></div>
+            <div>Account No: <input id="bankAcc" class="border-b w-56" value="41443107263" /></div>
+            <div>IFSC: <input id="bankIFSC" class="border-b w-36" value="SBIN0003063" /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="mt-6">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-slate-500">Item Description</div>
+          <div class="text-sm text-slate-500">Qty</div>
+          <div class="text-sm text-slate-500">Unit Price</div>
+          <div class="text-sm text-slate-500">Total</div>
+        </div>
+
+        <div id="itemsWrap" class="mt-3 space-y-2">
+          <!-- rows injected by JS; sample rows below -->
+        </div>
+
+        <div class="mt-3 flex gap-2 no-print">
+          <button id="addRow" class="px-3 py-2 rounded border text-sm">+ Add item</button>
+          <button id="clearItems" class="px-3 py-2 rounded border text-sm">Clear items</button>
+        </div>
+      </div>
+
+      <!-- Totals -->
+      <div class="mt-6 md:flex md:justify-end">
+        <div class="w-full md:w-1/2">
+          <div class="p-4 border rounded">
+            <div class="flex justify-between items-center">
+              <div class="text-sm text-slate-600">Sub Total</div>
+              <div class="text-lg font-semibold" id="subTotal">₹ 0</div>
+            </div>
+            <div class="flex justify-between items-center mt-2">
+              <div class="text-sm text-slate-600">SGST (9%)</div>
+              <div id="sgst" class="text-sm">₹ 0</div>
+            </div>
+            <div class="flex justify-between items-center mt-2">
+              <div class="text-sm text-slate-600">CGST (9%)</div>
+              <div id="cgst" class="text-sm">₹ 0</div>
+            </div>
+            <div class="border-t mt-3 pt-3 flex justify-between items-center">
+              <div class="text-sm text-slate-600">Grand Total</div>
+              <div class="text-xl font-bold" id="grandTotal">₹ 0</div>
+            </div>
+
+            <div class="mt-3 text-sm text-slate-600">
+              Amount (in words):
+              <div class="font-medium mt-1" id="amountWords">Zero Rupees Only</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div class="p-4 border rounded">
+          <div class="text-sm font-semibold">Terms and Conditions</div>
+          <textarea id="terms" class="w-full mt-2 border rounded p-2" rows="6">Customer will be billed after indicating acceptance of this quote.
+Payment will be due prior to delivery of service and goods.</textarea>
+        </div>
+
+        <div class="p-4 border rounded">
+          <div class="text-sm font-semibold">Notes / Additional Info</div>
+          <textarea id="notes" class="w-full mt-2 border rounded p-2" rows="6">If you any enquires about this quotation, please contact Suruchi Sinha on Mobile: 7677614547</textarea>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="mt-6 flex items-center justify-between">
+        <div class="text-sm text-slate-500">Quote prepared by <span id="preparedByFooter" class="font-medium">Suruchi Sinha</span></div>
+        <div class="text-sm text-slate-500">Grand Total (rounded): <span id="grandRounded" class="font-semibold">₹ 0</span></div>
+      </div>
+
+    </div> <!-- page -->
+
+  </div> <!-- container -->
+
+<script>
+  // --- Utilities ---
+  const formatINR = (n) => {
+    if (isNaN(n)) return '₹ 0';
+    // Indian numbering grouping (e.g., 12,34,567)
+    const x = Math.round(n);
+    let s = x.toString();
+    const last3 = s.slice(-3);
+    let rest = s.slice(0, -3);
+    if (rest !== '') {
+      rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+      s = rest + ',' + last3;
+    } else {
+      s = last3;
+    }
+    return '₹ ' + s;
+  };
+
+  // Convert number to words (Indian system)
+  function numberToWords(num) {
+    const a = ['', 'One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const b = ['', '', 'Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    if ((num = num.toString()).length > 9) return 'Overflow';
+    const n = ('000000000' + num).substr(-9).match(/(\d{2})(\d{2})(\d{1})(\d{2})(\d{2})/);
+    if (!n) return; 
+    let str = '';
+    str += (n[1] != 0) ? (a[Number(n[1])] || (b[n[1][0]] + ' ' + a[n[1][1]])) + ' Crore ' : '';
+    str += (n[2] != 0) ? (a[Number(n[2])] || (b[n[2][0]] + ' ' + a[n[2][1]])) + ' Lakh ' : '';
+    str += (n[3] != 0) ? (a[Number(n[3])] || (b[n[3][0]] + ' ' + a[n[3][1]])) + ' Thousand ' : '';
+    str += (n[4] != 0) ? ((a[Number(n[4])] || (b[n[4][0]] + ' ' + a[n[4][1]])) + ' Hundred ') : '';
+    if (n[5] != 0) str += (str != '' ? 'and ' : '') + (a[Number(n[5])] || (b[n[5][0]] + ' ' + a[n[5][1]])) + ' ';
+    return str.trim();
+  }
+
+  function toRupeeWords(n) {
+    const rounded = Math.round(n);
+    if (rounded === 0) return 'Zero Rupees Only';
+    return (numberToWords(rounded) + ' Rupees Only').replace(/\s+/g,' ').trim();
+  }
+
+  // --- Items management ---
+  const itemsWrap = document.getElementById('itemsWrap');
+  let items = [];
+
+  function createItemRow(item = {}) {
+    const id = 'row_' + Math.random().toString(36).slice(2,9);
+    const div = document.createElement('div');
+    div.className = 'grid grid-cols-12 gap-2 items-center';
+    div.dataset.id = id;
+
+    div.innerHTML = `
+      <div class="col-span-7">
+        <input type="text" placeholder="Item description" class="w-full border rounded px-3 py-2" data-field="desc" value="${item.desc||''}" />
+      </div>
+      <div class="col-span-1">
+        <input type="number" min="0" step="1" class="w-full border rounded px-2 py-2 text-right" data-field="qty" value="${item.qty||1}" />
+      </div>
+      <div class="col-span-2">
+        <input type="number" min="0" step="0.01" class="w-full border rounded px-3 py-2 text-right" data-field="unit" value="${item.unit||0}" />
+      </div>
+      <div class="col-span-1 text-right">
+        <div class="py-2" data-field="total">${formatINR((item.qty||1)*(item.unit||0))}</div>
+      </div>
+      <div class="col-span-1 text-right">
+        <button class="removeRow px-2 py-1 rounded text-red-600">✕</button>
+      </div>
+    `;
+    // event listeners
+    const qty = div.querySelector('[data-field="qty"]');
+    const unit = div.querySelector('[data-field="unit"]');
+    const desc = div.querySelector('[data-field="desc"]');
+    const remove = div.querySelector('.removeRow');
+    const totalEl = div.querySelector('[data-field="total"]');
+
+    function updateRow() {
+      const q = parseFloat(qty.value) || 0;
+      const u = parseFloat(unit.value) || 0;
+      const tot = q * u;
+      totalEl.textContent = formatINR(tot);
+      syncItemsFromDOM();
+      recalcTotals();
+    }
+
+    qty.addEventListener('input', updateRow);
+    unit.addEventListener('input', updateRow);
+    desc.addEventListener('input', () => { syncItemsFromDOM(); });
+
+    remove.addEventListener('click', () => {
+      div.remove();
+      syncItemsFromDOM();
+      recalcTotals();
+    });
+
+    itemsWrap.appendChild(div);
+    syncItemsFromDOM();
+    return div;
+  }
+
+  function syncItemsFromDOM() {
+    const rows = itemsWrap.querySelectorAll('[data-id]');
+    items = [];
+    rows.forEach(r => {
+      const desc = r.querySelector('[data-field="desc"]').value;
+      const qty = parseFloat(r.querySelector('[data-field="qty"]').value) || 0;
+      const unit = parseFloat(r.querySelector('[data-field="unit"]').value) || 0;
+      items.push({ desc, qty, unit });
+    });
+  }
+
+  function recalcTotals() {
+    let subtotal = 0;
+    items.forEach(it => subtotal += (it.qty || 0) * (it.unit || 0));
+    const sgst = subtotal * 0.09;
+    const cgst = subtotal * 0.09;
+    const grand = subtotal + sgst + cgst;
+    document.getElementById('subTotal').textContent = formatINR(subtotal);
+    document.getElementById('sgst').textContent = formatINR(sgst);
+    document.getElementById('cgst').textContent = formatINR(cgst);
+    document.getElementById('grandTotal').textContent = formatINR(grand);
+    document.getElementById('grandRounded').textContent = formatINR(Math.round(grand));
+    document.getElementById('amountWords').textContent = toRupeeWords(grand);
+  }
+
+  // Pre-fill with sample rows from your uploaded quote
+  const sampleRows = [
+    { desc: 'RO SYSTEM', qty: 1, unit: 434120 },
+    { desc: 'SAND FILTER', qty: 1, unit: 52082 },
+    { desc: 'RAW WATER PUMP', qty: 1, unit: 43412 },
+    { desc: 'CARBON FILTER', qty: 1, unit: 60737 },
+    { desc: 'RAW WATER TANK', qty: 1, unit: 86846 },
+    { desc: 'UV STERILIZER', qty: 1, unit: 43141 }
+  ];
+
+  // init
+  document.addEventListener('DOMContentLoaded', () => {
+    // populate date and quote no
+    const dateEl = document.getElementById('quoteDate');
+    const today = new Date().toISOString().slice(0,10);
+    dateEl.value = today;
+    document.getElementById('quoteNo').value = '#9018';
+    document.getElementById('preparedByFooter').textContent = document.getElementById('preparedBy').value;
+
+    // fill sample rows
+    sampleRows.forEach(r => createItemRow(r));
+    recalcTotals();
+
+    // handlers
+    document.getElementById('addRow').addEventListener('click', () => {
+      createItemRow({ desc: '', qty:1, unit:0 });
+    });
+    document.getElementById('clearItems').addEventListener('click', () => {
+      itemsWrap.innerHTML = '';
+      items = [];
+      recalcTotals();
+    });
+
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+    document.getElementById('saveJson').addEventListener('click', () => {
+      syncItemsFromDOM();
+      const payload = collectPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (payload.quoteNo || 'quotation') + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('copyJson').addEventListener('click', async () => {
+      syncItemsFromDOM();
+      const payload = collectPayload();
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+        alert('Quotation JSON copied to clipboard.');
+      } catch (err) {
+        alert('Unable to copy. You can save the draft instead.');
+      }
+    });
+
+    // update prepared by footer when changed
+    document.getElementById('preparedBy').addEventListener('input', (e) => {
+      document.getElementById('preparedByFooter').textContent = e.target.value;
+    });
+  });
+
+  function collectPayload() {
+    const payload = {
+      company: document.getElementById('companyName').value,
+      companyAddress: document.getElementById('companyAddress').value,
+      companyPhone: document.getElementById('companyPhone').value,
+      companyGST: document.getElementById('companyGST').value,
+      quoteNo: document.getElementById('quoteNo').value,
+      date: document.getElementById('quoteDate').value,
+      preparedBy: document.getElementById('preparedBy').value,
+      customer: {
+        name: document.getElementById('custName').value,
+        contact: document.getElementById('custContact').value,
+        address: document.getElementById('custAddress').value
+      },
+      bank: {
+        name: document.getElementById('bankName').value,
+        holder: document.getElementById('bankHolder').value,
+        account: document.getElementById('bankAcc').value,
+        ifsc: document.getElementById('bankIFSC').value
+      },
+      items: items,
+      terms: document.getElementById('terms').value,
+      notes: document.getElementById('notes').value,
+      totals: {
+        sub: (function(){ let s=0; items.forEach(i=> s+= (i.qty||0)*(i.unit||0)); return s; })(),
+        sgst: (function(){ let s=0; items.forEach(i=> s+= (i.qty||0)*(i.unit||0)); return s * 0.09; })(),
+        cgst: (function(){ let s=0; items.forEach(i=> s+= (i.qty||0)*(i.unit||0)); return s * 0.09; })(),
+        grand: (function(){ let s=0; items.forEach(i=> s+= (i.qty||0)*(i.unit||0)); return s + s*0.09 + s*0.09; })()
+      }
+    };
+    return payload;
+  }
+
+</script>
+</body>
+</html>

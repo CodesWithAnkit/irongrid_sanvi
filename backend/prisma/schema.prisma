@@ -1,0 +1,727 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum QuotationStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum Currency {
+  INR
+  USD
+  EUR
+}
+
+enum CustomerType {
+  INDIVIDUAL
+  SMALL_BUSINESS
+  ENTERPRISE
+  GOVERNMENT
+}
+
+enum PaymentTerms {
+  NET_15
+  NET_30
+  NET_45
+  NET_60
+  IMMEDIATE
+  ADVANCE
+}
+
+enum TemplateCategory {
+  STANDARD
+  CUSTOM
+  INDUSTRY_SPECIFIC
+  CUSTOMER_SPECIFIC
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  firstName       String?
+  lastName        String?
+  isActive        Boolean   @default(true)
+  lastLoginAt     DateTime?
+  passwordResetToken String?
+  passwordResetExpires DateTime?
+  emailVerified   Boolean   @default(false)
+  emailVerificationToken String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  userRoles            UserRole[]
+  quotations           Quotation[] @relation("QuotationCreatedBy")
+  orders               Order[]     @relation("OrderCreatedBy")
+  customerInteractions CustomerInteraction[]
+  assignedFollowUpTasks FollowUpTask[] @relation("FollowUpTaskAssignedTo")
+  createdFollowUpTasks  FollowUpTask[] @relation("FollowUpTaskCreatedBy")
+  creditLimitChanges    CreditLimitHistory[] @relation("CreditLimitChangedBy")
+  quotationTemplates    QuotationTemplate[]
+  bulkQuotationJobs     BulkQuotationJob[]
+  requestedApprovals    QuotationApproval[] @relation("ApprovalRequestedBy")
+  approvalSteps         ApprovalStep[]
+
+  @@index([email])
+  @@index([passwordResetToken])
+  @@index([emailVerificationToken])
+}
+
+model Role {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  resource    String
+  action      String
+  description String?
+
+  rolePermissions RolePermission[]
+
+  @@unique([resource, action])
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    Int
+  assignedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
+}
+
+model RolePermission {
+  id           String @id @default(cuid())
+  roleId       Int
+  permissionId Int
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+}
+
+model Customer {
+  id              String        @id @default(cuid())
+  companyName     String
+  contactPerson   String
+  email           String        @unique
+  phone           String?
+  alternatePhone  String?
+  address         String?
+  city            String?
+  state           String?
+  country         String?       @default("India")
+  postalCode      String?
+  customerType    CustomerType  @default(SMALL_BUSINESS)
+  creditLimit     Decimal       @db.Decimal(12, 2) @default(0)
+  paymentTerms    PaymentTerms  @default(NET_30)
+  taxId           String?
+  gstNumber       String?
+  notes           String?
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  quotations         Quotation[]
+  orders             Order[]
+  interactions       CustomerInteraction[]
+  segmentMemberships CustomerSegmentMembership[]
+  engagementScore    CustomerEngagementScore?
+  followUpTasks      FollowUpTask[]
+  creditLimitHistory CreditLimitHistory[]
+  lifetimeValue      CustomerLifetimeValue?
+
+  @@index([email])
+  @@index([companyName])
+  @@index([customerType])
+  @@index([isActive])
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  parentId    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Self-referential relation for category hierarchy
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+
+  @@index([name])
+  @@index([parentId])
+}
+
+model Product {
+  id              String    @id @default(cuid())
+  sku             String    @unique
+  name            String
+  description     String?
+  categoryId      String?
+  basePrice       Decimal   @db.Decimal(12, 2)
+  currency        Currency  @default(INR)
+  specifications  Json?
+  images          String[]
+  inventoryCount  Int?
+  minOrderQty     Int       @default(1)
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  category        Category? @relation(fields: [categoryId], references: [id])
+  quotationItems  QuotationItem[]
+  orderItems      OrderItem[]
+  pricingRules    ProductPricingRule[]
+  segmentPricingRules SegmentPricingRule[]
+
+  @@index([sku])
+  @@index([name])
+  @@index([categoryId])
+  @@index([isActive])
+}
+
+model Quotation {
+  id                    String           @id @default(cuid())
+  quotationNumber       String           @unique
+  customerId            String
+  status                QuotationStatus  @default(DRAFT)
+  subtotal              Decimal          @db.Decimal(12, 2)
+  discountAmount        Decimal          @db.Decimal(12, 2) @default(0)
+  taxAmount             Decimal          @db.Decimal(12, 2) @default(0)
+  totalAmount           Decimal          @db.Decimal(12, 2)
+  validUntil            DateTime?
+  termsConditions       String?
+  notes                 String?
+  pdfUrl                String?
+  emailSentAt           DateTime?
+  customerViewedAt      DateTime?
+  customerRespondedAt   DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  createdByUserId       String?
+
+  // Relations
+  customer              Customer         @relation(fields: [customerId], references: [id])
+  items                 QuotationItem[]
+  createdBy             User?            @relation("QuotationCreatedBy", fields: [createdByUserId], references: [id])
+  order                 Order?
+  approvals             QuotationApproval[]
+
+  @@index([quotationNumber])
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([validUntil])
+}
+
+model QuotationItem {
+  id                    String    @id @default(cuid())
+  quotationId           String
+  productId             String
+  quantity              Int
+  unitPrice             Decimal   @db.Decimal(12, 2)
+  discountPercentage    Decimal   @db.Decimal(5, 2) @default(0)
+  discountAmount        Decimal   @db.Decimal(12, 2) @default(0)
+  lineTotal             Decimal   @db.Decimal(12, 2)
+  customSpecifications  Json?
+  deliveryTimeline      String?
+
+  // Relations
+  quotation             Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  product               Product   @relation(fields: [productId], references: [id])
+
+  @@index([quotationId])
+  @@index([productId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  quotationId     String?     @unique
+  customerId      String
+  status          OrderStatus @default(PENDING)
+  subtotal        Decimal     @db.Decimal(12, 2)
+  discountAmount  Decimal     @db.Decimal(12, 2) @default(0)
+  taxAmount       Decimal     @db.Decimal(12, 2) @default(0)
+  totalAmount     Decimal     @db.Decimal(12, 2)
+  paymentStatus   String?
+  paymentId       String?
+  shippingAddress String?
+  expectedDelivery DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  createdByUserId String?
+
+  // Relations
+  quotation       Quotation?  @relation(fields: [quotationId], references: [id])
+  customer        Customer    @relation(fields: [customerId], references: [id])
+  items           OrderItem[]
+  createdBy       User?       @relation("OrderCreatedBy", fields: [createdByUserId], references: [id])
+
+  @@index([orderNumber])
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id                String  @id @default(cuid())
+  orderId           String
+  productId         String
+  quantity          Int
+  unitPrice         Decimal @db.Decimal(12, 2)
+  discountAmount    Decimal @db.Decimal(12, 2) @default(0)
+  lineTotal         Decimal @db.Decimal(12, 2)
+
+  // Relations
+  order             Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product           Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model File {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  originalName String
+  mimeType     String
+  size         Int
+  createdAt    DateTime @default(now())
+
+  @@index([key])
+}
+
+// New models for enhanced functionality
+
+model CustomerInteraction {
+  id                String   @id @default(cuid())
+  customerId        String
+  userId            String
+  type              String   // EMAIL, CALL, MEETING, NOTE, FOLLOW_UP
+  subject           String?
+  description       String?
+  scheduledAt       DateTime?
+  completedAt       DateTime?
+  priority          String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status            String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  outcome           String?
+  followUpRequired  Boolean  @default(false)
+  followUpDate      DateTime?
+  tags              String[] @default([])
+  attachments       String[] @default([])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  customer          Customer @relation(fields: [customerId], references: [id])
+  user              User     @relation(fields: [userId], references: [id])
+  followUpTasks     FollowUpTask[]
+
+  @@index([customerId])
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+}
+
+model ProductPricingRule {
+  id              String   @id @default(cuid())
+  productId       String
+  customerType    CustomerType?
+  minQuantity     Int      @default(1)
+  maxQuantity     Int?
+  discountPercent Decimal  @db.Decimal(5, 2) @default(0)
+  fixedPrice      Decimal? @db.Decimal(12, 2)
+  validFrom       DateTime @default(now())
+  validUntil      DateTime?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  // Relations
+  product         Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([customerType])
+  @@index([validFrom, validUntil])
+}
+
+model EmailTemplate {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  subject     String
+  htmlContent String
+  textContent String?
+  variables   Json?    // Array of variable names
+  category    String   // QUOTATION, FOLLOW_UP, REMINDER, etc.
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
+  @@index([category])
+}
+
+model EmailLog {
+  id            String    @id @default(cuid())
+  recipientEmail String
+  subject       String
+  templateId    String?
+  quotationId   String?
+  status        String    // SENT, DELIVERED, OPENED, CLICKED, BOUNCED, FAILED
+  messageId     String?
+  errorMessage  String?
+  sentAt        DateTime  @default(now())
+  deliveredAt   DateTime?
+  openedAt      DateTime?
+  clickedAt     DateTime?
+
+  @@index([recipientEmail])
+  @@index([status])
+  @@index([sentAt])
+  @@index([quotationId])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT
+  resource    String   // USER, CUSTOMER, QUOTATION, etc.
+  resourceId  String?
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+}
+
+// Customer Segmentation Models
+
+model CustomerSegmentationRule {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  criteria    Json     // Stores segmentation criteria and rules
+  isActive    Boolean  @default(true)
+  priority    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
+  @@index([isActive])
+  @@index([priority])
+}
+
+model CustomerSegment {
+  id                    String   @id @default(cuid())
+  segmentId             String   @unique
+  name                  String
+  description           String?
+  criteria              Json     // Stores segmentation criteria
+  customerCount         Int      @default(0)
+  totalValue            Decimal  @db.Decimal(15, 2) @default(0)
+  averageValue          Decimal  @db.Decimal(15, 2) @default(0)
+  averageLifetimeValue  Decimal  @db.Decimal(15, 2) @default(0)
+  lastCalculatedAt      DateTime @default(now())
+  isActive              Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  customerSegmentMemberships CustomerSegmentMembership[]
+  segmentPricingRules        SegmentPricingRule[]
+
+  @@index([segmentId])
+  @@index([name])
+  @@index([isActive])
+}
+
+model CustomerSegmentMembership {
+  id         String   @id @default(cuid())
+  customerId String
+  segmentId  String
+  assignedAt DateTime @default(now())
+  isActive   Boolean  @default(true)
+
+  // Relations
+  customer Customer       @relation(fields: [customerId], references: [id])
+  segment  CustomerSegment @relation(fields: [segmentId], references: [segmentId])
+
+  @@unique([customerId, segmentId])
+  @@index([customerId])
+  @@index([segmentId])
+}
+
+model SegmentPricingRule {
+  id                 String          @id @default(cuid())
+  segmentId          String
+  productId          String?
+  discountPercentage Decimal?        @db.Decimal(5, 2)
+  fixedPrice         Decimal?        @db.Decimal(12, 2)
+  minQuantity        Int             @default(1)
+  maxQuantity        Int?
+  validFrom          DateTime        @default(now())
+  validUntil         DateTime?
+  isActive           Boolean         @default(true)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  // Relations
+  segment CustomerSegment @relation(fields: [segmentId], references: [segmentId])
+  product Product?        @relation(fields: [productId], references: [id])
+
+  @@index([segmentId])
+  @@index([productId])
+  @@index([validFrom, validUntil])
+  @@index([isActive])
+}
+
+model CustomerEngagementScore {
+  id                    String   @id @default(cuid())
+  customerId            String   @unique
+  engagementScore       Int      @default(0) // 0-100 scale
+  interactionCount      Int      @default(0)
+  lastInteractionAt     DateTime?
+  quotationResponseRate Decimal  @db.Decimal(5, 2) @default(0)
+  averageResponseTime   Int      @default(0) // in hours
+  purchaseFrequency     Decimal  @db.Decimal(5, 2) @default(0)
+  calculatedAt          DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([customerId])
+  @@index([engagementScore])
+  @@index([calculatedAt])
+}
+
+model FollowUpTask {
+  id               String   @id @default(cuid())
+  customerId       String
+  interactionId    String?
+  assignedToUserId String
+  createdByUserId  String
+  title            String
+  description      String
+  dueDate          DateTime
+  priority         String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status           String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  completedAt      DateTime?
+  outcome          String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  customer     Customer             @relation(fields: [customerId], references: [id])
+  interaction  CustomerInteraction? @relation(fields: [interactionId], references: [id])
+  assignedTo   User                 @relation("FollowUpTaskAssignedTo", fields: [assignedToUserId], references: [id])
+  createdBy    User                 @relation("FollowUpTaskCreatedBy", fields: [createdByUserId], references: [id])
+
+  @@index([customerId])
+  @@index([assignedToUserId])
+  @@index([dueDate])
+  @@index([status])
+  @@index([priority])
+}
+
+model CreditLimitHistory {
+  id           String   @id @default(cuid())
+  customerId   String
+  oldLimit     Decimal  @db.Decimal(12, 2)
+  newLimit     Decimal  @db.Decimal(12, 2)
+  reason       String?
+  changedBy    String
+  createdAt    DateTime @default(now())
+
+  // Relations
+  customer     Customer @relation(fields: [customerId], references: [id])
+  changedByUser User    @relation("CreditLimitChangedBy", fields: [changedBy], references: [id])
+
+  @@index([customerId])
+  @@index([createdAt])
+}
+
+model CustomerLifetimeValue {
+  id                    String   @id @default(cuid())
+  customerId            String   @unique
+  totalRevenue          Decimal  @db.Decimal(15, 2) @default(0)
+  totalOrders           Int      @default(0)
+  averageOrderValue     Decimal  @db.Decimal(12, 2) @default(0)
+  firstOrderDate        DateTime?
+  lastOrderDate         DateTime?
+  customerTenure        Int      @default(0) // in days
+  predictedLifetimeValue Decimal @db.Decimal(15, 2) @default(0)
+  riskScore             Int      @default(0) // 0-100, higher = more risk
+  calculatedAt          DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([customerId])
+  @@index([totalRevenue])
+  @@index([calculatedAt])
+}
+
+// Quotation Templates and Advanced Features
+
+model QuotationTemplate {
+  id                      String           @id @default(cuid())
+  name                    String           @unique
+  description             String?
+  category                TemplateCategory @default(STANDARD)
+  isPublic                Boolean          @default(false)
+  isActive                Boolean          @default(true)
+  templateData            Json             // Stores template structure and default values
+  defaultValidityDays     Int              @default(30)
+  defaultTermsConditions  String?
+  tags                    String[]         @default([])
+  usageCount              Int              @default(0)
+  lastUsedAt              DateTime?
+  createdByUserId         String?
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  // Relations
+  createdBy               User?            @relation(fields: [createdByUserId], references: [id])
+  bulkJobs                BulkQuotationJob[]
+
+  @@index([category])
+  @@index([isActive])
+  @@index([createdByUserId])
+}
+
+model BulkQuotationJob {
+  id                    String             @id @default(cuid())
+  name                  String
+  description           String?
+  templateId            String?
+  customerIds           String[]
+  status                String             @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  totalCustomers        Int                @default(0)
+  processedCustomers    Int                @default(0)
+  successfulQuotations  Int                @default(0)
+  failedQuotations      Int                @default(0)
+  errorLog              Json?
+  startedAt             DateTime?
+  completedAt           DateTime?
+  createdByUserId       String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  // Relations
+  template              QuotationTemplate? @relation(fields: [templateId], references: [id])
+  createdBy             User?              @relation(fields: [createdByUserId], references: [id])
+
+  @@index([status])
+  @@index([createdByUserId])
+}
+
+model ApprovalWorkflow {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  description     String?
+  conditions      Json     // Conditions that trigger this workflow
+  approvalLevels  Json     // Array of approval levels with rules
+  isActive        Boolean  @default(true)
+  priority        Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  quotationApprovals QuotationApproval[]
+
+  @@index([isActive])
+}
+
+model QuotationApproval {
+  id                String          @id @default(cuid())
+  quotationId       String
+  workflowId        String
+  currentLevel      Int             @default(1)
+  status            ApprovalStatus  @default(PENDING)
+  requestedAt       DateTime        @default(now())
+  completedAt       DateTime?
+  requestedByUserId String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  quotation         Quotation       @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  workflow          ApprovalWorkflow @relation(fields: [workflowId], references: [id])
+  requestedBy       User?           @relation("ApprovalRequestedBy", fields: [requestedByUserId], references: [id])
+  steps             ApprovalStep[]
+
+  @@index([quotationId])
+  @@index([status])
+}
+
+model ApprovalStep {
+  id              String         @id @default(cuid())
+  approvalId      String
+  level           Int
+  approverUserId  String
+  status          ApprovalStatus @default(PENDING)
+  comments        String?
+  approvedAt      DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  approval        QuotationApproval @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+  approver        User              @relation(fields: [approverUserId], references: [id])
+
+  @@index([approvalId])
+  @@index([approverUserId])
+  @@index([status])
+}

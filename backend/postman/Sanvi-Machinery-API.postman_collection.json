@@ -1,0 +1,807 @@
+{
+  "info": {
+    "name": "Sanvi Machinery B2B Platform API",
+    "description": "Comprehensive API collection for Sanvi Machinery B2B e-commerce platform including authentication, customer management, product catalog, quotations, and analytics.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001/api",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "quotation_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.accessToken) {",
+                  "        pm.collectionVariables.set('jwt_token', response.data.accessToken);",
+                  "        pm.test('Login successful', () => {",
+                  "            pm.expect(response.success).to.be.true;",
+                  "            pm.expect(response.data.accessToken).to.be.a('string');",
+                  "        });",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@sanvi-machinery.com\",\n  \"password\": \"Admin@123\",\n  \"rememberMe\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticate user and obtain JWT token"
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            },
+            "description": "Get current user profile information"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "refresh"]
+            },
+            "description": "Refresh JWT token using refresh token"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Logout and invalidate tokens"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.id) {",
+                  "        pm.collectionVariables.set('customer_id', response.data.id);",
+                  "        pm.test('Customer created successfully', () => {",
+                  "            pm.expect(response.success).to.be.true;",
+                  "            pm.expect(response.data.id).to.be.a('string');",
+                  "            pm.expect(response.data.companyName).to.equal('Test Company Ltd.');",
+                  "        });",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Test Company Ltd.\",\n  \"contactPerson\": \"John Doe\",\n  \"email\": \"john.doe@testcompany.com\",\n  \"phone\": \"+91-9876543210\",\n  \"address\": \"123 Industrial Area, Sector 5\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"country\": \"India\",\n  \"postalCode\": \"400001\",\n  \"customerType\": \"LARGE_ENTERPRISE\",\n  \"creditLimit\": 500000,\n  \"paymentTerms\": \"NET_30\",\n  \"gstNumber\": \"27ABCDE1234F1Z5\",\n  \"notes\": \"Test customer for API validation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers",
+              "host": ["{{base_url}}"],
+              "path": ["customers"]
+            },
+            "description": "Create a new B2B customer"
+          }
+        },
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/customers?page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["customers"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            },
+            "description": "Get paginated list of customers"
+          }
+        },
+        {
+          "name": "Get Customer Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            },
+            "description": "Get detailed customer information"
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"creditLimit\": 750000,\n  \"paymentTerms\": \"NET_45\",\n  \"notes\": \"Credit limit increased due to good payment history\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}"]
+            },
+            "description": "Update customer information"
+          }
+        },
+        {
+          "name": "Search Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/customers?search=Test Company&customerType=LARGE_ENTERPRISE&isActive=true",
+              "host": ["{{base_url}}"],
+              "path": ["customers"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Test Company"
+                },
+                {
+                  "key": "customerType",
+                  "value": "LARGE_ENTERPRISE"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Search customers with filters"
+          }
+        },
+        {
+          "name": "Get Customer Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}/analytics",
+              "host": ["{{base_url}}"],
+              "path": ["customers", "{{customer_id}}", "analytics"]
+            },
+            "description": "Get customer analytics and metrics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.id) {",
+                  "        pm.collectionVariables.set('product_id', response.data.id);",
+                  "        pm.test('Product created successfully', () => {",
+                  "            pm.expect(response.success).to.be.true;",
+                  "            pm.expect(response.data.id).to.be.a('string');",
+                  "            pm.expect(response.data.sku).to.equal('TEST-LATHE-001');",
+                  "        });",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"TEST-LATHE-001\",\n  \"name\": \"Test CNC Lathe Machine - Model X200\",\n  \"description\": \"High-precision CNC lathe machine for testing purposes\",\n  \"basePrice\": 250000,\n  \"currency\": \"INR\",\n  \"specifications\": {\n    \"power\": \"15 KW\",\n    \"weight\": \"2500 kg\",\n    \"dimensions\": \"3000x1500x2000 mm\",\n    \"accuracy\": \"±0.01 mm\",\n    \"maxRPM\": 4000\n  },\n  \"inventoryCount\": 5,\n  \"minOrderQty\": 1,\n  \"manufacturer\": \"Sanvi Machinery\",\n  \"modelNumber\": \"X200-Test\",\n  \"warrantyMonths\": 24,\n  \"leadTimeDays\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "Create a new product"
+          }
+        },
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products?page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            },
+            "description": "Get paginated list of products"
+          }
+        },
+        {
+          "name": "Get Product Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{product_id}}"]
+            },
+            "description": "Get detailed product information"
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/search?q=CNC lathe&minPrice=100000&maxPrice=500000",
+              "host": ["{{base_url}}"],
+              "path": ["products", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "CNC lathe"
+                },
+                {
+                  "key": "minPrice",
+                  "value": "100000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "500000"
+                }
+              ]
+            },
+            "description": "Search products with full-text search"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"basePrice\": 275000,\n  \"inventoryCount\": 8,\n  \"notes\": \"Price updated due to material cost increase\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{product_id}}"]
+            },
+            "description": "Update product information"
+          }
+        },
+        {
+          "name": "Get Product Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/categories",
+              "host": ["{{base_url}}"],
+              "path": ["products", "categories"]
+            },
+            "description": "Get all product categories"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotations",
+      "item": [
+        {
+          "name": "Create Quotation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.id) {",
+                  "        pm.collectionVariables.set('quotation_id', response.data.id);",
+                  "        pm.test('Quotation created successfully', () => {",
+                  "            pm.expect(response.success).to.be.true;",
+                  "            pm.expect(response.data.id).to.be.a('string');",
+                  "            pm.expect(response.data.quotationNumber).to.match(/^QUO-\\d{4}-\\d{6}$/);",
+                  "        });",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customer_id}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2,\n      \"unitPrice\": 250000,\n      \"discount\": 10000,\n      \"customSpecifications\": {\n        \"color\": \"Blue\",\n        \"installation\": \"Included\"\n      },\n      \"deliveryTimeline\": \"4-6 weeks\"\n    }\n  ],\n  \"validUntil\": \"2024-12-31T23:59:59Z\",\n  \"termsConditions\": \"Payment within 30 days of delivery. Prices valid for 30 days.\",\n  \"notes\": \"Test quotation for API validation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/quotations",
+              "host": ["{{base_url}}"],
+              "path": ["quotations"]
+            },
+            "description": "Create a new quotation"
+          }
+        },
+        {
+          "name": "List Quotations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/quotations?page=1&limit=20&status=SENT&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["quotations"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "SENT"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc"
+                }
+              ]
+            },
+            "description": "Get paginated list of quotations"
+          }
+        },
+        {
+          "name": "Get Quotation Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/quotations/{{quotation_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["quotations", "{{quotation_id}}"]
+            },
+            "description": "Get detailed quotation information"
+          }
+        },
+        {
+          "name": "Update Quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SENT\",\n  \"notes\": \"Quotation sent to customer for review\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/quotations/{{quotation_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["quotations", "{{quotation_id}}"]
+            },
+            "description": "Update quotation status and information"
+          }
+        },
+        {
+          "name": "Duplicate Quotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resetStatus\": true,\n  \"notes\": \"Duplicated quotation for revised requirements\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/quotations/{{quotation_id}}/duplicate",
+              "host": ["{{base_url}}"],
+              "path": ["quotations", "{{quotation_id}}", "duplicate"]
+            },
+            "description": "Create a duplicate of existing quotation"
+          }
+        },
+        {
+          "name": "Generate PDF",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/quotations/{{quotation_id}}/pdf?format=html",
+              "host": ["{{base_url}}"],
+              "path": ["quotations", "{{quotation_id}}", "pdf"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "html"
+                }
+              ]
+            },
+            "description": "Generate PDF document for quotation"
+          }
+        },
+        {
+          "name": "Send Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Quotation for Industrial Machinery - QUO-2024-000123\",\n  \"message\": \"Please find attached our quotation for your machinery requirements. We look forward to your response.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/quotations/{{quotation_id}}/email",
+              "host": ["{{base_url}}"],
+              "path": ["quotations", "{{quotation_id}}", "email"]
+            },
+            "description": "Send quotation via email"
+          }
+        },
+        {
+          "name": "Get Quotation Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/quotations/{{quotation_id}}/analytics",
+              "host": ["{{base_url}}"],
+              "path": ["quotations", "{{quotation_id}}", "analytics"]
+            },
+            "description": "Get quotation analytics and metrics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/analytics/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "dashboard"]
+            },
+            "description": "Get dashboard overview metrics"
+          }
+        },
+        {
+          "name": "Quotation Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/analytics/quotations?startDate=2024-01-01&endDate=2024-12-31&groupBy=month",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "quotations"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "month"
+                }
+              ]
+            },
+            "description": "Get quotation analytics with date range"
+          }
+        },
+        {
+          "name": "Customer Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/analytics/customers",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "customers"]
+            },
+            "description": "Get customer analytics and insights"
+          }
+        },
+        {
+          "name": "Product Performance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/analytics/products",
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "products"]
+            },
+            "description": "Get product performance analytics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "item": [
+        {
+          "name": "Upload File",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "folder",
+                  "value": "products",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/files/upload",
+              "host": ["{{base_url}}"],
+              "path": ["files", "upload"]
+            },
+            "description": "Upload a file to the system"
+          }
+        },
+        {
+          "name": "Get File",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/files/:fileId",
+              "host": ["{{base_url}}"],
+              "path": ["files", ":fileId"]
+            },
+            "description": "Download or view a file"
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Add timestamp to requests",
+          "pm.request.headers.add({",
+          "    key: 'X-Request-ID',",
+          "    value: pm.variables.replaceIn('{{$randomUUID}}'),",
+          "});",
+          "",
+          "// Add request timestamp",
+          "pm.request.headers.add({",
+          "    key: 'X-Request-Time',",
+          "    value: new Date().toISOString(),",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global response validation",
+          "pm.test('Response time is less than 2000ms', () => {",
+          "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "});",
+          "",
+          "pm.test('Response has correct content type', () => {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});",
+          "",
+          "// Validate response structure for successful requests",
+          "if (pm.response.code >= 200 && pm.response.code < 300) {",
+          "    pm.test('Successful response has correct structure', () => {",
+          "        const response = pm.response.json();",
+          "        pm.expect(response).to.have.property('success');",
+          "        pm.expect(response.success).to.be.true;",
+          "        pm.expect(response).to.have.property('timestamp');",
+          "    });",
+          "}",
+          "",
+          "// Validate error response structure",
+          "if (pm.response.code >= 400) {",
+          "    pm.test('Error response has correct structure', () => {",
+          "        const response = pm.response.json();",
+          "        pm.expect(response).to.have.property('success');",
+          "        pm.expect(response.success).to.be.false;",
+          "        pm.expect(response).to.have.property('error');",
+          "        pm.expect(response.error).to.have.property('code');",
+          "        pm.expect(response.error).to.have.property('message');",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ]
+}
