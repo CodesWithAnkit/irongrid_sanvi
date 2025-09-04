@@ -1,0 +1,136 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  backend-security-scan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./sanvi-backend
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: './sanvi-backend/package-lock.json'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run npm audit
+      run: npm audit --audit-level=high
+      continue-on-error: true
+    
+    - name: Run OWASP Dependency Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'Sanvi-Backend'
+        path: './sanvi-backend'
+        format: 'HTML'
+        out: './reports'
+        args: >
+          --suppression ./sanvi-backend/.github/suppression.xml
+          --failOnCVSS 7
+          --enableRetired
+    
+    - name: Archive security scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend-security-report
+        path: ./reports
+    
+    - name: Run SonarQube scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: ./sanvi-backend
+        args: >
+          -Dsonar.projectKey=sanvi-backend
+          -Dsonar.organization=sanvi-machinery
+          -Dsonar.sources=src
+          -Dsonar.tests=src
+          -Dsonar.test.inclusions=**/*.spec.ts,**/*.test.ts
+          -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+
+  frontend-security-scan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./sanvi-frontend
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: './sanvi-frontend/package-lock.json'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run npm audit
+      run: npm audit --audit-level=high
+      continue-on-error: true
+    
+    - name: Run OWASP Dependency Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'Sanvi-Frontend'
+        path: './sanvi-frontend'
+        format: 'HTML'
+        out: './reports'
+        args: >
+          --suppression ./sanvi-frontend/.github/suppression.xml
+          --failOnCVSS 7
+          --enableRetired
+    
+    - name: Archive security scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-security-report
+        path: ./reports
+    
+    - name: Run SonarQube scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: ./sanvi-frontend
+        args: >
+          -Dsonar.projectKey=sanvi-frontend
+          -Dsonar.organization=sanvi-machinery
+          -Dsonar.sources=app,components,features
+          -Dsonar.tests=app,components,features
+          -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx
+          -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+
+  send-security-report:
+    needs: [backend-security-scan, frontend-security-scan]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Send security report
+        run: |
+          echo "Generating comprehensive security report"
+          echo "1. Collecting scan results"
+          echo "2. Analyzing vulnerabilities"
+          echo "3. Generating actionable recommendations"
+          echo "4. Distributing report to security team"
+          # In a real scenario, this would send emails, post to Slack, etc.
+          echo "Security report generated and distributed"

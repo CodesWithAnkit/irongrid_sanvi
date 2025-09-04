@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sanvi Machinery – UI Mock (HTML + Tailwind)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind config (optional theme tweaks)
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef7ff', 100:'#d9ecff', 200:'#b4d8ff', 300:'#89c0ff',
+              400:'#5ba7ff', 500:'#2e8bff', 600:'#1f6cdb', 700:'#174fb1',
+              800:'#143f8f', 900:'#123672'
+            }
+          },
+          boxShadow: {
+            soft: '0 10px 25px -10px rgba(0,0,0,0.25)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Simple fade for route transitions */
+    .route { display:none; }
+    .route.active { display:block; animation: fade 200ms ease-out; }
+    @keyframes fade { from {opacity:0; transform: translateY(4px);} to {opacity:1; transform: translateY(0);} }
+    /* Hide app shell on auth routes */
+    .app-shell.hidden { display:none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <!-- ===================== AUTH VIEWS ===================== -->
+  <main id="auth" class="route min-h-screen grid place-items-center p-6 bg-gradient-to-br from-slate-50 to-slate-200">
+    <!-- LOGIN -->
+    <section id="page-login" class="w-full max-w-md bg-white rounded-2xl shadow-soft p-8 space-y-6">
+      <div class="text-center space-y-2">
+        <div class="mx-auto h-12 w-12 rounded-xl bg-brand-100 grid place-items-center">
+          <svg class="h-6 w-6 text-brand-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v6c0 5-7 8-7 8s-7-3-7-8V7l7-4z"/></svg>
+        </div>
+        <h1 class="text-2xl font-semibold">Sign in to Sanvi</h1>
+        <p class="text-sm text-slate-500">B2B Quotations & CRM</p>
+      </div>
+
+      <div class="space-y-4">
+        <label class="block text-sm font-medium">Organization</label>
+        <select class="w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500">
+          <option>Acme Pumps (Tenant A)</option>
+          <option>Nova Manufacturing (Tenant B)</option>
+        </select>
+        <div>
+          <label class="block text-sm font-medium">Email</label>
+          <input type="email" class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" placeholder="you@company.com" />
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label class="block text-sm font-medium">Password</label>
+            <a href="#reset" class="text-sm text-brand-700 hover:underline">Forgot?</a>
+          </div>
+          <input type="password" class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" placeholder="••••••••" />
+        </div>
+        <button data-route-to="#dashboard" class="w-full py-2.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition">Sign in</button>
+      </div>
+      <p class="text-center text-sm text-slate-500">No account? <a href="#register" class="text-brand-700 hover:underline">Create one</a></p>
+    </section>
+
+    <!-- REGISTER -->
+    <section id="page-register" class="hidden w-full max-w-md bg-white rounded-2xl shadow-soft p-8 space-y-6">
+      <div class="text-center space-y-2">
+        <h1 class="text-2xl font-semibold">Create your account</h1>
+        <p class="text-sm text-slate-500">Join your organization or create a new one</p>
+      </div>
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium">First name</label>
+            <input class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium">Last name</label>
+            <input class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Work email</label>
+          <input type="email" class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Organization</label>
+          <input class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" placeholder="Your company" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Password</label>
+          <input type="password" class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" />
+        </div>
+        <button data-route-to="#dashboard" class="w-full py-2.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition">Create account</button>
+      </div>
+      <p class="text-center text-sm text-slate-500">Already have an account? <a href="#login" class="text-brand-700 hover:underline">Sign in</a></p>
+    </section>
+
+    <!-- RESET -->
+    <section id="page-reset" class="hidden w-full max-w-md bg-white rounded-2xl shadow-soft p-8 space-y-6">
+      <div class="text-center space-y-2">
+        <h1 class="text-2xl font-semibold">Reset your password</h1>
+        <p class="text-sm text-slate-500">We will email you a reset link</p>
+      </div>
+      <div class="space-y-4">
+        <label class="block text-sm font-medium">Work email</label>
+        <input type="email" class="mt-1 w-full rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" placeholder="you@company.com" />
+        <button data-route-to="#login" class="w-full py-2.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition">Send reset link</button>
+      </div>
+      <p class="text-center text-sm text-slate-500"><a href="#login" class="text-brand-700 hover:underline">Back to sign in</a></p>
+    </section>
+  </main>
+
+  <!-- ===================== APP SHELL ===================== -->
+  <div id="app" class="app-shell min-h-screen">
+    <!-- Sidebar -->
+    <aside class="fixed inset-y-0 left-0 w-72 bg-white border-r border-slate-200 px-4 py-6 hidden lg:flex lg:flex-col">
+      <div class="flex items-center gap-2 px-2">
+        <div class="h-10 w-10 rounded-xl bg-brand-600 grid place-items-center text-white">
+          <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v6c0 5-7 8-7 8s-7-3-7-8V7l7-4z"/></svg>
+        </div>
+        <div>
+          <div class="font-semibold">Sanvi Machinery</div>
+          <div class="text-xs text-slate-500">Quotations • CRM • Orders</div>
+        </div>
+      </div>
+      <nav class="mt-8 space-y-1">
+        <a href="#dashboard" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Dashboard
+        </a>
+        <a href="#customers" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Customers
+        </a>
+        <a href="#products" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Products
+        </a>
+        <a href="#quotations" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Quotations
+        </a>
+        <a href="#orders" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Orders
+        </a>
+        <a href="#analytics" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Analytics
+        </a>
+        <a href="#email" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Email
+        </a>
+        <a href="#settings" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100">
+          <span class="inline-block h-4 w-4 rounded bg-slate-300"></span> Settings
+        </a>
+      </nav>
+      <div class="mt-auto p-3">
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-3">
+          <div class="text-xs text-slate-500">Current Org</div>
+          <div class="font-medium">Acme Pumps</div>
+          <a href="#settings" class="text-sm text-brand-700 hover:underline">Manage</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="lg:pl-72 min-h-screen">
+      <!-- Topbar -->
+      <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
+        <div class="flex items-center justify-between gap-4 px-4 py-3">
+          <div class="flex items-center gap-3">
+            <button id="mobileMenuBtn" class="lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="hidden sm:block">
+              <input placeholder="Search…" class="w-80 rounded-lg border-slate-300 focus:ring-brand-500 focus:border-brand-500" />
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="hidden md:flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5">
+              <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span>
+              <span class="text-sm text-slate-600">Staging</span>
+            </div>
+            <button class="relative h-10 w-10 rounded-full bg-slate-200"></button>
+            <a href="#login" class="text-sm text-slate-600 hover:text-slate-800">Sign out</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- ROUTES -->
+      <main class="p-6 space-y-10">
+        <!-- DASHBOARD -->
+        <section id="page-dashboard" class="route active">
+          <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-2xl bg-white border border-slate-200 p-5 shadow-soft">
+              <div class="text-sm text-slate-500">Quotations (This Month)</div>
+              <div class="mt-1 text-3xl font-semibold">128</div>
+              <div class="mt-2 text-xs text-emerald-600">+12% vs last month</div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5 shadow-soft">
+              <div class="text-sm text-slate-500">Conversion Rate</div>
+              <div class="mt-1 text-3xl font-semibold">24.5%</div>
+              <div class="mt-2 text-xs text-emerald-600">+2.1% WoW</div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5 shadow-soft">
+              <div class="text-sm text-slate-500">Revenue (Booked)</div>
+              <div class="mt-1 text-3xl font-semibold">₹ 48.9L</div>
+              <div class="mt-2 text-xs text-rose-600">-3.4% WoW</div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5 shadow-soft">
+              <div class="text-sm text-slate-500">Pending Approvals</div>
+              <div class="mt-1 text-3xl font-semibold">7</div>
+              <div class="mt-2 text-xs text-slate-500">Avg age 3.2 days</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="xl:col-span-2 rounded-2xl bg-white border border-slate-200 p-5 shadow-soft">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold">Sales Trend</h3>
+                <select class="rounded-lg border-slate-300">
+                  <option>Last 30 days</option><option>Last 90 days</option>
+                </select>
+              </div>
+              <div class="mt-4 h-64 grid place-items-center text-slate-400">
+                <!-- Chart placeholder -->
+                <div class="h-40 w-full rounded-lg bg-slate-100"></div>
+              </div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5 shadow-soft">
+              <h3 class="font-semibold">Recent Activity</h3>
+              <ul class="mt-4 space-y-3 text-sm">
+                <li class="flex items-start gap-3"><span class="mt-1 h-2 w-2 bg-brand-600 rounded-full"></span> Quotation <b>#Q-02314</b> sent to <b>Omega Steel</b></li>
+                <li class="flex items-start gap-3"><span class="mt-1 h-2 w-2 bg-emerald-600 rounded-full"></span> Order <b>#O-00892</b> delivered</li>
+                <li class="flex items-start gap-3"><span class="mt-1 h-2 w-2 bg-amber-500 rounded-full"></span> Payment pending for <b>#O-00890</b></li>
+              </ul>
+              <div class="mt-4 flex gap-3">
+                <a href="#quotations" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">Create Quote</a>
+                <a href="#customers" class="px-3 py-1.5 rounded-lg border border-slate-200">Add Customer</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CUSTOMERS LIST -->
+        <section id="page-customers" class="route">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Customers</h2>
+            <div class="flex gap-2">
+              <button class="px-3 py-1.5 rounded-lg border border-slate-200">Import</button>
+              <button class="px-3 py-1.5 rounded-lg border border-slate-200">Export</button>
+              <a href="#customer-detail" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">Add Customer</a>
+            </div>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-3 items-center">
+            <input placeholder="Search customers…" class="rounded-lg border-slate-300" />
+            <select class="rounded-lg border-slate-300"><option>All Segments</option><option>Key Accounts</option></select>
+            <select class="rounded-lg border-slate-300"><option>All Status</option><option>Active</option><option>On Hold</option></select>
+          </div>
+          <div class="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-50 text-slate-600">
+                <tr>
+                  <th class="text-left p-3">Company</th>
+                  <th class="text-left p-3">Contact</th>
+                  <th class="text-left p-3">Email</th>
+                  <th class="text-left p-3">Phone</th>
+                  <th class="text-left p-3">Credit</th>
+                  <th class="text-left p-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-t">
+                  <td class="p-3 font-medium"><a href="#customer-detail" class="text-brand-700">Omega Steel Pvt Ltd</a></td>
+                  <td class="p-3">Rahul Rao</td>
+                  <td class="p-3">rahul@omega.com</td>
+                  <td class="p-3">+91 98xxxxxx</td>
+                  <td class="p-3">₹ 10,00,000</td>
+                  <td class="p-3"><a href="#quotations" class="text-brand-700">New Quote</a></td>
+                </tr>
+                <tr class="border-t">
+                  <td class="p-3 font-medium text-slate-700">Atria Plastics</td>
+                  <td class="p-3">K. Menon</td>
+                  <td class="p-3">k.menon@atria.co</td>
+                  <td class="p-3">+91 79xxxxxx</td>
+                  <td class="p-3">₹ 5,00,000</td>
+                  <td class="p-3"><button class="text-brand-700">New Quote</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- CUSTOMER DETAIL -->
+        <section id="page-customer-detail" class="route">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Omega Steel Pvt Ltd</h2>
+            <div class="flex gap-2"><button class="px-3 py-1.5 rounded-lg border border-slate-200">Edit</button><button class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">New Quote</button></div>
+          </div>
+          <div class="grid gap-6 lg:grid-cols-3 mt-4">
+            <div class="lg:col-span-2 space-y-6">
+              <div class="rounded-2xl bg-white border border-slate-200 p-5">
+                <h3 class="font-semibold">Contact Information</h3>
+                <div class="mt-3 grid sm:grid-cols-2 gap-4 text-sm">
+                  <div><div class="text-slate-500">Contact</div><div class="font-medium">Rahul Rao</div></div>
+                  <div><div class="text-slate-500">Email</div><div class="font-medium">rahul@omega.com</div></div>
+                  <div><div class="text-slate-500">Phone</div><div class="font-medium">+91 98xxxxxx</div></div>
+                  <div><div class="text-slate-500">Credit Limit</div><div class="font-medium">₹ 10,00,000</div></div>
+                </div>
+              </div>
+              <div class="rounded-2xl bg-white border border-slate-200 p-5">
+                <h3 class="font-semibold">Quotation History</h3>
+                <ul class="mt-3 space-y-3 text-sm">
+                  <li class="flex items-center justify-between"><span>#Q-02314 • Draft</span><div class="flex gap-2"><a href="#quotations" class="text-brand-700">Open</a></div></li>
+                  <li class="flex items-center justify-between"><span>#Q-02290 • Sent</span><div class="flex gap-2"><a href="#quotations" class="text-brand-700">Open</a></div></li>
+                </ul>
+              </div>
+            </div>
+            <div class="space-y-6">
+              <div class="rounded-2xl bg-white border border-slate-200 p-5">
+                <h3 class="font-semibold">Timeline</h3>
+                <ol class="mt-3 space-y-3 text-sm">
+                  <li><b>Today</b> • Call with procurement</li>
+                  <li><b>Mon</b> • Quote #Q-02314 created</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PRODUCTS LIST -->
+        <section id="page-products" class="route">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Products</h2>
+            <a href="#product-detail" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">Add Product</a>
+          </div>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <!-- Card -->
+            <article class="rounded-2xl bg-white border border-slate-200 p-5 flex gap-4">
+              <div class="h-20 w-20 rounded-lg bg-slate-100"></div>
+              <div>
+                <h3 class="font-semibold">Centrifugal Pump X100</h3>
+                <div class="text-sm text-slate-500">SKU: P-1001 • Stock: 42</div>
+                <div class="mt-2 font-medium">₹ 39,999</div>
+                <div class="mt-3 flex gap-2 text-sm"><a href="#product-detail" class="text-brand-700">Edit</a><a href="#quotations" class="text-brand-700">Quote</a></div>
+              </div>
+            </article>
+            <article class="rounded-2xl bg-white border border-slate-200 p-5 flex gap-4">
+              <div class="h-20 w-20 rounded-lg bg-slate-100"></div>
+              <div>
+                <h3 class="font-semibold">Submersible Pump S200</h3>
+                <div class="text-sm text-slate-500">SKU: P-1032 • Stock: 18</div>
+                <div class="mt-2 font-medium">₹ 54,500</div>
+                <div class="mt-3 flex gap-2 text-sm"><a href="#product-detail" class="text-brand-700">Edit</a><a href="#quotations" class="text-brand-700">Quote</a></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- PRODUCT DETAIL (form) -->
+        <section id="page-product-detail" class="route">
+          <h2 class="text-xl font-semibold">Product Details</h2>
+          <div class="mt-4 grid lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 rounded-2xl bg-white border border-slate-200 p-5">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div><label class="text-sm font-medium">Name</label><input class="mt-1 w-full rounded-lg border-slate-300" value="Centrifugal Pump X100" /></div>
+                <div><label class="text-sm font-medium">SKU</label><input class="mt-1 w-full rounded-lg border-slate-300" value="P-1001" /></div>
+                <div><label class="text-sm font-medium">Price</label><input class="mt-1 w-full rounded-lg border-slate-300" value="39999" /></div>
+                <div><label class="text-sm font-medium">Stock</label><input class="mt-1 w-full rounded-lg border-slate-300" value="42" /></div>
+                <div class="sm:col-span-2"><label class="text-sm font-medium">Specifications</label><textarea class="mt-1 w-full rounded-lg border-slate-300" rows="4">Flow rate, head, efficiency…</textarea></div>
+              </div>
+              <div class="mt-4 flex gap-2"><button class="px-3 py-1.5 rounded-lg border border-slate-200">Cancel</button><button class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">Save</button></div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5">
+              <div class="h-40 w-full rounded-lg bg-slate-100"></div>
+              <div class="mt-3 flex gap-2"><button class="px-3 py-1.5 rounded-lg border border-slate-200">Change Image</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- QUOTATIONS (list + CTA) -->
+        <section id="page-quotations" class="route">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Quotations</h2>
+            <a href="#quotation-builder" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">New Quotation</a>
+          </div>
+          <div class="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-50 text-slate-600">
+                <tr>
+                  <th class="text-left p-3">#</th>
+                  <th class="text-left p-3">Customer</th>
+                  <th class="text-left p-3">Amount</th>
+                  <th class="text-left p-3">Status</th>
+                  <th class="text-left p-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-t">
+                  <td class="p-3 font-medium">Q-02314</td>
+                  <td class="p-3">Omega Steel</td>
+                  <td class="p-3">₹ 1,25,000</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">Draft</span></td>
+                  <td class="p-3"><a href="#quotation-builder" class="text-brand-700">Open</a></td>
+                </tr>
+                <tr class="border-t">
+                  <td class="p-3 font-medium">Q-02290</td>
+                  <td class="p-3">Atria Plastics</td>
+                  <td class="p-3">₹ 3,40,000</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs bg-emerald-100 text-emerald-700">Sent</span></td>
+                  <td class="p-3"><a href="#quotation-builder" class="text-brand-700">Open</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- QUOTATION BUILDER (wizard) -->
+        <section id="page-quotation-builder" class="route">
+          <h2 class="text-xl font-semibold">Create Quotation</h2>
+          <!-- Stepper -->
+          <div class="mt-4 grid gap-4">
+            <ol id="qb-steps" class="grid grid-cols-4 gap-3 text-sm">
+              <li class="qb-step active p-3 rounded-xl border border-slate-200 bg-white">1. Customer</li>
+              <li class="qb-step p-3 rounded-xl border border-slate-200 bg-white">2. Products</li>
+              <li class="qb-step p-3 rounded-xl border border-slate-200 bg-white">3. Pricing & Terms</li>
+              <li class="qb-step p-3 rounded-xl border border-slate-200 bg-white">4. Review & Send</li>
+            </ol>
+            <div id="qb-panels" class="rounded-2xl bg-white border border-slate-200 p-6">
+              <!-- Panel 1 -->
+              <div class="qb-panel">
+                <label class="text-sm font-medium">Select customer</label>
+                <div class="mt-2 grid sm:grid-cols-2 gap-3">
+                  <select class="rounded-lg border-slate-300"><option>Omega Steel</option><option>Atria Plastics</option></select>
+                  <input placeholder="Search or add new…" class="rounded-lg border-slate-300" />
+                </div>
+              </div>
+              <!-- Panel 2 -->
+              <div class="qb-panel hidden">
+                <label class="text-sm font-medium">Add products</label>
+                <div class="mt-2 grid sm:grid-cols-3 gap-3 items-end">
+                  <select class="rounded-lg border-slate-300"><option>Centrifugal Pump X100</option></select>
+                  <input type="number" value="1" class="rounded-lg border-slate-300" />
+                  <button class="px-3 py-1.5 rounded-lg border border-slate-200">Add</button>
+                </div>
+                <div class="mt-4 rounded-lg border border-slate-200">
+                  <div class="p-3 text-sm flex justify-between"><span>Pump X100 × 1</span><span>₹ 39,999</span></div>
+                </div>
+              </div>
+              <!-- Panel 3 -->
+              <div class="qb-panel hidden">
+                <div class="grid sm:grid-cols-3 gap-4">
+                  <div><label class="text-sm font-medium">Discount (%)</label><input type="number" value="5" class="mt-1 w-full rounded-lg border-slate-300" /></div>
+                  <div><label class="text-sm font-medium">Tax (%)</label><input type="number" value="18" class="mt-1 w-full rounded-lg border-slate-300" /></div>
+                  <div><label class="text-sm font-medium">Validity (days)</label><input type="number" value="14" class="mt-1 w-full rounded-lg border-slate-300" /></div>
+                </div>
+                <div class="mt-4 text-sm text-slate-600">Subtotal: ₹ 39,999 • Discount: ₹ 2,000 • Tax: ₹ 6,839 • <b>Total: ₹ 44,838</b></div>
+              </div>
+              <!-- Panel 4 -->
+              <div class="qb-panel hidden">
+                <div class="grid lg:grid-cols-2 gap-4">
+                  <div>
+                    <div class="rounded-lg border border-slate-200 p-4">
+                      <h4 class="font-semibold">Preview</h4>
+                      <div class="mt-3 h-40 w-full bg-slate-100 rounded"></div>
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <label class="text-sm font-medium">Email to</label>
+                    <input class="w-full rounded-lg border-slate-300" placeholder="rahul@omega.com" />
+                    <label class="text-sm font-medium">Message</label>
+                    <textarea class="w-full rounded-lg border-slate-300" rows="4">Hi Rahul, please find the quotation attached…</textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-between">
+              <button id="qb-prev" class="px-3 py-1.5 rounded-lg border border-slate-200">Back</button>
+              <div class="space-x-2">
+                <button id="qb-save" class="px-3 py-1.5 rounded-lg border border-slate-200">Save Draft</button>
+                <button id="qb-next" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">Next</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ORDERS LIST -->
+        <section id="page-orders" class="route">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Orders</h2>
+          </div>
+          <div class="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-50 text-slate-600">
+                <tr>
+                  <th class="text-left p-3">Order #</th>
+                  <th class="text-left p-3">Customer</th>
+                  <th class="text-left p-3">Amount</th>
+                  <th class="text-left p-3">Status</th>
+                  <th class="text-left p-3">Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-t">
+                  <td class="p-3 font-medium">O-00892</td>
+                  <td class="p-3">Omega Steel</td>
+                  <td class="p-3">₹ 2,45,000</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs bg-emerald-100 text-emerald-700">Delivered</span></td>
+                  <td class="p-3">Today</td>
+                </tr>
+                <tr class="border-t">
+                  <td class="p-3 font-medium">O-00890</td>
+                  <td class="p-3">Atria Plastics</td>
+                  <td class="p-3">₹ 1,10,000</td>
+                  <td class="p-3"><span class="px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">Pending Payment</span></td>
+                  <td class="p-3">Yesterday</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section id="page-analytics" class="route">
+          <h2 class="text-xl font-semibold">Analytics</h2>
+          <div class="mt-4 grid gap-6 xl:grid-cols-3">
+            <div class="xl:col-span-2 rounded-2xl bg-white border border-slate-200 p-5">
+              <div class="flex items-center justify-between"><h3 class="font-semibold">Revenue Trend</h3><select class="rounded-lg border-slate-300"><option>Last 90 days</option></select></div>
+              <div class="mt-4 h-64 w-full bg-slate-100 rounded-lg"></div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5">
+              <h3 class="font-semibold">Top Products</h3>
+              <div class="mt-4 h-64 w-full bg-slate-100 rounded-lg"></div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5">
+              <h3 class="font-semibold">Conversion Funnel</h3>
+              <div class="mt-4 h-64 w-full bg-slate-100 rounded-lg"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- EMAIL AUTOMATION -->
+        <section id="page-email" class="route">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold">Email Automation</h2>
+            <button class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">New Campaign</button>
+          </div>
+          <div class="mt-4 grid gap-6 lg:grid-cols-3">
+            <div class="lg:col-span-2 rounded-2xl bg-white border border-slate-200 p-5">
+              <h3 class="font-semibold">Campaigns</h3>
+              <ul class="mt-3 space-y-3 text-sm">
+                <li class="flex items-center justify-between"><span>Follow-up: Quotes expiring in 3 days</span><span class="px-2 py-0.5 rounded-full text-xs bg-emerald-100 text-emerald-700">Active</span></li>
+                <li class="flex items-center justify-between"><span>New product launch</span><span class="px-2 py-0.5 rounded-full text-xs bg-slate-200 text-slate-700">Draft</span></li>
+              </ul>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5">
+              <h3 class="font-semibold">Templates</h3>
+              <div class="mt-3 space-y-3">
+                <div class="h-24 w-full bg-slate-100 rounded"></div>
+                <div class="h-24 w-full bg-slate-100 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS (Multi-tenant + Roles) -->
+        <section id="page-settings" class="route">
+          <h2 class="text-xl font-semibold">Settings</h2>
+          <div class="mt-4 grid gap-6 lg:grid-cols-2">
+            <div class="rounded-2xl bg-white border border-slate-200 p-5">
+              <h3 class="font-semibold">Organization</h3>
+              <div class="mt-3 grid sm:grid-cols-2 gap-3">
+                <div><label class="text-sm font-medium">Name</label><input class="mt-1 w-full rounded-lg border-slate-300" value="Acme Pumps" /></div>
+                <div><label class="text-sm font-medium">Subdomain</label><input class="mt-1 w-full rounded-lg border-slate-300" value="acme" /></div>
+                <div class="sm:col-span-2"><label class="text-sm font-medium">Brand Color</label><input type="color" class="mt-1 w-40 h-10 rounded-lg border-slate-300" value="#2e8bff" /></div>
+              </div>
+              <div class="mt-4 flex gap-2"><button class="px-3 py-1.5 rounded-lg border border-slate-200">Cancel</button><button class="px-3 py-1.5 rounded-lg bg-brand-600 text-white">Save</button></div>
+            </div>
+            <div class="rounded-2xl bg-white border border-slate-200 p-5">
+              <h3 class="font-semibold">Roles & Permissions</h3>
+              <div class="mt-3 overflow-x-auto rounded border border-slate-200">
+                <table class="min-w-full text-sm">
+                  <thead class="bg-slate-50 text-slate-600">
+                    <tr><th class="text-left p-3">Role</th><th class="text-left p-3">Customers</th><th class="text-left p-3">Products</th><th class="text-left p-3">Quotations</th><th class="text-left p-3">Orders</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t"><td class="p-3 font-medium">Admin</td><td class="p-3">Read/Write</td><td class="p-3">Read/Write</td><td class="p-3">Read/Write</td><td class="p-3">Read/Write</td></tr>
+                    <tr class="border-t"><td class="p-3 font-medium">Sales Rep</td><td class="p-3">Read/Write</td><td class="p-3">Read</td><td class="p-3">Read/Write</td><td class="p-3">Read</td></tr>
+                    <tr class="border-t"><td class="p-3 font-medium">Viewer</td><td class="p-3">Read</td><td class="p-3">Read</td><td class="p-3">Read</td><td class="p-3">Read</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // -------- Tiny client-side router with hash routes --------
+    const routes = {
+      '#login': () => showAuth('page-login'),
+      '#register': () => showAuth('page-register'),
+      '#reset': () => showAuth('page-reset'),
+      '#dashboard': () => showApp('page-dashboard'),
+      '#customers': () => showApp('page-customers'),
+      '#customer-detail': () => showApp('page-customer-detail'),
+      '#products': () => showApp('page-products'),
+      '#product-detail': () => showApp('page-product-detail'),
+      '#quotations': () => showApp('page-quotations'),
+      '#quotation-builder': () => showApp('page-quotation-builder'),
+      '#orders': () => showApp('page-orders'),
+      '#analytics': () => showApp('page-analytics'),
+      '#email': () => showApp('page-email'),
+      '#settings': () => showApp('page-settings')
+    };
+
+    const appShell = document.getElementById('app');
+    const authRoot = document.getElementById('auth');
+
+    function setActive(sectionId) {
+      document.querySelectorAll('.route').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(sectionId);
+      if (target) target.classList.add('active');
+    }
+
+    function showAuth(pageId) {
+      appShell.classList.add('hidden');
+      authRoot.classList.remove('hidden');
+      setActive('auth');
+      // toggle inner auth pages
+      ['page-login','page-register','page-reset'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    function showApp(pageId) {
+      authRoot.classList.add('hidden');
+      appShell.classList.remove('hidden');
+      setActive(pageId);
+    }
+
+    function handleRoute() {
+      const hash = location.hash || '#login';
+      (routes[hash] || routes['#login'])();
+    }
+
+    window.addEventListener('hashchange', handleRoute);
+    document.addEventListener('DOMContentLoaded', () => {
+      // Enable buttons with data-route-to to navigate
+      document.body.addEventListener('click', (e) => {
+        const t = e.target.closest('[data-route-to]');
+        if (t) {
+          e.preventDefault();
+          location.hash = t.getAttribute('data-route-to');
+        }
+      });
+
+      // Simple QB wizard controls
+      const steps = Array.from(document.querySelectorAll('#qb-steps .qb-step'));
+      const panels = Array.from(document.querySelectorAll('#qb-panels .qb-panel'));
+      let current = 0;
+      const updateQB = () => {
+        steps.forEach((s,i)=>{ s.classList.toggle('bg-brand-50', i===current); s.classList.toggle('border-brand-300', i===current); });
+        panels.forEach((p,i)=>{ p.classList.toggle('hidden', i!==current); });
+        document.getElementById('qb-prev').disabled = current === 0;
+        document.getElementById('qb-next').textContent = current === steps.length-1 ? 'Send' : 'Next';
+      };
+      document.getElementById('qb-prev')?.addEventListener('click', ()=>{ if(current>0){current--; updateQB();} });
+      document.getElementById('qb-next')?.addEventListener('click', ()=>{ if(current<steps.length-1){current++; updateQB();} else { alert('Quotation sent (mock)!'); location.hash = '#quotations'; }});
+      updateQB();
+
+      handleRoute();
+    });
+  </script>
+</body>
+</html>
