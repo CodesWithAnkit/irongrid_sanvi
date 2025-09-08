@@ -1,7 +1,6 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import * as sanitizeHtml from 'sanitize-html';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
@@ -39,16 +38,16 @@ export class ValidationPipe implements PipeTransform<any> {
       return typeof value === 'string' ? this.sanitizeString(value) : value;
     }
 
-    const sanitized = Array.isArray(value) ? [] : {};
+    const sanitized: Record<string, any> | any[] = Array.isArray(value) ? [] : {} as Record<string, any>;
     
-    Object.keys(value).forEach(key => {
-      const val = value[key];
+    Object.keys(value as Record<string, any>).forEach((key: string) => {
+      const val = (value as Record<string, any>)[key];
       if (typeof val === 'object' && val !== null) {
-        sanitized[key] = this.sanitizeInput(val);
+        (sanitized as Record<string, any>)[key] = this.sanitizeInput(val);
       } else if (typeof val === 'string') {
-        sanitized[key] = this.sanitizeString(val);
+        (sanitized as Record<string, any>)[key] = this.sanitizeString(val);
       } else {
-        sanitized[key] = val;
+        (sanitized as Record<string, any>)[key] = val;
       }
     });
     
@@ -56,11 +55,12 @@ export class ValidationPipe implements PipeTransform<any> {
   }
 
   private sanitizeString(value: string): string {
-    // Prevent XSS by sanitizing HTML content
-    return sanitizeHtml(value, {
-      allowedTags: [],
-      allowedAttributes: {},
-      disallowedTagsMode: 'recursiveEscape',
-    });
+    // Minimal XSS protection by escaping HTML special characters
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 }

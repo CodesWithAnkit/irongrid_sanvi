@@ -181,15 +181,22 @@ export class CacheWarmingService implements OnModuleInit {
    * Fetch product categories
    */
   private async fetchProductCategories(): Promise<any[]> {
-    return this.prismaService.product.findMany({
+    // Use distinct on scalar field 'categoryId' and include minimal category info
+    const products = await this.prismaService.product.findMany({
+      where: { isActive: true, categoryId: { not: null } },
+      distinct: ['categoryId'],
       select: {
-        category: true,
-      },
-      distinct: ['category'],
-      where: {
-        isActive: true,
+        categoryId: true,
+        category: {
+          select: { id: true, name: true }
+        },
       },
     });
+
+    // Map to categories array
+    return products
+      .filter(p => p.category)
+      .map(p => p.category);
   }
 
   /**
@@ -274,7 +281,7 @@ export class CacheWarmingService implements OnModuleInit {
           totalAmount: true,
         },
         where: {
-          status: 'COMPLETED',
+          status: 'DELIVERED',
         },
       }),
     ]);
@@ -283,7 +290,7 @@ export class CacheWarmingService implements OnModuleInit {
       totalOrders,
       ordersToday,
       ordersThisMonth,
-      totalRevenue: totalRevenue._sum.totalAmount || 0,
+      totalRevenue: (totalRevenue._sum?.totalAmount as any) || 0,
       timestamp: new Date(),
     };
   }

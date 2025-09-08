@@ -35,6 +35,12 @@ export class CacheInterceptor implements NestInterceptor {
     const className = context.getClass().name;
     const args = context.getArgs();
 
+    // Normalize options with safe defaults
+    const namespace = (cacheOptions.namespace ?? 'default');
+    const ttl = cacheOptions.ttl ?? 3600;
+    const tags = cacheOptions.tags ?? [];
+    const dependencies = cacheOptions.dependencies ?? [];
+
     // Generate cache key
     const cacheKey = this.generateCacheKey(
       methodName,
@@ -49,39 +55,39 @@ export class CacheInterceptor implements NestInterceptor {
     try {
       // Try to get from cache first
       const cachedResult = await this.cacheService.get(
-        cacheOptions.namespace,
+        namespace,
         cacheKey,
         cacheParams,
       );
 
       if (cachedResult !== null) {
-        this.logger.debug(`Cache HIT: ${cacheOptions.namespace}:${cacheKey}`);
+        this.logger.debug(`Cache HIT: ${namespace}:${cacheKey}`);
         return of(cachedResult);
       }
 
-      this.logger.debug(`Cache MISS: ${cacheOptions.namespace}:${cacheKey}`);
+      this.logger.debug(`Cache MISS: ${namespace}:${cacheKey}`);
 
       // Execute the method and cache the result
       return next.handle().pipe(
         tap(async (result) => {
           if (result !== undefined && result !== null) {
             await this.cacheService.set(
-              cacheOptions.namespace,
+              namespace,
               cacheKey,
               result,
               {
-                ttl: cacheOptions.ttl,
-                tags: cacheOptions.tags,
-                dependencies: cacheOptions.dependencies,
+                ttl,
+                tags,
+                dependencies,
               },
               cacheParams,
             );
-            this.logger.debug(`Cache SET: ${cacheOptions.namespace}:${cacheKey}`);
+            this.logger.debug(`Cache SET: ${namespace}:${cacheKey}`);
           }
         }),
       );
     } catch (error) {
-      this.logger.error(`Cache error for ${cacheOptions.namespace}:${cacheKey}:`, error);
+      this.logger.error(`Cache error for ${namespace}:${cacheKey}:`, error);
       // Continue with method execution if cache fails
       return next.handle();
     }

@@ -34,11 +34,18 @@ export default function QuotationsPage() {
   };
 
   const headerActions = (
-    <Link href="/admin/quotations/new">
-      <Button className="bg-white text-[var(--color-sanvi-primary-700)] hover:bg-gray-100">
-        Create New Quotation
-      </Button>
-    </Link>
+    <div className="flex gap-2">
+      <Link href="/admin/quotations/builder">
+        <Button className="bg-[var(--color-sanvi-primary-600)] hover:bg-[var(--color-sanvi-primary-700)] text-white">
+          Quick Builder
+        </Button>
+      </Link>
+      <Link href="/admin/quotations/new">
+        <Button variant="outline" className="text-[var(--color-sanvi-primary-700)] hover:bg-gray-100">
+          Create New
+        </Button>
+      </Link>
+    </div>
   );
 
   return (

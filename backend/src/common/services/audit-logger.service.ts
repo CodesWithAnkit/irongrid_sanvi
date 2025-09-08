@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../prisma/prisma.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter } from 'events';
 
 export enum AuditLogLevel {
   INFO = 'INFO',
@@ -25,14 +25,15 @@ export interface AuditLogEntry {
 export class AuditLoggerService {
   private readonly enableConsoleOutput: boolean;
   private readonly enableDbStorage: boolean;
+  private readonly eventEmitter: EventEmitter;
 
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
-    private eventEmitter: EventEmitter2,
   ) {
     this.enableConsoleOutput = this.configService.get<boolean>('AUDIT_CONSOLE_OUTPUT') ?? true;
     this.enableDbStorage = this.configService.get<boolean>('AUDIT_DB_STORAGE') ?? true;
+    this.eventEmitter = new EventEmitter();
   }
 
   /**
@@ -121,7 +122,6 @@ export class AuditLoggerService {
       ...(userId && { userId }),
       ...(resource && { resource }),
       ...(action && { action }),
-      ...(level && { level }),
       ...(fromDate || toDate) && {
         createdAt: {
           ...(fromDate && { gte: fromDate }),
@@ -170,10 +170,10 @@ export class AuditLoggerService {
       action: entry.action,
       resource: entry.resource,
       resourceId: entry.resourceId || null,
-      details: entry.details ? JSON.stringify(entry.details) : null,
+      // Persist level inside details JSON to avoid schema changes
+      details: JSON.stringify({ ...(entry.details || {}), level: entry.level }),
       ipAddress: entry.ipAddress || null,
       userAgent: entry.userAgent || null,
-      level: entry.level,
     };
   }
 }

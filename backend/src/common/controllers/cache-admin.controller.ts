@@ -35,7 +35,7 @@ export class CacheAdminController {
   @Get('info')
   @ApiOperation({ summary: 'Get cache information and statistics' })
   @ApiResponse({ status: 200, description: 'Cache information retrieved successfully' })
-  async getCacheInfo() {
+  async getCacheInfo(): Promise<any> {
     const [cacheInfo, metrics, report] = await Promise.all([
       this.cacheService.getCacheInfo(),
       this.cacheService.getMetrics(),
@@ -56,21 +56,21 @@ export class CacheAdminController {
   @Get('metrics')
   @ApiOperation({ summary: 'Get cache performance metrics' })
   @ApiResponse({ status: 200, description: 'Cache metrics retrieved successfully' })
-  async getCacheMetrics() {
+  async getCacheMetrics(): Promise<any> {
     return this.cacheService.getMetrics();
   }
 
   @Get('monitoring/report')
   @ApiOperation({ summary: 'Get comprehensive cache monitoring report' })
   @ApiResponse({ status: 200, description: 'Monitoring report generated successfully' })
-  async getMonitoringReport() {
+  async getMonitoringReport(): Promise<any> {
     return this.cacheMonitoringService.generateReport();
   }
 
   @Get('monitoring/alerts')
   @ApiOperation({ summary: 'Get recent cache alerts' })
   @ApiResponse({ status: 200, description: 'Cache alerts retrieved successfully' })
-  async getCacheAlerts(@Query('hours') hours?: string) {
+  async getCacheAlerts(@Query('hours') hours?: string): Promise<any> {
     const hoursNum = hours ? parseInt(hours, 10) : 24;
     return this.cacheMonitoringService.getRecentAlerts(hoursNum);
   }
@@ -78,7 +78,7 @@ export class CacheAdminController {
   @Get('monitoring/historical')
   @ApiOperation({ summary: 'Get historical cache metrics' })
   @ApiResponse({ status: 200, description: 'Historical metrics retrieved successfully' })
-  async getHistoricalMetrics(@Query('hours') hours?: string) {
+  async getHistoricalMetrics(@Query('hours') hours?: string): Promise<any> {
     const hoursNum = hours ? parseInt(hours, 10) : 24;
     return this.cacheMonitoringService.getHistoricalMetrics(hoursNum);
   }
@@ -87,7 +87,7 @@ export class CacheAdminController {
   @ApiOperation({ summary: 'Warm cache with critical data' })
   @ApiResponse({ status: 200, description: 'Cache warming initiated successfully' })
   @HttpCode(HttpStatus.OK)
-  async warmCache(@Body() options?: { type?: 'critical' | 'all' }) {
+  async warmCache(@Body() options?: { type?: 'critical' | 'all' }): Promise<any> {
     if (options?.type === 'all') {
       await this.cacheWarmingService.warmAllCache();
     } else {
@@ -100,7 +100,7 @@ export class CacheAdminController {
   @Get('warming/tasks')
   @ApiOperation({ summary: 'Get cache warming tasks' })
   @ApiResponse({ status: 200, description: 'Warming tasks retrieved successfully' })
-  async getWarmingTasks() {
+  async getWarmingTasks(): Promise<any> {
     return this.cacheWarmingService.getWarmingTasks();
   }
 
@@ -111,7 +111,7 @@ export class CacheAdminController {
   async toggleWarmingTask(
     @Param('taskName') taskName: string,
     @Body() body: { enabled: boolean },
-  ) {
+  ): Promise<any> {
     this.cacheWarmingService.toggleWarmingTask(taskName, body.enabled);
     return { message: `Warming task ${taskName} ${body.enabled ? 'enabled' : 'disabled'}` };
   }
@@ -119,7 +119,7 @@ export class CacheAdminController {
   @Delete('clear/:namespace')
   @ApiOperation({ summary: 'Clear cache for a specific namespace' })
   @ApiResponse({ status: 200, description: 'Cache cleared successfully' })
-  async clearNamespace(@Param('namespace') namespace: string) {
+  async clearNamespace(@Param('namespace') namespace: string): Promise<any> {
     await this.cacheService.clearNamespace(namespace);
     return { message: `Cache cleared for namespace: ${namespace}` };
   }
@@ -128,7 +128,7 @@ export class CacheAdminController {
   @ApiOperation({ summary: 'Invalidate cache by tags' })
   @ApiResponse({ status: 200, description: 'Cache invalidated successfully' })
   @HttpCode(HttpStatus.OK)
-  async invalidateByTags(@Body() body: { tags: string[] }) {
+  async invalidateByTags(@Body() body: { tags: string[] }): Promise<any> {
     await this.cacheService.invalidateByTags(body.tags);
     return { message: `Cache invalidated for tags: ${body.tags.join(', ')}` };
   }
@@ -137,7 +137,7 @@ export class CacheAdminController {
   @ApiOperation({ summary: 'Invalidate cache by dependencies' })
   @ApiResponse({ status: 200, description: 'Cache invalidated successfully' })
   @HttpCode(HttpStatus.OK)
-  async invalidateByDependencies(@Body() body: { dependencies: string[] }) {
+  async invalidateByDependencies(@Body() body: { dependencies: string[] }): Promise<any> {
     await this.cacheService.invalidateByDependencies(body.dependencies);
     return { message: `Cache invalidated for dependencies: ${body.dependencies.join(', ')}` };
   }
@@ -146,7 +146,7 @@ export class CacheAdminController {
   @ApiOperation({ summary: 'Reset cache metrics' })
   @ApiResponse({ status: 200, description: 'Cache metrics reset successfully' })
   @HttpCode(HttpStatus.OK)
-  async resetMetrics() {
+  async resetMetrics(): Promise<any> {
     this.cacheService.resetMetrics();
     return { message: 'Cache metrics reset successfully' };
   }
@@ -156,14 +156,14 @@ export class CacheAdminController {
   @Get('query-optimization/report')
   @ApiOperation({ summary: 'Get query optimization report' })
   @ApiResponse({ status: 200, description: 'Query optimization report generated successfully' })
-  async getQueryOptimizationReport() {
+  async getQueryOptimizationReport(): Promise<any> {
     return this.queryOptimizationService.generateOptimizationReport();
   }
 
   @Get('query-optimization/statistics')
   @ApiOperation({ summary: 'Get query statistics' })
   @ApiResponse({ status: 200, description: 'Query statistics retrieved successfully' })
-  async getQueryStatistics() {
+  async getQueryStatistics(): Promise<any> {
     return this.queryOptimizationService.getQueryStatistics();
   }
 
@@ -171,7 +171,7 @@ export class CacheAdminController {
   @ApiOperation({ summary: 'Clear query log' })
   @ApiResponse({ status: 200, description: 'Query log cleared successfully' })
   @HttpCode(HttpStatus.OK)
-  async clearQueryLog() {
+  async clearQueryLog(): Promise<any> {
     this.queryOptimizationService.clearQueryLog();
     return { message: 'Query log cleared successfully' };
   }
@@ -189,7 +189,7 @@ export class CacheAdminController {
     ttl?: number;
     tags?: string[];
     dependencies?: string[];
-  }) {
+  }): Promise<any> {
     await this.cacheService.set(
       body.namespace,
       body.key,
@@ -210,7 +210,7 @@ export class CacheAdminController {
   async getCache(
     @Param('namespace') namespace: string,
     @Param('key') key: string,
-  ) {
+  ): Promise<any> {
     const value = await this.cacheService.get(namespace, key);
     return {
       namespace,
@@ -226,7 +226,7 @@ export class CacheAdminController {
   async deleteCache(
     @Param('namespace') namespace: string,
     @Param('key') key: string,
-  ) {
+  ): Promise<any> {
     await this.cacheService.delete(namespace, key);
     return { message: `Cache entry deleted: ${namespace}:${key}` };
   }
@@ -234,7 +234,7 @@ export class CacheAdminController {
   @Get('health')
   @ApiOperation({ summary: 'Check cache health status' })
   @ApiResponse({ status: 200, description: 'Cache health status retrieved successfully' })
-  async getCacheHealth() {
+  async getCacheHealth(): Promise<any> {
     const metrics = this.cacheService.getMetrics();
     const cacheInfo = await this.cacheService.getCacheInfo();
     const trends = this.cacheMonitoringService.getPerformanceTrends();
