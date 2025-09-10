@@ -3,6 +3,8 @@
 ## Project Overview
 This repository contains the Sanvi Machinery B2B Quotation & CRM Platform, a comprehensive solution for managing business quotations, customer relationships, and machinery orders.
 
+<!-- No need of this -->
+<!-- 
 ## Repository Structure
 
 ### Project Repositories
@@ -57,7 +59,7 @@ npm run dev
 ## Development Guidelines
 - Follow the implementation plan outlined in IMPLEMENTATION_PLAN.md
 - Refer to sanvi_complete_roadmap_v2.md for the complete project vision
-- Sprint planning details are available in sanvi_development_plan_sprint_v1.md
+- Sprint planning details are available in sanvi_development_plan_sprint_v1.md -->
 
 ## License
 Proprietary - All Rights Reserved
