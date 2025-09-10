@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Req, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { 
   ApiTags, 
@@ -29,6 +29,7 @@ import {
 } from '../common/decorators/api-response.decorator';
 import { ValidationSchemas } from '../common/validation/schemas';
 import { JoiValidation } from 'src/common/pipes/joi-validation.pipe';
+import { Response } from 'express';
 
 @ApiTags('Quotations')
 @ApiBearerAuth('JWT-auth')
@@ -301,6 +302,38 @@ export class QuotationsController {
     return this.pdf.generateQuotationPdf(id).then((file: any) =>
       file && file.id ? { ...file, downloadUrl: `/api/files/${file.id}` } : file,
     );
+  }
+
+  @Get(':id/pdf')
+  @ApiAuthenticatedOperation(
+    'Download Quotation PDF',
+    'Generate and download the quotation PDF. Responds with a redirect to the file download URL.'
+  )
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'Unique quotation identifier',
+    example: 'cm1quo123abc456def789'
+  })
+  @ApiQuery({
+    name: 'format',
+    required: false,
+    enum: ['standard', 'html'],
+    description: 'PDF generation format',
+    example: 'html'
+  })
+  async downloadPdf(@Param('id') id: string, @Query('format') format: string | undefined, @Res() res: Response) {
+    const isHtml = (format || '').toLowerCase() === 'html';
+    const file: any = isHtml
+      ? await this.htmlPdf.generateQuotationPdfHtml(id)
+      : await this.pdf.generateQuotationPdf(id);
+
+    const downloadUrl = file && file.id ? `/api/files/${file.id}` : undefined;
+    if (downloadUrl) {
+      return res.redirect(downloadUrl);
+    }
+    // Fallback: return JSON if no file id was produced (e.g., deps missing in html mode)
+    return res.status(200).json(file);
   }
 
   @Get(':id/analytics')
