@@ -8,9 +8,9 @@ import { fillTerms } from '../../quotations/templates/default-template';
 export class PdfService {
   constructor(private prisma: PrismaService, private files: FilesService) {}
 
-  async generateQuotationPdf(quotationId: number) {
+  async generateQuotationPdf(quotationId: string) {
     const quotation: any = await this.prisma.quotation.findUnique({
-      where: { id: quotationId.toString() },
+      where: { id: quotationId },
       include: { customer: true, items: { include: { product: true } } },
     });
     if (!quotation) throw new NotFoundException('Quotation not found');

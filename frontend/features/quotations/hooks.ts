@@ -19,7 +19,7 @@ export function useQuotations(skip = 0, take = 20) {
   });
 }
 
-export function useQuotation(id: number) {
+export function useQuotation(id: string) {
   return useQuery({
     queryKey: ["quotations", id],
     queryFn: () => getQuotation(id),
@@ -40,7 +40,7 @@ export function useCreateQuotation() {
 export function useUpdateQuotation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateQuotationRequest }) => 
+    mutationFn: ({ id, data }: { id: string; data: UpdateQuotationRequest }) => 
       updateQuotation(id, data),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["quotations"] });
@@ -52,7 +52,7 @@ export function useUpdateQuotation() {
 export function useDeleteQuotation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => deleteQuotation(id),
+    mutationFn: (id: string) => deleteQuotation(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["quotations"] });
     },
@@ -61,14 +61,14 @@ export function useDeleteQuotation() {
 
 export function useEmailQuotation() {
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: EmailQuotationRequest }) => 
+    mutationFn: ({ id, data }: { id: string; data: EmailQuotationRequest }) => 
       emailQuotation(id, data),
   });
 }
 
 export function useGenerateQuotationPdf() {
   return useMutation({
-    mutationFn: ({ id, format = "html" }: { id: number; format?: string }) => 
+    mutationFn: ({ id, format = "pdf" }: { id: string; format?: string }) => 
       generateQuotationPdf(id, format),
   });
 }

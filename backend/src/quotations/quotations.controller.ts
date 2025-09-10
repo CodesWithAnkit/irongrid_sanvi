@@ -294,11 +294,11 @@ export class QuotationsController {
   @ApiStandardResponse(Object, 'PDF generated successfully')
   generatePdf(@Param('id') id: string, @Query('format') format?: string) {
     if ((format || '').toLowerCase() === 'html') {
-      return this.htmlPdf.generateQuotationPdfHtml(parseInt(id)).then((file: any) =>
+      return this.htmlPdf.generateQuotationPdfHtml(id).then((file: any) =>
         file && file.id ? { ...file, downloadUrl: `/api/files/${file.id}` } : file,
       );
     }
-    return this.pdf.generateQuotationPdf(parseInt(id)).then((file: any) =>
+    return this.pdf.generateQuotationPdf(id).then((file: any) =>
       file && file.id ? { ...file, downloadUrl: `/api/files/${file.id}` } : file,
     );
   }

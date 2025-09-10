@@ -1,7 +1,7 @@
 export interface QuotationItem {
-  id?: number;
-  quotationId?: number;
-  productId: number;
+  id?: string;
+  quotationId?: string;
+  productId: string;
   quantity: number;
   unitPrice: string | number;
   discount: string | number;
@@ -9,10 +9,10 @@ export interface QuotationItem {
 }
 
 export interface Quotation {
-  id: number;
+  id: string;
   quotationNumber: string;
-  customerId: number;
-  status: "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED";
+  customerId: string;
+  status: "DRAFT" | "SENT" | "APPROVED" | "REJECTED";
   subtotal: string;
   discountTotal: string;
   taxTotal: string;
@@ -20,10 +20,10 @@ export interface Quotation {
   validUntil: string;
   createdAt: string;
   updatedAt: string;
-  createdByUserId: number;
+  createdByUserId: string;
   items?: QuotationItem[];
   customer?: {
-    id: number;
+    id: string;
     name: string;
     email: string;
     phone: string;
@@ -35,10 +35,10 @@ export interface Quotation {
 }
 
 export interface CreateQuotationRequest {
-  customerId: number;
+  customerId: string;
   validUntil: string;
   items: Array<{
-    productId: number;
+    productId: string;
     quantity: number;
     unitPrice: number;
     discount: number;
@@ -46,7 +46,7 @@ export interface CreateQuotationRequest {
 }
 
 export interface UpdateQuotationRequest {
-  status?: "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED";
+  status?: "DRAFT" | "SENT" | "APPROVED" | "REJECTED";
   validUntil?: string;
 }
 
@@ -66,7 +66,7 @@ export interface QuotationWizardStep {
 export interface QuotationBuilderData {
   // Customer Selection Step
   customer: {
-    id?: number;
+    id?: string;
     name: string;
     email: string;
     phone: string;
@@ -78,7 +78,7 @@ export interface QuotationBuilderData {
   // Product Configuration Step
   items: Array<{
     id: string;
-    productId: number;
+    productId: string;
     productName: string;
     quantity: number;
     unitPrice: number;
@@ -108,7 +108,7 @@ export interface QuotationBuilderData {
   // Review and Send Step
   review: {
     quotationNumber: string;
-    status: "DRAFT" | "SENT";
+    status: "DRAFT" | "SENT" | "APPROVED" | "REJECTED";
     emailOptions?: {
       recipientEmail: string;
       subject: string;

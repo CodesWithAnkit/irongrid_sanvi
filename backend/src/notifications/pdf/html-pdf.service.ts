@@ -9,9 +9,9 @@ export class HtmlPdfService {
   constructor(private prisma: PrismaService, private files: FilesService) {}
 
   // Generates a quotation PDF via HTML -> PDF (Puppeteer). Falls back with an informative error if deps are missing.
-  async generateQuotationPdfHtml(quotationId: number) {
+  async generateQuotationPdfHtml(quotationId: string) {
     const quotation: any = await this.prisma.quotation.findUnique({
-      where: { id: quotationId.toString() },
+      where: { id: quotationId },
       include: { items: { include: { product: true } }, customer: true },
     });
     if (!quotation) throw new NotFoundException('Quotation not found');

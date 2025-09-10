@@ -12,7 +12,7 @@ import { useQuotation, useDeleteQuotation, useUpdateQuotation, useEmailQuotation
 export default function QuotationDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const quotationId = parseInt(params.id as string);
+  const quotationId = params.id as string;
   
   const { data: quotation, isLoading, error } = useQuotation(quotationId);
   const deleteQuotation = useDeleteQuotation();
@@ -31,7 +31,7 @@ export default function QuotationDetailPage() {
     }
   };
 
-  const handleStatusUpdate = async (status: "SENT" | "ACCEPTED" | "REJECTED") => {
+  const handleStatusUpdate = async (status: "SENT" | "APPROVED" | "REJECTED") => {
     try {
       await updateQuotation.mutateAsync({ 
         id: quotationId, 
@@ -62,7 +62,10 @@ export default function QuotationDetailPage() {
 
   const handleGeneratePdf = async () => {
     try {
-      await generatePdf.mutateAsync({ id: quotationId, format: "pdf" });
+      const res = await generatePdf.mutateAsync({ id: quotationId, format: "pdf" });
+      if (res && (res as any).downloadUrl) {
+        window.open((res as any).downloadUrl, "_blank");
+      }
     } catch (error) {
       console.error("Failed to generate PDF:", error);
     }
@@ -115,7 +118,7 @@ export default function QuotationDetailPage() {
     switch (status) {
       case "DRAFT": return "bg-gray-100 text-gray-800";
       case "SENT": return "bg-blue-100 text-blue-800";
-      case "ACCEPTED": return "bg-green-100 text-green-800";
+      case "APPROVED": return "bg-green-100 text-green-800";
       case "REJECTED": return "bg-red-100 text-red-800";
       default: return "bg-gray-100 text-gray-800";
     }
@@ -179,11 +182,11 @@ export default function QuotationDetailPage() {
               {quotation.status === "SENT" && (
                 <>
                   <Button 
-                    onClick={() => handleStatusUpdate("ACCEPTED")}
+                    onClick={() => handleStatusUpdate("APPROVED")}
                     disabled={updateQuotation.isPending}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    Mark as Accepted
+                    Mark as Approved
                   </Button>
                   <Button 
                     onClick={() => handleStatusUpdate("REJECTED")}
