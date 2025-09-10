@@ -70,7 +70,12 @@ export default function QuotationBuilderPage() {
 
       // Create quotation via API
       const quotation = await quotationService.createQuotation(quotationRequest);
-      
+
+      // Auto-open HTML PDF in a new tab (non-blocking)
+      try {
+        window.open(`/api/quotations/${quotation.id}/pdf?format=html`, "_blank");
+      } catch {}
+
       // Redirect to view the created quotation
       router.push(`/admin/quotations/${quotation.id}`);
     } catch (error) {

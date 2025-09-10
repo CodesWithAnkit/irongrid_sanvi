@@ -165,6 +165,27 @@ export function LiveQuotationBuilder({
   });
 
   const [isLoading, setIsLoading] = React.useState(false);
+  const [errors, setErrors] = React.useState<string[]>([]);
+
+  const validate = (data: QuotationData): string[] => {
+    const errs: string[] = [];
+    if (!data.companyName?.trim()) errs.push('Company name is required');
+    if (!data.customerName?.trim()) errs.push('Customer name is required');
+    if (!data.quoteDate?.trim()) errs.push('Quote date is required');
+    if (!data.quoteNo?.trim()) errs.push('Quote number is required');
+    if (!data.items || data.items.length === 0) errs.push('At least one item is required');
+    data.items.forEach((it, idx) => {
+      if (!it.description?.trim()) errs.push(`Item #${idx + 1}: description is required`);
+      if (!Number.isFinite(it.quantity) || it.quantity < 1) errs.push(`Item #${idx + 1}: quantity must be at least 1`);
+      if (!Number.isFinite(it.unitPrice) || it.unitPrice < 0) errs.push(`Item #${idx + 1}: unit price must be 0 or more`);
+    });
+    return errs;
+  };
+
+  React.useEffect(() => {
+    setErrors(validate(quotationData));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quotationData]);
 
   // Calculate totals whenever items change
   React.useEffect(() => {
@@ -238,6 +259,12 @@ export function LiveQuotationBuilder({
   const handleSaveAsDraft = async () => {
     setIsLoading(true);
     try {
+      const currentErrors = validate(quotationData);
+      setErrors(currentErrors);
+      if (currentErrors.length > 0) {
+        setIsLoading(false);
+        return;
+      }
       await onSave?.(quotationData);
     } catch (error) {
       console.error('Failed to save draft:', error);
@@ -276,6 +303,16 @@ export function LiveQuotationBuilder({
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-slate-50 min-h-screen">
+      {errors.length > 0 && (
+        <div className="no-print mb-4 p-3 border border-red-200 bg-red-50 text-red-700 rounded">
+          <div className="font-semibold mb-1">Please fix the following before saving:</div>
+          <ul className="list-disc ml-5 text-sm space-y-1">
+            {errors.map((e, i) => (
+              <li key={i}>{e}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       {/* Controls */}
       <div className="flex items-center justify-between gap-3 mb-6 no-print">
         <div className="flex items-center gap-3">
@@ -475,7 +512,7 @@ export function LiveQuotationBuilder({
                       value={item.description}
                       onChange={(e) => updateItem(item.id, 'description', e.target.value)}
                       placeholder="Item description"
-                      className="w-full"
+                      className={cn("w-full", !item.description?.trim() && "border-red-300 focus:border-red-500")}
                     />
                   </div>
                   <div className="col-span-1">
@@ -484,7 +521,7 @@ export function LiveQuotationBuilder({
                       min="1"
                       value={item.quantity}
                       onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 1)}
-                      className="w-full text-right"
+                      className={cn("w-full text-right", (isNaN(item.quantity as any) || item.quantity < 1) && "border-red-300 focus:border-red-500")}
                     />
                   </div>
                   <div className="col-span-2">
@@ -494,7 +531,7 @@ export function LiveQuotationBuilder({
                       step="0.01"
                       value={item.unitPrice}
                       onChange={(e) => updateItem(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
-                      className="w-full text-right"
+                      className={cn("w-full text-right", (isNaN(item.unitPrice as any) || item.unitPrice < 0) && "border-red-300 focus:border-red-500")}
                     />
                   </div>
                   <div className="col-span-1 text-right py-2 text-sm">
@@ -601,7 +638,7 @@ export function LiveQuotationBuilder({
       <div className="mt-6 flex justify-center gap-3 no-print">
         <Button 
           onClick={handleSaveAsDraft}
-          disabled={isLoading}
+          disabled={isLoading || errors.length > 0}
           className="bg-blue-600 hover:bg-blue-700 text-white"
         >
           {isLoading ? 'Saving...' : 'Save Quotation'}

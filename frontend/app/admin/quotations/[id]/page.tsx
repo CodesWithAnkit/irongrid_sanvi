@@ -7,7 +7,7 @@ import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useQuotation, useDeleteQuotation, useUpdateQuotation, useEmailQuotation, useGenerateQuotationPdf } from "@/features/quotations/hooks";
+import { useQuotation, useDeleteQuotation, useUpdateQuotation, useEmailQuotation } from "@/features/quotations/hooks";
 
 export default function QuotationDetailPage() {
   const router = useRouter();
@@ -18,7 +18,6 @@ export default function QuotationDetailPage() {
   const deleteQuotation = useDeleteQuotation();
   const updateQuotation = useUpdateQuotation();
   const emailQuotation = useEmailQuotation();
-  const generatePdf = useGenerateQuotationPdf();
 
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this quotation? This action cannot be undone.")) {
@@ -60,15 +59,9 @@ export default function QuotationDetailPage() {
     }
   };
 
-  const handleGeneratePdf = async () => {
-    try {
-      const res = await generatePdf.mutateAsync({ id: quotationId, format: "pdf" });
-      if (res && (res as any).downloadUrl) {
-        window.open((res as any).downloadUrl, "_blank");
-      }
-    } catch (error) {
-      console.error("Failed to generate PDF:", error);
-    }
+  const handleGeneratePdf = () => {
+    const url = `/api/quotations/${quotationId}/pdf?format=html`;
+    window.open(url, "_blank");
   };
 
   if (isLoading) {
@@ -135,11 +128,11 @@ export default function QuotationDetailPage() {
       </Button>
       <Button 
         onClick={handleGeneratePdf}
-        disabled={generatePdf.isPending}
+        disabled={false}
         variant="outline"
         className="border-white text-white hover:bg-white hover:text-[var(--color-sanvi-primary-700)]"
       >
-        {generatePdf.isPending ? "Generating..." : "Download PDF"}
+        Download PDF
       </Button>
       <Link href={`/admin/quotations/${quotationId}/edit`}>
         <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[var(--color-sanvi-primary-700)]">
