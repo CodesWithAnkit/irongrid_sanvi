@@ -163,7 +163,7 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
         const cacheKeys = await this.client.sMembers(tagKey);
         
         if (cacheKeys.length > 0) {
-          await this.client.del(...cacheKeys);
+          await this.client.del(cacheKeys);
           await this.client.del(tagKey);
           this.logger.debug(`Invalidated ${cacheKeys.length} cache entries for tag: ${tag}`);
         }
@@ -183,7 +183,7 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
         const cacheKeys = await this.client.sMembers(depKey);
         
         if (cacheKeys.length > 0) {
-          await this.client.del(...cacheKeys);
+          await this.client.del(cacheKeys);
           await this.client.del(depKey);
           this.logger.debug(`Invalidated ${cacheKeys.length} cache entries for dependency: ${dependency}`);
         }
@@ -202,7 +202,7 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
       const keys = await this.client.keys(pattern);
       
       if (keys.length > 0) {
-        await this.client.del(...keys);
+        await this.client.del(keys);
         this.logger.debug(`Cleared ${keys.length} cache entries for namespace: ${namespace}`);
       }
     } catch (error) {
