@@ -21,6 +21,7 @@
     "test:unit": "jest --testPathIgnorePatterns=.*\\.e2e-spec\\.ts$ --passWithNoTests",
     "test:integration": "jest --testPathPattern=.*\\.integration\\.spec\\.ts$ --runInBand --passWithNoTests",
     "test:ci": "jest --coverage --watchAll=false --passWithNoTests",
+    "type-check": "tsc --noEmit",
     "docker:up": "docker compose -f docker/docker-compose.yml up -d",
     "docker:down": "docker compose -f docker/docker-compose.yml down",
     "prisma:generate": "prisma generate",
