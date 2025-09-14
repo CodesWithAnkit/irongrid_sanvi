@@ -4,34 +4,64 @@ export interface QuotationItem {
   productId: string;
   quantity: number;
   unitPrice: string | number;
-  discount: string | number;
-  total: string;
+  discountPercentage: string;
+  discountAmount: string;
+  lineTotal: string;
+  customSpecifications: Record<string, any> | null;
+  deliveryTimeline: string | null;
+  product?: {
+    id: string;
+    sku: string;
+    name: string;
+    description: string;
+  };
 }
 
 export interface Quotation {
   id: string;
   quotationNumber: string;
   customerId: string;
-  status: "DRAFT" | "SENT" | "APPROVED" | "REJECTED";
+  status: "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED";
   subtotal: string;
-  discountTotal: string;
-  taxTotal: string;
-  total: string;
+  discountAmount: string;
+  taxAmount: string;
+  totalAmount: string;
   validUntil: string;
+  termsConditions: string | null;
+  notes: string | null;
+  pdfUrl: string | null;
+  emailSentAt: string | null;
+  customerViewedAt: string | null;
+  customerRespondedAt: string | null;
   createdAt: string;
   updatedAt: string;
   createdByUserId: string;
   items?: QuotationItem[];
   customer?: {
     id: string;
-    name: string;
+    companyName: string;
+    contactPerson: string;
     email: string;
-    phone: string;
-    company: string;
-    address: string;
-    createdAt: string;
-    updatedAt: string;
   };
+  createdBy?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
+
+export interface QuotationResponse {
+  data: Quotation[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+  timestamp: string;
 }
 
 export interface CreateQuotationRequest {
@@ -41,13 +71,28 @@ export interface CreateQuotationRequest {
     productId: string;
     quantity: number;
     unitPrice: number;
-    discount: number;
+    discountPercentage?: number;
+    customSpecifications?: Record<string, any>;
+    deliveryTimeline?: string;
   }>;
+  termsConditions?: string;
+  notes?: string;
 }
 
 export interface UpdateQuotationRequest {
-  status?: "DRAFT" | "SENT" | "APPROVED" | "REJECTED";
+  status?: "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED";
   validUntil?: string;
+  items?: Array<{
+    productId: string;
+    quantity: number;
+    unitPrice: number;
+    discountPercentage?: number;
+    customSpecifications?: Record<string, any>;
+    deliveryTimeline?: string;
+  }>;
+  termsConditions?: string;
+  notes?: string;
+}
 }
 
 export interface EmailQuotationRequest {

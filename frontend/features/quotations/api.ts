@@ -3,7 +3,7 @@ import type {
   Quotation, 
   CreateQuotationRequest, 
   UpdateQuotationRequest, 
-  EmailQuotationRequest 
+  EmailQuotationRequest
 } from "./types";
 
 export async function getQuotations(skip = 0, take = 20): Promise<Quotation[]> {

@@ -136,7 +136,7 @@ export default function QuotationsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₹{parseFloat(quotation.total).toLocaleString()}
+                          ₹{parseFloat(quotation.totalAmount).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(quotation.status)}`}>
