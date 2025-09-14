@@ -106,6 +106,7 @@ export function QuotationForm({
     }, [items, taxRate, shippingCost, setValue]);
 
     const onSubmit = async (data: QuotationFormData) => {
+        console.log("Form data:", data);
         try {
             const apiData = transformQuotationToAPI(data);
 

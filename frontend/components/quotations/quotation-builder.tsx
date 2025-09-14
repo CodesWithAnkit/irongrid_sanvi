@@ -65,7 +65,7 @@ export function QuotationBuilder({
   const form = useForm<QuotationBuilderFormData>({
     resolver: zodResolver(quotationBuilderSchema),
     defaultValues: {
-      customer: {
+      customer: initialData?.customer || {
         name: "",
         email: "",
         phone: "",
@@ -73,8 +73,11 @@ export function QuotationBuilder({
         address: "",
         isNewCustomer: false,
       },
-      items: [],
-      pricing: {
+      items: initialData?.items?.map(item => ({
+        ...item,
+        discount: item.discount ?? 0, // Ensure discount is always a number
+      })) || [],
+      pricing: initialData?.pricing || {
         subtotal: 0,
         taxRate: 18,
         taxAmount: 0,
@@ -82,17 +85,16 @@ export function QuotationBuilder({
         totalDiscount: 0,
         grandTotal: 0,
       },
-      terms: {
+      terms: initialData?.terms || {
         paymentTerms: "net30",
         deliveryTerms: "FOB Origin",
         validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         notes: "",
       },
-      review: {
+      review: initialData?.review || {
         quotationNumber: `QUO-${Date.now()}`,
         status: "DRAFT",
       },
-      ...initialData,
     },
     mode: "onChange",
   });
@@ -104,28 +106,28 @@ export function QuotationBuilder({
   // Update step completion status based on form validation
   React.useEffect(() => {
     const updateStepCompletion = async () => {
-      const newSteps = [...steps];
-      
-      // Check customer step
+      const newSteps = WIZARD_STEPS.map((step, index) => ({
+        ...step,
+        isActive: index === currentStepIndex, // Set active state based on currentStepIndex
+      }));
+
+      // Trigger validation for each section to determine completion status
       const customerValid = await trigger("customer");
       newSteps[0].isCompleted = customerValid;
-      
-      // Check products step
+
       const itemsValid = await trigger("items");
       newSteps[1].isCompleted = itemsValid;
-      
-      // Check pricing step
+
       const pricingValid = await trigger(["pricing", "terms"]);
       newSteps[2].isCompleted = pricingValid;
-      
-      // Review step is completed when all previous steps are valid
+
       newSteps[3].isCompleted = customerValid && itemsValid && pricingValid;
-      
+
       setSteps(newSteps);
     };
 
     updateStepCompletion();
-  }, [form.watch(), trigger, steps]);
+  }, [form.formState.isValid, currentStepIndex, trigger]);
 
   const goToStep = (stepIndex: number) => {
     if (stepIndex >= 0 && stepIndex < steps.length) {
@@ -180,9 +182,29 @@ export function QuotationBuilder({
   };
 
   const handleComplete = async (data: QuotationBuilderFormData) => {
+    console.log('dddd', data)
     setIsLoading(true);
     try {
-      await onSave?.(data);
+      // Transform customSpecifications from stringified JSON to object if needed
+      const transformedData = {
+        ...data,
+        items: data.items.map(item => {
+          let customSpecifications = item.customSpecifications;
+          // If customSpecifications is a stringified object, parse it
+          if (typeof customSpecifications === 'string') {
+            try {
+              customSpecifications = JSON.parse(customSpecifications);
+            } catch {
+              // fallback: treat as plain string
+            }
+          }
+          return {
+            ...item,
+            customSpecifications,
+          };
+        })
+      };
+      await onSave?.(transformedData);
       onComplete?.(data.review.quotationNumber);
     } catch (error) {
       console.error("Failed to complete quotation:", error);
@@ -197,6 +219,7 @@ export function QuotationBuilder({
       onNext: goToNextStep,
       onPrevious: goToPreviousStep,
       isValid: steps[currentStepIndex].isCompleted,
+      
     };
 
     switch (currentStep.id) {

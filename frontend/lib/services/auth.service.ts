@@ -36,10 +36,9 @@ export interface ChangePasswordRequest {
 
 export const authService = {
   async login(data: LoginRequest) {
-    const response = await apiClient.post<LoginResponse>('/auth/login', data);
+    const response = await apiClient.post<{ user: User }>('/auth/login', data);
 
-    // Store tokens
-    TokenManager.setTokens(response.accessToken, response.refreshToken);
+    // Tokens are set as cookies by the backend, no need to store them manually
     
     return response;
   },
@@ -57,25 +56,17 @@ export const authService = {
     try {
       await apiClient.post('/auth/logout');
     } finally {
-      // Always clear tokens, even if the request fails
+      // Clear any stored tokens (though we mainly use cookies)
       TokenManager.clearTokens();
     }
   },
 
-  async refreshToken(): Promise<LoginResponse> {
-    const refreshToken = TokenManager.getRefreshToken();
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
-    }
-
-    const response = await apiClient.post<LoginResponse>('/auth/refresh', {
-      refreshToken
-    });
+  async refreshToken(): Promise<{ user: User }> {
+    const response = await apiClient.post<{ user: User }>('/auth/refresh', {});
     
-    // Update stored tokens
-    TokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
+    // Tokens are refreshed as cookies by the backend
     
-    return response.data;
+    return response;
   },
 
   async getCurrentUser(): Promise<User> {
@@ -96,6 +87,8 @@ export const authService = {
   },
 
   isAuthenticated(): boolean {
-    return !!TokenManager.getAccessToken();
+    // Since we use cookies, we can't easily check authentication status on the client
+    // This should be determined by trying to fetch the current user
+    return true; // Will be handled by the useCurrentUser hook
   },
 };

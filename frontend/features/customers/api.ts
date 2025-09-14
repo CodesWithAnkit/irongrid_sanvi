@@ -1,8 +1,8 @@
 import { api } from "../../lib/api";
-import type { Customer, CreateCustomerRequest, UpdateCustomerRequest } from "./types";
+import type { Customer, CreateCustomerRequest, UpdateCustomerRequest, PaginatedCustomersResponse } from "./types";
 
-export async function getCustomers(skip = 0, take = 20): Promise<Customer[]> {
-  const res = await api.get<Customer[]>(`/customers?skip=${skip}&take=${take}`);
+export async function getCustomers(skip = 0, take = 20): Promise<PaginatedCustomersResponse> {
+  const res = await api.get<PaginatedCustomersResponse>(`/customers?skip=${skip}&take=${take}`);
   return res.data;
 }
 

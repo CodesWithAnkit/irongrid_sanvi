@@ -725,3 +725,35 @@ model ApprovalStep {
   @@index([approverUserId])
   @@index([status])
 }
+
+enum DataRequestType {
+  ACCESS
+  DELETION
+  CORRECTION
+  RESTRICTION
+  PORTABILITY
+}
+
+enum DataRequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  REJECTED
+}
+
+model DataRequest {
+  id             String            @id @default(cuid())
+  userId         String
+  email          String
+  requestType    DataRequestType
+  status         DataRequestStatus @default(PENDING)
+  requestDate    DateTime          @default(now())
+  completionDate DateTime?
+  details        String?
+  dataProvided   String? // Encrypted data for access requests
+
+  @@index([userId])
+  @@index([email])
+  @@index([status])
+  @@index([requestType])
+}

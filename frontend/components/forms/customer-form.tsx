@@ -41,11 +41,11 @@ export function CustomerForm({
             state: "Haryana",
             zipCode: "122001",
             country: "India",
-            customerType: "wholesale",
+            customerType: "SMALL_BUSINESS",
             businessCategory: "manufacturing",
             taxId: "27AABCA1234M1Z5",
             creditLimit: 500000,
-            paymentTerms: "net30",
+            paymentTerms: "NET_30",
             preferredCommunication: "email",
             newsletter: true,
             specialInstructions: "Preferred delivery time: 9 AM - 5 PM. Contact security at gate for large deliveries.",
@@ -73,9 +73,10 @@ export function CustomerForm({
     };
 
     const customerTypeOptions = [
-        { value: "wholesale", label: "Wholesale Client", description: "Bulk orders with wholesale pricing" },
-        { value: "distributor", label: "Distributor", description: "Authorized reseller with special terms" },
-        { value: "retail", label: "Retail Customer", description: "Individual or small business customer" }
+        { value: "INDIVIDUAL", label: "Individual", description: "Individual customer" },
+        { value: "SMALL_BUSINESS", label: "Small Business", description: "Small business customer" },
+        { value: "ENTERPRISE", label: "Enterprise", description: "Large enterprise customer" },
+        { value: "GOVERNMENT", label: "Government", description: "Government organization" }
     ];
 
     const businessCategories = [
@@ -88,12 +89,12 @@ export function CustomerForm({
     ];
 
     const paymentTermsOptions = [
-        { value: "net15", label: "Net 15 Days" },
-        { value: "net30", label: "Net 30 Days" },
-        { value: "net45", label: "Net 45 Days" },
-        { value: "net60", label: "Net 60 Days" },
-        { value: "cod", label: "Cash on Delivery" },
-        { value: "advance", label: "Advance Payment" }
+        { value: "NET_15", label: "Net 15 Days" },
+        { value: "NET_30", label: "Net 30 Days" },
+        { value: "NET_45", label: "Net 45 Days" },
+        { value: "NET_60", label: "Net 60 Days" },
+        { value: "IMMEDIATE", label: "Immediate Payment" },
+        { value: "ADVANCE", label: "Advance Payment" }
     ];
 
     return (

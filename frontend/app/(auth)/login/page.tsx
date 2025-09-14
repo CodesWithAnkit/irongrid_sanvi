@@ -6,8 +6,8 @@ import { useLogin } from "@/lib/hooks";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@sanvi.local");
-  const [password, setPassword] = useState("Admin@12345");
+  const [email, setEmail] = useState("admin@sanvi-machinery.com");
+  const [password, setPassword] = useState("Admin123!");
   const [error, setError] = useState<string | null>(null);
   const { mutateAsync, isPending } = useLogin();
 

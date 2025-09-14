@@ -14,6 +14,8 @@ import {
   IsObject
 } from 'class-validator';
 
+// CustomSpecificationDto removed - using generic object instead
+
 export class QuotationItemInputDto {
   @ApiProperty({
     description: 'Unique product identifier',
@@ -53,12 +55,8 @@ export class QuotationItemInputDto {
   discount?: number = 0;
 
   @ApiPropertyOptional({
-    description: 'Custom specifications for this line item',
-    example: {
-      color: 'Blue',
-      customFeature: 'Extended warranty',
-      installation: 'Included'
-    }
+    description: 'Custom specifications for this line item as key-value pairs',
+    example: { description: 'RO SYSTEM', unit: 'item', warranty: '2 years' },
   })
   @IsOptional()
   @IsObject()

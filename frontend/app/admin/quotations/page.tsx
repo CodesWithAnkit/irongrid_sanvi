@@ -72,7 +72,7 @@ export default function QuotationsPage() {
             </Card>
           )}
 
-          {quotations && quotations.length === 0 && (
+          {quotations && quotations.data.length === 0 && (
             <Card className="p-8 text-center">
               <div className="text-gray-500 mb-4">No quotations found</div>
               <Link href="/admin/quotations/new">
@@ -81,7 +81,7 @@ export default function QuotationsPage() {
             </Card>
           )}
 
-          {quotations && quotations.length > 0 && (
+          {quotations && quotations.data.length > 0 && (
             <Card>
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -108,7 +108,7 @@ export default function QuotationsPage() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {quotations.map((quotation: Quotation) => (
+                    {quotations.data.map((quotation: Quotation) => (
                       <tr key={quotation.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">

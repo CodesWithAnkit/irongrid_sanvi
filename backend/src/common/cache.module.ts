@@ -24,6 +24,7 @@ import { PrismaService } from '../prisma/prisma.service';
     CacheWarmingService,
     CacheMonitoringService,
     QueryOptimizationService,
+    PrismaService,
   ],
 })
 export class CacheModule {}

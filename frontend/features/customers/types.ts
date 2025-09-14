@@ -1,26 +1,74 @@
 export interface Customer {
   id: number;
-  name: string;
+  companyName: string;
+  contactPerson: string;
   email: string;
   phone: string;
-  company: string;
+  alternatePhone?: string;
   address: string;
+  city?: string;
+  state?: string;
+  country: string;
+  postalCode?: string;
+  customerType: string;
+  creditLimit: string;
+  paymentTerms: string;
+  taxId?: string;
+  gstNumber?: string;
+  notes?: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  quotations: any[];
+  orders: any[];
+  interactions: any[];
+  totalQuotations: number;
+  totalOrders: number;
+}
+
+export interface PaginatedCustomersResponse {
+  data: Customer[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface CreateCustomerRequest {
-  name: string;
+  companyName: string;
+  contactPerson: string;
   email: string;
   phone?: string;
-  company?: string;
+  alternatePhone?: string;
   address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  customerType?: string;
+  creditLimit?: string;
+  paymentTerms?: string;
+  taxId?: string;
+  gstNumber?: string;
+  notes?: string;
 }
 
 export interface UpdateCustomerRequest {
-  name?: string;
+  companyName?: string;
+  contactPerson?: string;
   email?: string;
   phone?: string;
-  company?: string;
+  alternatePhone?: string;
   address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  customerType?: string;
+  creditLimit?: string;
+  paymentTerms?: string;
+  taxId?: string;
+  gstNumber?: string;
+  notes?: string;
+  isActive?: boolean;
 }

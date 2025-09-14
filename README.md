@@ -88,6 +88,10 @@ Use the stack under `monitoring/` to run Prometheus, Loki, Grafana, and Alertman
 - Frontend (`frontend/package.json`):
   - `dev`, `build`, `start`, `lint`, `test`, `test:run`
 
+## Redis issue
+docker compose up -d redis
+<!-- docker compose up -d redis --> (if redis is already running)
+
 ## Deployment
 - Backend: build with `npm run build` and run `npm run start:prod`. Containerization via Docker is recommended.
 - Frontend: build with `npm run build` and deploy the `.next/` output with your preferred platform.

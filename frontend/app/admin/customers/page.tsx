@@ -16,31 +16,31 @@ export default function CustomersPage() {
   const router = useRouter();
   const { data: customers, isLoading, error } = useCustomers();
   const deleteCustomer = useDeleteCustomer();
-  
+
   // Search and filter state
   const [searchValue, setSearchValue] = React.useState("");
   const [filterValues, setFilterValues] = React.useState<Record<string, string>>({});
 
   // Filter customers based on search and filters
   const filteredCustomers = React.useMemo(() => {
-    if (!customers) return [];
-    
-    return customers.filter(customer => {
+    if (!customers?.data) return [];
+
+    return customers.data.filter((customer: Customer) => {
       // Search filter
-      const searchMatch = !searchValue || 
-        customer.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      const searchMatch = !searchValue ||
+        customer.contactPerson.toLowerCase().includes(searchValue.toLowerCase()) ||
         customer.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-        (customer.company && customer.company.toLowerCase().includes(searchValue.toLowerCase()));
-      
+        (customer.companyName && customer.companyName.toLowerCase().includes(searchValue.toLowerCase()));
+
       // Additional filters can be added here
       const hasCompanyFilter = filterValues.hasCompany;
-      const companyMatch = !hasCompanyFilter || 
-        (hasCompanyFilter === "yes" && customer.company) ||
-        (hasCompanyFilter === "no" && !customer.company);
-      
+      const companyMatch = !hasCompanyFilter ||
+        (hasCompanyFilter === "yes" && customer.companyName) ||
+        (hasCompanyFilter === "no" && !customer.companyName);
+
       return searchMatch && companyMatch;
     });
-  }, [customers, searchValue, filterValues]);
+  }, [customers?.data, searchValue, filterValues]);
 
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this customer?")) {
@@ -63,18 +63,18 @@ export default function CustomersPage() {
   };
 
   const handleBulkExport = (selectedIds: string[]) => {
-    const selectedCustomers = customers?.filter(customer => 
+    const selectedCustomers = customers?.data?.filter(customer =>
       selectedIds.includes(customer.id.toString())
     );
-    
+
     if (selectedCustomers) {
       const csvContent = [
-        "ID,Name,Email,Phone,Company,Address,Created",
-        ...selectedCustomers.map(customer => 
-          `${customer.id},"${customer.name}","${customer.email}","${customer.phone || ''}","${customer.company || ''}","${customer.address || ''}","${new Date(customer.createdAt).toLocaleDateString()}"`
+        "ID,Contact Person,Email,Phone,Company,Address,Created",
+        ...selectedCustomers.map(customer =>
+          `${customer.id},"${customer.contactPerson}","${customer.email}","${customer.phone || ''}","${customer.companyName || ''}","${customer.address || ''}","${new Date(customer.createdAt).toLocaleDateString()}"`
         )
       ].join('\n');
-      
+
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -93,12 +93,12 @@ export default function CustomersPage() {
         <div className="flex items-center">
           <div className="w-10 h-10 bg-[var(--color-sanvi-primary-100)] rounded-full flex items-center justify-center">
             <span className="text-[var(--color-sanvi-primary-700)] font-medium">
-              {customer.name[0].toUpperCase()}
+              {customer.contactPerson[0].toUpperCase()}
             </span>
           </div>
           <div className="ml-4">
             <div className="text-sm font-medium text-gray-900">
-              {customer.name}
+              {customer.contactPerson}
             </div>
             <div className="text-sm text-gray-500">
               ID: {customer.id}
@@ -111,7 +111,7 @@ export default function CustomersPage() {
       key: "company",
       label: "Company",
       render: (customer) => (
-        <div className="text-sm text-gray-900">{customer.company || "—"}</div>
+        <div className="text-sm text-gray-900">{customer.companyName || "—"}</div>
       )
     },
     {
@@ -138,13 +138,13 @@ export default function CustomersPage() {
       label: "Actions",
       render: (customer) => (
         <div className="text-sm font-medium space-x-2">
-          <Link 
+          <Link
             href={`/admin/customers/${customer.id}`}
             className="text-[var(--color-sanvi-primary-600)] hover:text-[var(--color-sanvi-primary-900)]"
           >
             View
           </Link>
-          <Link 
+          <Link
             href={`/admin/customers/${customer.id}/edit`}
             className="text-blue-600 hover:text-blue-900"
           >
@@ -201,7 +201,7 @@ export default function CustomersPage() {
 
   const headerActions = (
     <div className="flex gap-3">
-      <Button 
+      <Button
         variant="outline"
         onClick={() => handleBulkExport(filteredCustomers.map(c => c.id.toString()))}
         className="border-white text-white hover:bg-white hover:text-[var(--color-sanvi-primary-700)]"
@@ -217,7 +217,7 @@ export default function CustomersPage() {
   );
 
   return (
-  <AdminLayout>
+    <AdminLayout>
       <div className="space-y-6">
         <AdminPageHeader
           title="Customer Management"
@@ -243,10 +243,10 @@ export default function CustomersPage() {
                 filterValues={filterValues}
                 onFilterChange={handleFilterChange}
                 onClearFilters={clearFilters}
-                placeholder="Search customers by name, email, or company..."
+                placeholder="Search customers by contact person, email, or company..."
               />
 
-              {customers && customers.length === 0 && !isLoading && (
+              {customers?.data && customers.data.length === 0 && !isLoading && (
                 <Card className="p-8 text-center">
                   <div className="text-gray-500 mb-4">No customers found</div>
                   <Link href="/admin/customers/new">
@@ -263,8 +263,8 @@ export default function CustomersPage() {
                 onRowClick={(customer) => router.push(`/admin/customers/${customer.id}`)}
                 loading={isLoading}
                 emptyMessage={
-                  searchValue || Object.values(filterValues).some(v => v) 
-                    ? "No customers match your search criteria" 
+                  searchValue || Object.values(filterValues).some(v => v)
+                    ? "No customers match your search criteria"
                     : "No customers found"
                 }
               />
@@ -272,6 +272,6 @@ export default function CustomersPage() {
           )}
         </div>
       </div>
-  </AdminLayout>
+    </AdminLayout>
   );
 }

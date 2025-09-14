@@ -66,7 +66,7 @@ export interface QuotationWizardStep {
 export interface QuotationBuilderData {
   // Customer Selection Step
   customer: {
-    id?: string;
+    id?: number;
     name: string;
     email: string;
     phone: string;
@@ -78,7 +78,7 @@ export interface QuotationBuilderData {
   // Product Configuration Step
   items: Array<{
     id: string;
-    productId: string;
+    productId: number;
     productName: string;
     quantity: number;
     unitPrice: number;
@@ -108,7 +108,7 @@ export interface QuotationBuilderData {
   // Review and Send Step
   review: {
     quotationNumber: string;
-    status: "DRAFT" | "SENT" | "APPROVED" | "REJECTED";
+    status: "DRAFT" | "SENT";
     emailOptions?: {
       recipientEmail: string;
       subject: string;

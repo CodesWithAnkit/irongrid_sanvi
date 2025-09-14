@@ -33,7 +33,7 @@ import { CacheAdminController } from './common/controllers/cache-admin.controlle
     ConfigModule.forRoot({ isGlobal: true, load: [databaseConfig, redisConfig, jwtConfig, awsConfig] }),
     BullModule.forRoot({
       redis: {
-        host: process.env.REDIS_HOST || 'localhost',
+        host: process.env.REDIS_HOST || '127.0.0.1',
         port: 6379,
         password: process.env.REDIS_PASSWORD,
       },

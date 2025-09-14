@@ -162,10 +162,7 @@ export const api = axios.create({
 // Request interceptor for authentication
 api.interceptors.request.use(
   (config) => {
-    const token = TokenManager.getAccessToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // Backend uses cookies for authentication, no need to add Authorization header
     
     // Add request ID for tracking
     config.headers['X-Request-ID'] = crypto.randomUUID();
@@ -179,7 +176,7 @@ api.interceptors.request.use(
 
 // Token refresh state
 let isRefreshing = false;
-let pendingRequests: Array<(token: string) => void> = [];
+let pendingRequests: Array<() => void> = [];
 
 // Response interceptor for error handling and token refresh
 api.interceptors.response.use(
@@ -189,15 +186,12 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
     
-    // Handle 401 errors with token refresh
+    // Handle 401 errors with token refresh (using cookies)
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         // Wait for the token refresh to complete
         return new Promise((resolve) => {
-          pendingRequests.push((token: string) => {
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-            }
+          pendingRequests.push(() => {
             resolve(api.request(originalRequest));
           });
         });
@@ -207,31 +201,21 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshToken = TokenManager.getRefreshToken();
-        if (!refreshToken) {
-          throw new Error('No refresh token available');
-        }
-
-        const response = await axios.post(
+        // Try to refresh using cookies (no body needed)
+        await axios.post(
           `${api.defaults.baseURL}/auth/refresh`,
-          { refreshToken },
+          {},
           { withCredentials: true }
         );
 
-        const { accessToken, refreshToken: newRefreshToken } = response.data.data;
-        TokenManager.setTokens(accessToken, newRefreshToken);
-
         // Retry all pending requests
-        pendingRequests.forEach((callback) => callback(accessToken));
+        pendingRequests.forEach((callback) => callback());
         pendingRequests = [];
 
         // Retry the original request
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        }
         return api.request(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, clear tokens and redirect to login
+        // Refresh failed, clear any stored tokens and redirect to login
         TokenManager.clearTokens();
         pendingRequests = [];
         
@@ -278,16 +262,28 @@ async function retryRequest<T>(
   throw lastError;
 }
 
+// Helper function to normalize response format
+function normalizeResponse<T>(response: any): T {
+  // If response already has the expected ApiResponse format, return the data
+  if (response && typeof response === 'object' && 'success' in response && 'data' in response) {
+    return response.data;
+  }
+  
+  // Otherwise, return the response directly (backend returns data directly)
+  return response;
+}
+
 // Enhanced API client with retry logic
 export const apiClient = {
   // GET request with retry
-  async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return retryRequest(() => api.get<ApiResponse<T>>(url, config).then(res => res.data));
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await retryRequest(() => api.get(url, config).then(res => res.data));
+    return normalizeResponse<T>(response);
   },
 
   // POST request with retry
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return retryRequest(() => api.post<ApiResponse<T>>(url, data, config).then(res => res.data), {
+  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await retryRequest(() => api.post(url, data, config).then(res => res.data), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
         // Don't retry POST requests on 4xx errors (except 408, 429)
@@ -297,11 +293,12 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
+    return normalizeResponse<T>(response);
   },
 
   // PUT request with retry
-  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return retryRequest(() => api.put<ApiResponse<T>>(url, data, config).then(res => res.data), {
+  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await retryRequest(() => api.put(url, data, config).then(res => res.data), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
         // Don't retry PUT requests on 4xx errors (except 408, 429)
@@ -311,11 +308,12 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
+    return normalizeResponse<T>(response);
   },
 
   // DELETE request with retry
-  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return retryRequest(() => api.delete<ApiResponse<T>>(url, config).then(res => res.data), {
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await retryRequest(() => api.delete(url, config).then(res => res.data), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
         // Don't retry DELETE requests on 4xx errors (except 408, 429)
@@ -325,11 +323,12 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
+    return normalizeResponse<T>(response);
   },
 
   // PATCH request with retry
-  async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return retryRequest(() => api.patch<ApiResponse<T>>(url, data, config).then(res => res.data), {
+  async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await retryRequest(() => api.patch(url, data, config).then(res => res.data), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
         // Don't retry PATCH requests on 4xx errors (except 408, 429)
@@ -339,6 +338,7 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
+    return normalizeResponse<T>(response);
   }
 };
 

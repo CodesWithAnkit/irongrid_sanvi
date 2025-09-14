@@ -15,13 +15,13 @@ export const customerSchema = z.object({
   country: z.string().min(1, "Country is required"),
   
   // Business Details
-  customerType: z.enum(["wholesale", "distributor", "retail"]),
+  customerType: z.enum(["INDIVIDUAL", "SMALL_BUSINESS", "ENTERPRISE", "GOVERNMENT"]),
   businessCategory: z.string().optional(),
   taxId: z.string().optional(),
   
   // Credit & Terms
   creditLimit: z.number().min(0, "Credit limit cannot be negative"),
-  paymentTerms: z.string().min(1, "Payment terms are required"),
+  paymentTerms: z.enum(["NET_15", "NET_30", "NET_45", "NET_60", "IMMEDIATE", "ADVANCE"]),
   
   // Preferences
   preferredCommunication: z.enum(["email", "phone", "both"]),
@@ -33,11 +33,18 @@ export type CustomerFormData = z.infer<typeof customerSchema>;
 
 // Transform to API format
 export const transformCustomerToAPI = (data: CustomerFormData) => ({
-  name: data.contactPerson,
+  companyName: data.companyName,
+  contactPerson: data.contactPerson,
   email: data.email,
   phone: data.phone,
-  company: data.companyName,
-  address: [data.address, data.city, data.state, data.zipCode, data.country]
-    .filter(Boolean)
-    .join(", "),
+  address: data.address,
+  city: data.city,
+  state: data.state,
+  country: data.country,
+  postalCode: data.zipCode,
+  customerType: data.customerType,
+  creditLimit: data.creditLimit,
+  paymentTerms: data.paymentTerms,
+  taxId: data.taxId,
+  notes: data.specialInstructions,
 });

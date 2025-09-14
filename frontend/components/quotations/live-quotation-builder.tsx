@@ -29,6 +29,7 @@ interface QuotationData {
   preparedBy: string;
   
   // Customer Info
+  customerId?: string;
   customerName: string;
   customerContact: string;
   customerAddress: string;
@@ -130,10 +131,11 @@ export function LiveQuotationBuilder({
     quoteNo: `#${Date.now().toString().slice(-4)}`,
     preparedBy: "Suruchi Sinha",
     
-    // Default customer info
+    // Default customer info (will be overridden by initialData)
     customerName: "MS ARADHYA MINERAL WATER",
     customerContact: "VIKASH KUMAR",
     customerAddress: "VIKASH NAGER, BIHARSHARIF NALANDA 803101",
+    customerId: 'cmfjeun5o0000od2x5uv8f4o9',
     
     // Default bank details
     bankName: "State Bank of India",
@@ -141,14 +143,14 @@ export function LiveQuotationBuilder({
     bankAccount: "41443107263",
     bankIFSC: "SBIN0003063",
     
-    // Default items (sample from mockup)
+    // Default items (will be overridden by initialData)
     items: [
-      { id: '1', description: 'RO SYSTEM', quantity: 1, unitPrice: 434120, total: 434120 },
-      { id: '2', description: 'SAND FILTER', quantity: 1, unitPrice: 52082, total: 52082 },
-      { id: '3', description: 'RAW WATER PUMP', quantity: 1, unitPrice: 43412, total: 43412 },
-      { id: '4', description: 'CARBON FILTER', quantity: 1, unitPrice: 60737, total: 60737 },
-      { id: '5', description: 'RAW WATER TANK', quantity: 1, unitPrice: 86846, total: 86846 },
-      { id: '6', description: 'UV STERILIZER', quantity: 1, unitPrice: 43141, total: 43141 }
+      { id: 'cmfjeun660001od2xl94oskdx', description: 'RO SYSTEM', quantity: 1, unitPrice: 434120, total: 434120 },
+      { id: 'cmfjeun6h0002od2xw7acw2oy', description: 'SAND FILTER', quantity: 1, unitPrice: 52082, total: 52082 },
+      { id: 'cmfjeun6l0003od2xfo3wtn70', description: 'RAW WATER PUMP', quantity: 1, unitPrice: 43412, total: 43412 },
+      { id: 'cmfjeun6q0004od2xyevmua12', description: 'CARBON FILTER', quantity: 1, unitPrice: 60737, total: 60737 },
+      { id: 'cmfjeun6u0005od2xjuojvkre', description: 'RAW WATER TANK', quantity: 1, unitPrice: 86846, total: 86846 },
+      { id: 'cmfjeun6y0006od2xutsoc08p', description: 'UV STERILIZER', quantity: 1, unitPrice: 43141, total: 43141 }
     ],
     
     // Default terms
@@ -258,6 +260,7 @@ export function LiveQuotationBuilder({
 
   const handleSaveAsDraft = async () => {
     setIsLoading(true);
+    console.log('qqqq', quotationData)
     try {
       const currentErrors = validate(quotationData);
       setErrors(currentErrors);
@@ -641,7 +644,7 @@ export function LiveQuotationBuilder({
           disabled={isLoading || errors.length > 0}
           className="bg-blue-600 hover:bg-blue-700 text-white"
         >
-          {isLoading ? 'Saving...' : 'Save Quotation'}
+          {isLoading ? 'Saving...' : 'Save Quotatiowwwn'}
         </Button>
         {onCancel && (
           <Button 

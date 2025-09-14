@@ -39,8 +39,10 @@ export function CustomerSelectionStep({
   // Filter customers based on search query
   const filteredCustomers = React.useMemo(() => {
     if (!debouncedSearchQuery) return customers;
+    console.log(debouncedSearchQuery);
+    console.log(customers);
     
-    return customers.filter(customer =>
+    return customers.data.filter(customer =>
       customer.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
       customer.company.toLowerCase().includes(debouncedSearchQuery.toLowerCase())

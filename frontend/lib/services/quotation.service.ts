@@ -20,11 +20,7 @@ export interface CreateQuotationItemRequest {
   quantity: number;
   unitPrice: number;
   discountPercentage?: number;
-  customSpecifications?: Array<{
-    name: string;
-    value: string;
-    unit?: string;
-  }>;
+  customSpecifications?: Record<string, any>;
   deliveryTimeline?: string;
 }
 
