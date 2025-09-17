@@ -5,13 +5,13 @@ import { UseFormReturn } from "react-hook-form";
 import { Search, Plus, User, Building, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormSection, FormActions } from "@/components/ui/form";
 import { type QuotationBuilderFormData } from "@/features/quotations/schemas";
 import { type Customer } from "@/features/customers/types";
 import { useCustomers } from "@/features/customers/hooks";
 import { useDebounce } from "@/lib/hooks/use-debounce";
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 export interface CustomerSelectionStepProps {
@@ -267,6 +267,3 @@ export function CustomerSelectionStep({
     </div>
   );
 }
-
-// Import ChevronRight for the continue button
-import { ChevronRight } from "lucide-react";

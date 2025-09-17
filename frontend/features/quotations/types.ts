@@ -93,7 +93,6 @@ export interface UpdateQuotationRequest {
   termsConditions?: string;
   notes?: string;
 }
-}
 
 export interface EmailQuotationRequest {
   email: string;
