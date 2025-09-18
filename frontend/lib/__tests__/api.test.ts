@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios, { AxiosError } from 'axios';
 import { ApiError, ErrorCodes, TokenManager } from '../api';
 
@@ -24,12 +24,10 @@ vi.mock('axios', () => ({
       super(message);
       this.name = 'AxiosError';
     }
-    response?: any;
+    response?: unknown;
     code?: string;
   },
 }));
-
-const mockedAxios = vi.mocked(axios);
 
 // Mock localStorage
 const localStorageMock = {

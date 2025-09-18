@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./sanvi-backend
+        working-directory: ./backend
     
     steps:
     - uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: './sanvi-backend/package-lock.json'
+        cache-dependency-path: './backend/package-lock.json'
     
     - name: Install dependencies
       run: npm ci
@@ -32,12 +32,12 @@ jobs:
     - name: Run OWASP Dependency Check
       uses: dependency-check/Dependency-Check_Action@main
       with:
-        project: 'Sanvi-Backend'
-        path: './sanvi-backend'
+        project: 'Backend'
+        path: './backend'
         format: 'HTML'
         out: './reports'
         args: >
-          --suppression ./sanvi-backend/.github/suppression.xml
+          --suppression ./backend/.github/suppression.xml
           --failOnCVSS 7
           --enableRetired
     
@@ -53,9 +53,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
-        projectBaseDir: ./sanvi-backend
+        projectBaseDir: ./backend
         args: >
-          -Dsonar.projectKey=sanvi-backend
+          -Dsonar.projectKey=backend
           -Dsonar.organization=sanvi-machinery
           -Dsonar.sources=src
           -Dsonar.tests=src
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./sanvi-frontend
+        working-directory: ./frontend
     
     steps:
     - uses: actions/checkout@v3
@@ -77,7 +77,7 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: './sanvi-frontend/package-lock.json'
+        cache-dependency-path: './frontend/package-lock.json'
     
     - name: Install dependencies
       run: npm ci
@@ -89,12 +89,12 @@ jobs:
     - name: Run OWASP Dependency Check
       uses: dependency-check/Dependency-Check_Action@main
       with:
-        project: 'Sanvi-Frontend'
-        path: './sanvi-frontend'
+        project: /Frontend'
+        path: './frontend'
         format: 'HTML'
         out: './reports'
         args: >
-          --suppression ./sanvi-frontend/.github/suppression.xml
+          --suppression ./frontend/.github/suppression.xml
           --failOnCVSS 7
           --enableRetired
     
@@ -110,9 +110,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
-        projectBaseDir: ./sanvi-frontend
+        projectBaseDir: ./frontend
         args: >
-          -Dsonar.projectKey=sanvi-frontend
+          -Dsonar.projectKey/frontend
           -Dsonar.organization=sanvi-machinery
           -Dsonar.sources=app,components,features
           -Dsonar.tests=app,components,features

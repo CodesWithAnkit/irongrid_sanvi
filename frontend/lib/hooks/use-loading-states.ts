@@ -3,10 +3,10 @@ import { useState, useCallback } from 'react';
 export interface LoadingState {
   isLoading: boolean;
   error: Error | null;
-  data: any;
+  data: unknown;
 }
 
-export function useLoadingState<T = any>(initialData?: T) {
+export function useLoadingState<T = unknown>(initialData?: T) {
   const [state, setState] = useState<LoadingState>({
     isLoading: false,
     error: null,
