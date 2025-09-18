@@ -2,18 +2,13 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { vi } from 'vitest';
 import { Dashboard } from '../dashboard';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
 import { describe } from 'node:test';
 
 // Mock Chart.js components
 vi.mock('react-chartjs-2', () => ({
-  Line: ({ data }: any) => <div data-testid="line-chart">Line Chart</div>,
-  Doughnut: ({ data }: any) => <div data-testid="doughnut-chart">Doughnut Chart</div>,
-  Bar: ({ data }: any) => <div data-testid="bar-chart">Bar Chart</div>,
+  Line: () => <div data-testid="line-chart">Line Chart</div>,
+  Doughnut: () => <div data-testid="doughnut-chart">Doughnut Chart</div>,
+  Bar: () => <div data-testid="bar-chart">Bar Chart</div>,
 }));
 
 vi.mock('chart.js', () => ({

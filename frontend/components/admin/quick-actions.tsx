@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
+// ...existing code...
 
 export interface QuickAction {
   id: string;

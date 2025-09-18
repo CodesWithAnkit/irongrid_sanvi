@@ -13,7 +13,7 @@ export default function FormsDemo() {
   const [activeForm, setActiveForm] = React.useState<DemoForm>("customer");
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = <T extends object>(data: T) => {
     setIsLoading(true);
     console.log("Form submitted:", data);
     

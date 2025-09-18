@@ -127,7 +127,8 @@ export function DashboardChart({ title, type, data, isLoading = false, className
             y: {
               beginAtZero: true,
               ticks: {
-                callback: function(value: any) {
+                callback: function(this: any, tickValue: string | number) {
+                  const value = typeof tickValue === 'number' ? tickValue : Number(tickValue);
                   return '₹' + (value / 1000000).toFixed(1) + 'M';
                 },
               },
@@ -145,8 +146,10 @@ export function DashboardChart({ title, type, data, isLoading = false, className
                 label: function(context: any) {
                   const label = context.label || '';
                   const value = context.parsed;
-                  const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
-                  const percentage = ((value / total) * 100).toFixed(1);
+                  const total = Array.isArray(context.dataset.data)
+                    ? context.dataset.data.reduce((a: number, b: number) => a + b, 0)
+                    : 0;
+                  const percentage = total ? ((value / total) * 100).toFixed(1) : '0.0';
                   return `${label}: ${value} (${percentage}%)`;
                 },
               },
@@ -161,7 +164,8 @@ export function DashboardChart({ title, type, data, isLoading = false, className
             y: {
               beginAtZero: true,
               ticks: {
-                callback: function(value: any) {
+                callback: function(this: any, tickValue: string | number, index: number, ticks: any[]) {
+                  const value = typeof tickValue === 'number' ? tickValue : Number(tickValue);
                   return '₹' + (value / 1000000).toFixed(1) + 'M';
                 },
               },

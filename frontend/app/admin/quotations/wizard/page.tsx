@@ -13,8 +13,7 @@ export default function QuotationWizardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const preSelectedCustomerId = searchParams.get("customerId");
-  const preSelectedProductId = searchParams.get("productId");
+  // ...existing code...
 
   const handleSuccess = (quotationId: string) => {
     router.push(`/admin/quotations/${quotationId}`);

@@ -13,8 +13,7 @@ export default function NewQuotationPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const preSelectedCustomerId = searchParams.get("customerId");
-  const preSelectedProductId = searchParams.get("productId");
+  // ...existing code...
 
   return (
     <AdminLayout>

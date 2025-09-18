@@ -46,8 +46,8 @@ interface QuotationData {
 export default function QuotationBuilderPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [customers, setCustomers] = React.useState<any[]>([]);
-  const [products, setProducts] = React.useState<any[]>([]);
+  // const [customers, setCustomers] = React.useState<Array<{ id: string; name: string; email?: string; phone?: string }>[]>([]);
+  // const [products, setProducts] = React.useState<Array<{ id: string; name: string; price?: number }>[]>([]);
   const [initialData, setInitialData] = React.useState<Partial<QuotationData>>({});
 
   // Load data on component mount
@@ -60,8 +60,8 @@ export default function QuotationBuilderPage() {
           productService.getProducts({ limit: 100 })
         ]);
 
-        setCustomers(customersResponse.data);
-        setProducts(productsResponse.data);
+        // setCustomers(customersResponse.data);
+        // setProducts(productsResponse.data);
 
         // Set initial data with real customer and product info
         const defaultCustomer = customersResponse.data.find(c => c.id === "cmfjeun5o0000od2x5uv8f4o9") || customersResponse.data[0];

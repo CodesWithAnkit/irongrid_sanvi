@@ -53,7 +53,7 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Business Analytics"
-        description="Comprehensive insights into your business performance, sales metrics, and growth trends."
+        subtitle="Comprehensive insights into your business performance, sales metrics, and growth trends."
       />
 
       {/* Date Range Selector */}
@@ -176,7 +176,7 @@ export default function AnalyticsPage() {
               
               <div className="space-y-3">
                 <h4 className="font-medium text-gray-900">Top Value Customers</h4>
-                {clvData?.topValueCustomers.slice(0, 3).map((customer, index) => (
+                {clvData?.topValueCustomers.slice(0, 3).map((customer) => (
                   <div key={customer.customerId} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm font-medium">{customer.customerName}</span>
                     <span className="text-sm text-gray-600">{formatCurrency(customer.clv)}</span>

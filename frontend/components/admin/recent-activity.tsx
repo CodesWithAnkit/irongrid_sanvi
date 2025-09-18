@@ -66,7 +66,7 @@ const mockActivities: ActivityItem[] = [
 ];
 
 export function RecentActivity({ isLoading = false, className }: RecentActivityProps) {
-  const getActivityIcon = (type: ActivityItem['type'], status?: ActivityItem['status']) => {
+  const getActivityIcon = (type: ActivityItem['type']) => {
     const iconClass = "w-5 h-5";
     
     switch (type) {
@@ -158,7 +158,7 @@ export function RecentActivity({ isLoading = false, className }: RecentActivityP
           {mockActivities.map((activity) => (
             <div key={activity.id} className="flex items-start gap-3">
               <div className={`p-2 rounded-full ${getStatusColor(activity.status)}`}>
-                {getActivityIcon(activity.type, activity.status)}
+                {getActivityIcon(activity.type)}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">

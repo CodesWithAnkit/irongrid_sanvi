@@ -17,9 +17,11 @@ export default function LoginPage() {
     try {
       await mutateAsync({ email, password });
       router.push("/admin");
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(errorMessage || "Login failed");
       console.error(err)
-      setError(err?.response?.data?.message || "Login failed");
+      setError("Login failed");
     }
   };
 
