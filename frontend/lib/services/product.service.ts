@@ -43,7 +43,7 @@ export interface ProductFilters extends FilterParams {
 
 export interface SearchFilters {
   categories?: string[];
-  priceRange?: [number, number];
+  priceRange?: { min: number; max: number };
   specifications?: Record<string, string>;
   inStock?: boolean;
 }
@@ -52,7 +52,7 @@ export interface PricingRule {
   id: string;
   productId: string;
   customerId?: string;
-  customerType?: string;
+  customerType?: 'MANUFACTURER' | 'DISTRIBUTOR' | 'RETAILER' | 'END_USER';
   minQuantity: number;
   maxQuantity?: number;
   discountType: 'PERCENTAGE' | 'FIXED';
@@ -69,22 +69,22 @@ export const productService = {
     const response = await apiClient.get<PaginatedResponse<Product>>('/products', {
       params
     });
-    return response.data;
+    return response;
   },
 
   async getProduct(id: string): Promise<Product> {
     const response = await apiClient.get<Product>(`/products/${id}`);
-    return response.data;
+    return response;
   },
 
   async createProduct(data: CreateProductRequest): Promise<Product> {
     const response = await apiClient.post<Product>('/products', data);
-    return response.data;
+    return response;
   },
 
   async updateProduct(id: string, data: UpdateProductRequest): Promise<Product> {
     const response = await apiClient.put<Product>(`/products/${id}`, data);
-    return response.data;
+    return response;
   },
 
   async deleteProduct(id: string): Promise<void> {
@@ -95,22 +95,22 @@ export const productService = {
     const response = await apiClient.get<Product[]>('/products/search', {
       params: { q: query, ...filters }
     });
-    return response.data;
+    return response;
   },
 
   async getCategories(): Promise<Category[]> {
     const response = await apiClient.get<Category[]>('/products/categories');
-    return response.data;
+    return response;
   },
 
   async createCategory(data: { name: string; description: string; parentId?: string }): Promise<Category> {
     const response = await apiClient.post<Category>('/products/categories', data);
-    return response.data;
+    return response;
   },
 
   async updateCategory(id: string, data: { name?: string; description?: string; isActive?: boolean }): Promise<Category> {
     const response = await apiClient.put<Category>(`/products/categories/${id}`, data);
-    return response.data;
+    return response;
   },
 
   async deleteCategory(id: string): Promise<void> {
@@ -121,14 +121,14 @@ export const productService = {
     const response = await apiClient.put<Product>(`/products/${id}/inventory`, {
       quantity
     });
-    return response.data;
+    return response;
   },
 
   async getPricingRules(productId: string, customerId?: string): Promise<PricingRule[]> {
     const response = await apiClient.get<PricingRule[]>(`/products/${productId}/pricing-rules`, {
       params: customerId ? { customerId } : {}
     });
-    return response.data;
+    return response;
   },
 
   async uploadProductImages(productId: string, files: File[]): Promise<string[]> {
@@ -146,7 +146,7 @@ export const productService = {
         },
       }
     );
-    return response.data.imageUrls;
+    return response.imageUrls;
   },
 
   async deleteProductImage(productId: string, imageUrl: string): Promise<void> {

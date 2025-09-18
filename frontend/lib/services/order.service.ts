@@ -34,14 +34,18 @@ export interface PaymentRequest {
   amount: number;
   paymentMethod: string;
   cardToken?: string;
-  bankDetails?: any;
+  bankDetails?: {
+    accountNumber: string;
+    ifscCode: string;
+    accountHolder: string;
+  };
 }
 
 export interface OrderItem {
   productId: string;
   quantity: number;
   unitPrice: number;
-  customSpecifications?: Record<string, any>;
+  customSpecifications?: Record<string, unknown>;
 }
 
 export interface Address {
@@ -114,22 +118,22 @@ export interface RefundResult {
 class OrderService {
   async getOrders(params: PaginationParams & OrderFilters = {}) {
     const response = await apiClient.get('/orders', { params });
-    return response.data;
+    return response;
   }
 
   async getOrder(id: string): Promise<Order> {
     const response = await apiClient.get<Order>(`/orders/${id}`);
-    return response.data;
+    return response;
   }
 
   async createOrder(data: CreateOrderRequest): Promise<Order> {
     const response = await apiClient.post<Order>('/orders', data);
-    return response.data;
+    return response;
   }
 
   async updateOrder(id: string, data: UpdateOrderRequest): Promise<Order> {
     const response = await apiClient.put<Order>(`/orders/${id}`, data);
-    return response.data;
+    return response;
   }
 
   async updateOrderStatus(id: string, status: string, notes?: string): Promise<Order> {
@@ -137,17 +141,17 @@ class OrderService {
       status,
       notes,
     });
-    return response.data;
+    return response;
   }
 
   async processPayment(orderId: string, paymentData: PaymentRequest): Promise<PaymentResult> {
     const response = await apiClient.post<PaymentResult>(`/orders/${orderId}/payment`, paymentData);
-    return response.data;
+    return response;
   }
 
   async generateInvoice(orderId: string): Promise<InvoiceData> {
     const response = await apiClient.post<InvoiceData>(`/orders/${orderId}/invoice`);
-    return response.data;
+    return response;
   }
 
   async cancelOrder(id: string, reason: string): Promise<void> {
@@ -159,17 +163,17 @@ class OrderService {
       amount,
       reason,
     });
-    return response.data;
+    return response;
   }
 
   async getOrderTracking(orderId: string): Promise<OrderTracking> {
     const response = await apiClient.get<OrderTracking>(`/orders/${orderId}/tracking`);
-    return response.data;
+    return response;
   }
 
   async getOrderHistory(customerId: string): Promise<OrderHistory> {
     const response = await apiClient.get<OrderHistory>(`/orders/history/${customerId}`);
-    return response.data;
+    return response;
   }
 }
 

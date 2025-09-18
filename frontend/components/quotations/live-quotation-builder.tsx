@@ -4,7 +4,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Plus, X, Download, Copy, Printer } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -112,12 +112,14 @@ export interface LiveQuotationBuilderProps {
   initialData?: Partial<QuotationData>;
   onSave?: (data: QuotationData) => Promise<void>;
   onCancel?: () => void;
+  isLoading?: boolean;
 }
 
 export function LiveQuotationBuilder({
   initialData,
   onSave,
   onCancel,
+  isLoading,
 }: LiveQuotationBuilderProps) {
   const [quotationData, setQuotationData] = React.useState<QuotationData>({
     // Default company info
@@ -166,7 +168,6 @@ export function LiveQuotationBuilder({
     ...initialData
   });
 
-  const [isLoading, setIsLoading] = React.useState(false);
   const [errors, setErrors] = React.useState<string[]>([]);
 
   const validate = (data: QuotationData): string[] => {
@@ -186,7 +187,6 @@ export function LiveQuotationBuilder({
 
   React.useEffect(() => {
     setErrors(validate(quotationData));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quotationData]);
 
   // Calculate totals whenever items change
@@ -205,14 +205,14 @@ export function LiveQuotationBuilder({
     }));
   }, [quotationData.items]);
 
-  const updateField = (field: keyof QuotationData, value: any) => {
+  const updateField = <K extends keyof QuotationData>(field: K, value: QuotationData[K]) => {
     setQuotationData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const updateItem = (itemId: string, field: keyof QuotationItem, value: any) => {
+  const updateItem = <K extends keyof QuotationItem>(itemId: string, field: K, value: QuotationItem[K]) => {
     setQuotationData(prev => ({
       ...prev,
       items: prev.items.map(item => {
@@ -259,21 +259,10 @@ export function LiveQuotationBuilder({
   };
 
   const handleSaveAsDraft = async () => {
-    setIsLoading(true);
-    console.log('qqqq', quotationData)
-    try {
-      const currentErrors = validate(quotationData);
-      setErrors(currentErrors);
-      if (currentErrors.length > 0) {
-        setIsLoading(false);
-        return;
-      }
-      await onSave?.(quotationData);
-    } catch (error) {
-      console.error('Failed to save draft:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    if (isLoading) return;
+    setErrors(validate(quotationData));
+    if (errors.length > 0) return;
+    await onSave?.(quotationData);
   };
 
   const handleSaveAsJSON = () => {
@@ -435,7 +424,7 @@ export function LiveQuotationBuilder({
               <Input
                 value={quotationData.customerName}
                 onChange={(e) => updateField('customerName', e.target.value)}
-                className="w-full font-semibold border-0 border-b rounded-none px-0 focus:border-blue-500 mb-2"
+                className="w-full font-semibold border-0 border-b-2 rounded-none px-0 focus:border-blue-500 mb-2"
                 placeholder="Customer Name"
               />
               <div className="text-sm space-y-1">
@@ -644,7 +633,7 @@ export function LiveQuotationBuilder({
           disabled={isLoading || errors.length > 0}
           className="bg-blue-600 hover:bg-blue-700 text-white"
         >
-          {isLoading ? 'Saving...' : 'Save Quotatiowwwn'}
+          {isLoading ? 'Saving...' : 'Save Quotation'}
         </Button>
         {onCancel && (
           <Button 

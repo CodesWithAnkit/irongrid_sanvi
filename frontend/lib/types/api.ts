@@ -71,8 +71,9 @@ export interface Customer {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-}export i
-nterface Address {
+}
+
+export interface Address {
   street: string;
   city: string;
   state: string;
@@ -176,8 +177,9 @@ export enum QuotationStatus {
   REJECTED = 'REJECTED',
   EXPIRED = 'EXPIRED',
   CONVERTED = 'CONVERTED',
-}// Order t
-ypes
+}
+
+// Order types
 export interface Order {
   id: string;
   orderNumber: string;

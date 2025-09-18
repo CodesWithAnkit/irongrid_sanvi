@@ -43,6 +43,23 @@ interface QuotationData {
   grandTotal: number;
 }
 
+interface QuotationItemRequest {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  discount: number;
+  customSpecifications?: Record<string, unknown>;
+  deliveryTimeline?: string;
+}
+
+interface QuotationRequest {
+  customerId: string;
+  items: QuotationItemRequest[];
+  validUntil: string;
+  termsConditions: string;
+  notes: string;
+}
+
 export default function QuotationBuilderPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false);
@@ -92,47 +109,26 @@ export default function QuotationBuilderPage() {
 
   const handleSaveQuotation = async (data: QuotationData) => {
     setIsLoading(true);
-    console.log('Saving quotation:', data);
     try {
-      // Use the customer ID from the data or fallback to default
-      const customerId = (data as any).customerId || "cmfjeun5o0000od2x5uv8f4o9";
+      const customerId = data.customerId || "cmfjeun5o0000od2x5uv8f4o9";
 
-      // Map items to existing products
-      const resolvedItems = [] as Array<{ productId: string; quantity: number; unitPrice: number; discount: number; customSpecifications?: Record<string, any>; deliveryTimeline?: string; }>; 
-      
-      for (let idx = 0; idx < data.items.length; idx++) {
-        const it = data.items[idx];
+      const resolvedItems: QuotationItemRequest[] = data.items.map((it, idx) => {
         const name = it.description?.trim() || `Item ${idx + 1}`;
+        const productId = it.id;
 
-        // Try to find matching product by ID first, then by name
-        let productId = it.id;
-        // console.log('prodddd', productId, products)
-        // if (!productId || !products.find(p => p.id === productId)) {
-        //   // Find by name if ID doesn't match
-        //   const matchingProduct = products.find(p => 
-        //     p.name.toUpperCase().includes(name.toUpperCase()) || 
-        //     name.toUpperCase().includes(p.name.toUpperCase())
-        //   );
-        //   productId = matchingProduct?.id || products[0]?.id || "cmfjeun660001od2xl94oskdx";
-        // }
-
-        // Convert to the correct object format expected by backend (Joi validation)
-        const customSpecifications = {
-          description: name,
-          unit: "item"
-        };
-        
-        resolvedItems.push({
+        return {
           productId,
           quantity: Math.max(1, it.quantity || 1),
           unitPrice: Math.max(0, it.unitPrice || 0),
-          discount: 0.01, // Backend requires positive number, use minimal discount
-          customSpecifications,
-        });
-      }
+          discount: 0.01,
+          customSpecifications: {
+            description: name,
+            unit: "item"
+          }
+        };
+      });
 
-      // 3) Build backend-compliant payload
-      const quotationRequest: any = {
+      const quotationRequest: QuotationRequest = {
         customerId,
         items: resolvedItems,
         validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -140,19 +136,15 @@ export default function QuotationBuilderPage() {
         notes: data.notes,
       };
 
-      // Create quotation via API
-      const quotation = await quotationService.createQuotation(quotationRequest as any);
+      const quotation = await quotationService.createQuotation(quotationRequest);
 
-      // Auto-open HTML PDF in a new tab (non-blocking)
       try {
         window.open(`/api/quotations/${quotation.id}/pdf?format=html`, "_blank");
       } catch {}
 
-      // Redirect to view the created quotation
       router.push(`/admin/quotations/${quotation.id}`);
     } catch (error) {
       console.error("Failed to save quotation:", error);
-      // TODO: Add proper error handling/toast
       alert("Failed to save quotation. Please try again.");
     } finally {
       setIsLoading(false);
@@ -188,6 +180,7 @@ export default function QuotationBuilderPage() {
             initialData={initialData}
             onSave={handleSaveQuotation}
             onCancel={handleCancel}
+            isLoading={isLoading}
           />
         </div>
       </div>

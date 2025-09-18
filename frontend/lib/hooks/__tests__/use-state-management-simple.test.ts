@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { ReactNode } from 'react';
 import { 
@@ -46,7 +46,7 @@ describe('State Management Hooks', () => {
         await result.current.addToList(queryKey, newItem, 'start');
       });
 
-      const updatedData = queryClient.getQueryData(queryKey) as any;
+      const updatedData = queryClient.getQueryData(queryKey) as { data: Array<{ id: string; name: string }>; total: number };
       expect(updatedData.data).toHaveLength(2);
       expect(updatedData.data[0]).toEqual(newItem);
       expect(updatedData.total).toBe(2);
@@ -69,7 +69,7 @@ describe('State Management Hooks', () => {
         await result.current.removeFromList(queryKey, '1');
       });
 
-      const updatedData = queryClient.getQueryData(queryKey) as any;
+      const updatedData = queryClient.getQueryData(queryKey) as { data: Array<{ id: string; name: string }>; total: number };
       expect(updatedData.data).toHaveLength(1);
       expect(updatedData.data[0].id).toBe('2');
       expect(updatedData.total).toBe(1);
@@ -86,10 +86,10 @@ describe('State Management Hooks', () => {
       queryClient.setQueryData(queryKey, initialData);
 
       await act(async () => {
-        await result.current.updateInList(queryKey, '1', { name: 'Updated Item' });
+        await result.current.updateInList(queryKey, '1', { name: 'Updated Item' as string, status: 'active' });
       });
 
-      const updatedData = queryClient.getQueryData(queryKey) as any;
+      const updatedData = queryClient.getQueryData(queryKey) as { data: Array<{ id: string; name: string; status: string; updatedAt?: string }>; total: number };
       expect(updatedData.data[0].name).toBe('Updated Item');
       expect(updatedData.data[0].updatedAt).toBeDefined();
     });
@@ -104,10 +104,10 @@ describe('State Management Hooks', () => {
       queryClient.setQueryData(queryKey, initialData);
 
       await act(async () => {
-        await result.current.updateStatus(queryKey, 'completed', { priority: 'high' });
+        await result.current.updateStatus(queryKey, 'completed');
       });
 
-      const updatedData = queryClient.getQueryData(queryKey) as any;
+      const updatedData = queryClient.getQueryData(queryKey) as { id: string; status: string; name: string; updatedAt?: string; priority?: string };
       expect(updatedData.status).toBe('completed');
       expect(updatedData.priority).toBe('high');
       expect(updatedData.updatedAt).toBeDefined();
@@ -126,7 +126,7 @@ describe('State Management Hooks', () => {
         await result.current.incrementCounter(queryKey, 'count', 3);
       });
 
-      const updatedData = queryClient.getQueryData(queryKey) as any;
+      const updatedData = queryClient.getQueryData(queryKey) as { count: number; total: number };
       expect(updatedData.count).toBe(8);
       expect(updatedData.total).toBe(10); // Should remain unchanged
     });
@@ -142,7 +142,7 @@ describe('State Management Hooks', () => {
         await result.current.decrementCounter(queryKey, 'count', 2);
       });
 
-      const updatedData = queryClient.getQueryData(queryKey) as any;
+      const updatedData = queryClient.getQueryData(queryKey) as { count: number };
       expect(updatedData.count).toBe(3);
     });
 
@@ -157,7 +157,7 @@ describe('State Management Hooks', () => {
         await result.current.decrementCounter(queryKey, 'count', 5);
       });
 
-      const updatedData = queryClient.getQueryData(queryKey) as any;
+      const updatedData = queryClient.getQueryData(queryKey) as { count: number };
       expect(updatedData.count).toBe(0);
     });
   });
@@ -185,8 +185,8 @@ describe('State Management Hooks', () => {
         ]);
       });
 
-      const data1 = queryClient.getQueryData(queryKey1) as any;
-      const data2 = queryClient.getQueryData(queryKey2) as any;
+      const data1 = queryClient.getQueryData(queryKey1) as { id: string; count: number };
+      const data2 = queryClient.getQueryData(queryKey2) as { id: string; count: number };
 
       expect(data1.count).toBe(6);
       expect(data2.count).toBe(8);

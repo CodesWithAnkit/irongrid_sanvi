@@ -20,7 +20,7 @@ export interface CreateQuotationItemRequest {
   quantity: number;
   unitPrice: number;
   discountPercentage?: number;
-  customSpecifications?: Record<string, any>;
+  customSpecifications?: Record<string, unknown>;
   deliveryTimeline?: string;
 }
 
@@ -70,22 +70,22 @@ export const quotationService = {
     const response = await apiClient.get<PaginatedResponse<Quotation>>('/quotations', {
       params
     });
-    return response.data;
+    return response;
   },
 
   async getQuotation(id: string): Promise<Quotation> {
     const response = await apiClient.get<Quotation>(`/quotations/${id}`);
-    return response.data;
+    return response;
   },
 
   async createQuotation(data: CreateQuotationRequest): Promise<Quotation> {
     const response = await apiClient.post<Quotation>('/quotations', data);
-    return response.data;
+    return response;
   },
 
   async updateQuotation(id: string, data: UpdateQuotationRequest): Promise<Quotation> {
     const response = await apiClient.put<Quotation>(`/quotations/${id}`, data);
-    return response.data;
+    return response;
   },
 
   async deleteQuotation(id: string): Promise<void> {
@@ -94,7 +94,7 @@ export const quotationService = {
 
   async duplicateQuotation(id: string): Promise<Quotation> {
     const response = await apiClient.post<Quotation>(`/quotations/${id}/duplicate`);
-    return response.data;
+    return response;
   },
 
   async sendQuotation(id: string, data: SendQuotationRequest = {}): Promise<void> {
@@ -103,34 +103,34 @@ export const quotationService = {
 
   async generatePDF(id: string): Promise<string> {
     const response = await apiClient.get<{ pdfUrl: string }>(`/quotations/${id}/pdf`);
-    return response.data.pdfUrl;
+    return response.pdfUrl;
   },
 
   async approveQuotation(id: string, notes?: string): Promise<Quotation> {
     const response = await apiClient.post<Quotation>(`/quotations/${id}/approve`, { notes });
-    return response.data;
+    return response;
   },
 
   async rejectQuotation(id: string, reason: string): Promise<Quotation> {
     const response = await apiClient.post<Quotation>(`/quotations/${id}/reject`, { reason });
-    return response.data;
+    return response;
   },
 
   async convertToOrder(id: string): Promise<{ orderId: string }> {
     const response = await apiClient.post<{ orderId: string }>(`/quotations/${id}/convert`);
-    return response.data;
+    return response;
   },
 
   async getQuotationAnalytics(filters: QuotationFilters = {}): Promise<QuotationAnalytics> {
     const response = await apiClient.get<QuotationAnalytics>('/quotations/analytics', {
       params: filters
     });
-    return response.data;
+    return response;
   },
 
   async getPublicQuotation(token: string): Promise<Quotation> {
     const response = await apiClient.get<Quotation>(`/quotations/public/${token}`);
-    return response.data;
+    return response;
   },
 
   async respondToQuotation(

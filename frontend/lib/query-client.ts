@@ -1,6 +1,50 @@
 import { QueryClient, DefaultOptions } from '@tanstack/react-query';
 import { ApiError } from './api';
 
+// Type definitions for query filters
+interface CustomerFilters {
+  status?: string;
+  type?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
+
+interface ProductFilters {
+  category?: string;
+  status?: string;
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  limit?: number;
+  offset?: number;
+}
+
+interface QuotationFilters {
+  status?: string;
+  customerId?: string;
+  dateRange?: { from: string; to: string };
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
+
+interface OrderFilters {
+  status?: string;
+  customerId?: string;
+  dateRange?: { from: string; to: string };
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
+
+interface AnalyticsFilters {
+  dateRange?: { from: string; to: string };
+  customerId?: string;
+  productId?: string;
+  groupBy?: string;
+}
+
 // Default query options
 const defaultOptions: DefaultOptions = {
   queries: {
@@ -51,7 +95,7 @@ export const queryKeys = {
   customers: {
     all: ['customers'] as const,
     lists: () => [...queryKeys.customers.all, 'list'] as const,
-    list: (filters: Record<string, any>) => [...queryKeys.customers.lists(), filters] as const,
+    list: (filters: CustomerFilters) => [...queryKeys.customers.lists(), filters] as const,
     details: () => [...queryKeys.customers.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.customers.details(), id] as const,
     analytics: (id: string) => [...queryKeys.customers.detail(id), 'analytics'] as const,
@@ -63,11 +107,11 @@ export const queryKeys = {
   products: {
     all: ['products'] as const,
     lists: () => [...queryKeys.products.all, 'list'] as const,
-    list: (filters: Record<string, any>) => [...queryKeys.products.lists(), filters] as const,
+    list: (filters: ProductFilters) => [...queryKeys.products.lists(), filters] as const,
     details: () => [...queryKeys.products.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.products.details(), id] as const,
     categories: ['products', 'categories'] as const,
-    search: (query: string, filters: Record<string, any>) => 
+    search: (query: string, filters: ProductFilters) => 
       [...queryKeys.products.all, 'search', query, filters] as const,
     pricingRules: (productId: string, customerId?: string) => 
       [...queryKeys.products.detail(productId), 'pricing-rules', customerId] as const,
@@ -77,10 +121,10 @@ export const queryKeys = {
   quotations: {
     all: ['quotations'] as const,
     lists: () => [...queryKeys.quotations.all, 'list'] as const,
-    list: (filters: Record<string, any>) => [...queryKeys.quotations.lists(), filters] as const,
+    list: (filters: QuotationFilters) => [...queryKeys.quotations.lists(), filters] as const,
     details: () => [...queryKeys.quotations.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.quotations.details(), id] as const,
-    analytics: (filters: Record<string, any>) => 
+    analytics: (filters: AnalyticsFilters) => 
       [...queryKeys.quotations.all, 'analytics', filters] as const,
     public: (token: string) => [...queryKeys.quotations.all, 'public', token] as const,
   },
@@ -89,7 +133,7 @@ export const queryKeys = {
   orders: {
     all: ['orders'] as const,
     lists: () => [...queryKeys.orders.all, 'list'] as const,
-    list: (filters: Record<string, any>) => [...queryKeys.orders.lists(), filters] as const,
+    list: (filters: OrderFilters) => [...queryKeys.orders.lists(), filters] as const,
     details: () => [...queryKeys.orders.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.orders.details(), id] as const,
   },
@@ -97,20 +141,20 @@ export const queryKeys = {
   // Analytics
   analytics: {
     all: ['analytics'] as const,
-    dashboard: (filters: Record<string, any>) => 
+    dashboard: (filters: AnalyticsFilters) => 
       [...queryKeys.analytics.all, 'dashboard', filters] as const,
-    business: (filters: Record<string, any>) => 
+    business: (filters: AnalyticsFilters) => 
       [...queryKeys.analytics.all, 'business', filters] as const,
-    sales: (dateRange: Record<string, any>) =>
+    sales: (dateRange: { from: string; to: string }) =>
       [...queryKeys.analytics.all, 'sales', dateRange] as const,
-    customers: (dateRange: Record<string, any>) =>
+    customers: (dateRange: { from: string; to: string }) =>
       [...queryKeys.analytics.all, 'customers', dateRange] as const,
-    products: (dateRange: Record<string, any>) =>
+    products: (dateRange: { from: string; to: string }) =>
       [...queryKeys.analytics.all, 'products', dateRange] as const,
-    conversion: (filters: Record<string, any>) =>
+    conversion: (filters: AnalyticsFilters) =>
       [...queryKeys.analytics.all, 'conversion', filters] as const,
     performance: () => [...queryKeys.analytics.all, 'performance'] as const,
-    forecast: (params: Record<string, any>) =>
+    forecast: (params: AnalyticsFilters) =>
       [...queryKeys.analytics.all, 'forecast', params] as const,
   },
 } as const;

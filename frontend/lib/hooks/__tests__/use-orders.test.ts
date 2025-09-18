@@ -18,23 +18,25 @@ import { ApiError, ErrorCodes } from '../../api';
 import { afterEach, describe, expect, it } from 'vitest';
 
 // Mock the order service
+const mockOrderService = {
+  getOrders: jest.fn(),
+  getOrder: jest.fn(),
+  createOrder: jest.fn(),
+  updateOrder: jest.fn(),
+  updateOrderStatus: jest.fn(),
+  processPayment: jest.fn(),
+  generateInvoice: jest.fn(),
+  cancelOrder: jest.fn(),
+  refundOrder: jest.fn(),
+  getOrderTracking: jest.fn(),
+  getOrderHistory: jest.fn(),
+};
+
 jest.mock('../../services/order.service', () => ({
-    orderService: {
-        getOrders: jest.fn(),
-        getOrder: jest.fn(),
-        createOrder: jest.fn(),
-        updateOrder: jest.fn(),
-        updateOrderStatus: jest.fn(),
-        processPayment: jest.fn(),
-        generateInvoice: jest.fn(),
-        cancelOrder: jest.fn(),
-        refundOrder: jest.fn(),
-        getOrderTracking: jest.fn(),
-        getOrderHistory: jest.fn(),
-    },
+  orderService: mockOrderService
 }));
 
-const { orderService } = require('../../services/order.service');
+import { orderService } from '../../services/order.service';
 
 describe('Order Hooks', () => {
     let queryClient: QueryClient;
@@ -88,7 +90,7 @@ describe('Order Hooks', () => {
 
     describe('useOrders', () => {
         it('should fetch orders list successfully', async () => {
-            orderService.getOrders.mockResolvedValue(mockOrderList);
+            (orderService.getOrders as jest.Mock).mockResolvedValue(mockOrderList);
 
             const { result } = renderHook(
                 () => useOrders({ page: 1, limit: 10, status: 'PENDING' }),
@@ -106,11 +108,27 @@ describe('Order Hooks', () => {
                 status: 'PENDING',
             });
         });
+
+        it('should handle fetch errors', async () => {
+            const error = new ApiError('Fetch failed', ErrorCodes.EXTERNAL_SERVICE_ERROR, 502);
+            (orderService.getOrders as jest.Mock).mockRejectedValue(error);
+
+            const { result } = renderHook(
+                () => useOrders({ page: 1, limit: 10, status: 'PENDING' }),
+                { wrapper }
+            );
+
+            await waitFor(() => {
+                expect(result.current.isError).toBe(true);
+            });
+
+            expect(result.current.error).toEqual(error);
+        });
     });
 
     describe('useOrder', () => {
         it('should fetch single order successfully', async () => {
-            orderService.getOrder.mockResolvedValue(mockOrder);
+            (orderService.getOrder as jest.Mock).mockResolvedValue(mockOrder);
 
             const { result } = renderHook(
                 () => useOrder('order-1'),
@@ -123,6 +141,22 @@ describe('Order Hooks', () => {
 
             expect(result.current.data).toEqual(mockOrder);
             expect(orderService.getOrder).toHaveBeenCalledWith('order-1');
+        });
+
+        it('should handle fetch errors', async () => {
+            const error = new ApiError('Fetch failed', ErrorCodes.EXTERNAL_SERVICE_ERROR, 502);
+            (orderService.getOrder as jest.Mock).mockRejectedValue(error);
+
+            const { result } = renderHook(
+                () => useOrder('order-1'),
+                { wrapper }
+            );
+
+            await waitFor(() => {
+                expect(result.current.isError).toBe(true);
+            });
+
+            expect(result.current.error).toEqual(error);
         });
 
         it('should be disabled when id is empty', () => {
@@ -139,28 +173,27 @@ describe('Order Hooks', () => {
     describe('useCreateOrder', () => {
         it('should create order and update cache', async () => {
             const newOrder = { ...mockOrder, id: 'order-2' };
-            orderService.createOrder.mockResolvedValue(newOrder);
+            (orderService.createOrder as jest.Mock).mockResolvedValue(newOrder);
 
             const { result } = renderHook(() => useCreateOrder(), { wrapper });
 
-            const orderData = {
+            const mockOrderData = {
                 customerId: 'customer-1',
-                quotationId: 'quotation-1',
-                items: mockOrder.items,
+                items: [],
                 shippingAddress: {
                     street: '123 Main St',
                     city: 'Test City',
                     state: 'TS',
                     postalCode: '12345',
-                    country: 'US',
-                },
+                    country: 'US'
+                }
             };
 
             await act(async () => {
-                await result.current.mutateAsync(orderData);
+                await result.current.mutateAsync(mockOrderData);
             });
 
-            expect(orderService.createOrder).toHaveBeenCalledWith(orderData);
+            expect(orderService.createOrder).toHaveBeenCalledWith(mockOrderData);
             expect(result.current.isSuccess).toBe(true);
 
             // Verify cache was updated
@@ -170,7 +203,7 @@ describe('Order Hooks', () => {
 
         it('should handle creation errors', async () => {
             const error = new ApiError('Creation failed', ErrorCodes.VALIDATION_ERROR, 400);
-            orderService.createOrder.mockRejectedValue(error);
+            (orderService.createOrder as jest.Mock).mockRejectedValue(error);
 
             const { result } = renderHook(() => useCreateOrder(), { wrapper });
 
@@ -179,9 +212,16 @@ describe('Order Hooks', () => {
                     await result.current.mutateAsync({
                         customerId: 'customer-1',
                         items: [],
+                        shippingAddress: {
+                            street: '123 Main St',
+                            city: 'Test City',
+                            state: 'TS',
+                            postalCode: '12345',
+                            country: 'US'
+                        }
                     });
-                } catch (e) {
-                    expect(e).toEqual(error);
+                } catch (error) {
+                    expect(error).toEqual(error);
                 }
             });
 
@@ -192,7 +232,7 @@ describe('Order Hooks', () => {
     describe('useUpdateOrder', () => {
         it('should update order with optimistic updates', async () => {
             const updatedOrder = { ...mockOrder, totalAmount: 18000 };
-            orderService.updateOrder.mockResolvedValue(updatedOrder);
+            (orderService.updateOrder as jest.Mock).mockResolvedValue(updatedOrder);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -202,18 +242,19 @@ describe('Order Hooks', () => {
             await act(async () => {
                 await result.current.mutateAsync({
                     id: 'order-1',
-                    data: { totalAmount: 18000 },
+                    data: { status: 'CONFIRMED', notes: 'Order confirmed' },
                 });
             });
 
             expect(orderService.updateOrder).toHaveBeenCalledWith('order-1', {
-                totalAmount: 18000,
+                status: 'CONFIRMED',
+                notes: 'Order confirmed',
             });
         });
 
         it('should rollback on update error', async () => {
             const error = new ApiError('Update failed', ErrorCodes.VALIDATION_ERROR, 400);
-            orderService.updateOrder.mockRejectedValue(error);
+            (orderService.updateOrder as jest.Mock).mockRejectedValue(error);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -224,7 +265,10 @@ describe('Order Hooks', () => {
                 try {
                     await result.current.mutateAsync({
                         id: 'order-1',
-                        data: { totalAmount: 18000 },
+                        data: {
+                            status: 'CONFIRMED',
+                            notes: 'Order confirmed',
+                        },
                     });
                 } catch (e) {
                     // Expected to fail
@@ -240,7 +284,7 @@ describe('Order Hooks', () => {
     describe('useUpdateOrderStatus', () => {
         it('should update order status optimistically', async () => {
             const updatedOrder = { ...mockOrder, status: 'CONFIRMED' };
-            orderService.updateOrderStatus.mockResolvedValue(updatedOrder);
+            (orderService.updateOrderStatus as jest.Mock).mockResolvedValue(updatedOrder);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -270,7 +314,7 @@ describe('Order Hooks', () => {
                 status: 'SUCCESS',
                 transactionId: 'txn-123',
             };
-            orderService.processPayment.mockResolvedValue(paymentResult);
+            (orderService.processPayment as jest.Mock).mockResolvedValue(paymentResult);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -295,7 +339,7 @@ describe('Order Hooks', () => {
 
         it('should rollback payment status on error', async () => {
             const error = new ApiError('Payment failed', ErrorCodes.EXTERNAL_SERVICE_ERROR, 502);
-            orderService.processPayment.mockRejectedValue(error);
+            (orderService.processPayment as jest.Mock).mockRejectedValue(error);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -325,7 +369,7 @@ describe('Order Hooks', () => {
                 invoiceUrl: 'https://example.com/invoice.pdf',
                 invoiceNumber: 'INV-2024-001',
             };
-            orderService.generateInvoice.mockResolvedValue(invoiceData);
+            (orderService.generateInvoice as jest.Mock).mockResolvedValue(invoiceData);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -347,7 +391,7 @@ describe('Order Hooks', () => {
 
     describe('useCancelOrder', () => {
         it('should cancel order with optimistic updates', async () => {
-            orderService.cancelOrder.mockResolvedValue(undefined);
+            (orderService.cancelOrder as jest.Mock).mockResolvedValue(undefined);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -375,7 +419,7 @@ describe('Order Hooks', () => {
                 amount: 15000,
                 status: 'PROCESSING',
             };
-            orderService.refundOrder.mockResolvedValue(refundResult);
+            (orderService.refundOrder as jest.Mock).mockResolvedValue(refundResult);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -418,7 +462,7 @@ describe('Order Hooks', () => {
                 ],
             };
 
-            orderService.getOrderTracking.mockResolvedValue(trackingData);
+            (orderService.getOrderTracking as jest.Mock).mockResolvedValue(trackingData);
 
             const { result } = renderHook(
                 () => useOrderTracking('order-1'),
@@ -443,7 +487,7 @@ describe('Order Hooks', () => {
                 averageOrderValue: 15000,
             };
 
-            orderService.getOrderHistory.mockResolvedValue(orderHistory);
+            (orderService.getOrderHistory as jest.Mock).mockResolvedValue(orderHistory);
 
             const { result } = renderHook(
                 () => useOrderHistory('customer-1'),
@@ -462,7 +506,7 @@ describe('Order Hooks', () => {
     describe('Cache Invalidation', () => {
         it('should invalidate related caches on order creation', async () => {
             const newOrder = { ...mockOrder, id: 'order-2', quotationId: 'quotation-1' };
-            orderService.createOrder.mockResolvedValue(newOrder);
+            (orderService.createOrder as jest.Mock).mockResolvedValue(newOrder);
 
             const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries');
 
@@ -473,6 +517,13 @@ describe('Order Hooks', () => {
                     customerId: 'customer-1',
                     quotationId: 'quotation-1',
                     items: [],
+                    shippingAddress: {
+                        street: '123 Main St',
+                        city: 'Test City',
+                        state: 'TS',
+                        postalCode: '12345',
+                        country: 'US'
+                    }
                 });
             });
 

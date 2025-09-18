@@ -3,6 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuth, useLogin, useCurrentUser } from '../hooks/use-auth';
 import { authService } from '../services/auth.service';
+import { UserRole } from '../types/api';
 
 // Mock the auth service
 vi.mock('../services/auth.service', () => ({
@@ -32,11 +33,14 @@ function createWrapper() {
     },
   });
 
-  return ({ children }: { children: React.ReactNode }) => (
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
       {children}
     </QueryClientProvider>
   );
+  
+  Wrapper.displayName = 'TestQueryClientWrapper';
+  return Wrapper;
 }
 
 describe('useCurrentUser', () => {
@@ -50,7 +54,7 @@ describe('useCurrentUser', () => {
       email: 'test@example.com',
       firstName: 'Test',
       lastName: 'User',
-      role: 'ADMIN' as const,
+      role: 'ADMIN' as UserRole,
       permissions: [],
       isActive: true,
       createdAt: '2023-01-01',
@@ -96,7 +100,7 @@ describe('useLogin', () => {
         email: 'test@example.com',
         firstName: 'Test',
         lastName: 'User',
-        role: 'ADMIN' as const,
+        role: 'ADMIN' as UserRole,
         permissions: [],
         isActive: true,
         createdAt: '2023-01-01',
@@ -159,7 +163,7 @@ describe('useAuth', () => {
       email: 'test@example.com',
       firstName: 'Test',
       lastName: 'User',
-      role: 'ADMIN' as const,
+      role: 'ADMIN' as UserRole,
       permissions: [],
       isActive: true,
       createdAt: '2023-01-01',

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { QuotationBuilder } from "@/components/quotations/quotation-builder";
@@ -11,10 +11,7 @@ import Link from "next/link";
 
 export default function QuotationWizardPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   
-  // ...existing code...
-
   const handleSuccess = (quotationId: string) => {
     router.push(`/admin/quotations/${quotationId}`);
   };

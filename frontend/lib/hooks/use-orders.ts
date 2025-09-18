@@ -177,11 +177,12 @@ export function useProcessPayment() {
 }
 
 export function useGenerateInvoice() {
+  const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: orderService.generateInvoice,
     onSuccess: (invoiceData, orderId) => {
       // Update order cache with invoice information
-      const queryClient = useQueryClient();
       queryClient.setQueryData(
         queryKeys.orders.detail(orderId),
         (oldData: any) => {
