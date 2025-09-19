@@ -104,7 +104,7 @@ export default function Home() {
           },
         ]}
       >
-        <StatsGrid stats={heroStats} columns={2} variant="hero" />
+        <StatsGrid stats={heroStats} columns={2} variant="outline" />
       </HeroSection>
 
       {/* Features Section */}

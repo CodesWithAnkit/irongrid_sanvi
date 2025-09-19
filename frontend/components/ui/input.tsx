@@ -9,8 +9,8 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   error?: string;
   helperText?: string;
   loading?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  leftIcon?: React.ReactNode | null | undefined | false | string;
+  rightIcon?: React.ReactNode | null | undefined | false | string;
   onClear?: () => void;
   showClearButton?: boolean;
 }
@@ -57,8 +57,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               "w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--color-sanvi-primary-700)] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-colors",
               error && "border-red-300 focus:ring-red-500",
               loading && "pr-10",
-              leftIcon && "pl-10",
-              (rightIcon || showClear) && "pr-10",
+              Boolean(leftIcon) && "pl-10",
+              Boolean(rightIcon || showClear) && "pr-10",
               className
             )}
             ref={ref}
