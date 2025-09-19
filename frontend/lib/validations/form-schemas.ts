@@ -19,9 +19,7 @@ export const userProfileSchema = z.object({
   lastName: requiredStringSchema.max(50, createMaxLengthMessage(50)),
   email: emailSchema,
   phone: phoneSchema.optional(),
-  role: z.enum(["admin", "sales", "manager"], {
-    errorMap: () => ({ message: "Please select a valid role" })
-  }),
+  role: z.enum(["admin", "sales", "manager"]),
   department: z.string().optional(),
   isActive: z.boolean(),
 });
@@ -74,9 +72,7 @@ export const enhancedCustomerSchema = z.object({
   address: addressSchema,
   
   // Business Details
-  customerType: z.enum(["wholesale", "distributor", "retail", "manufacturer"], {
-    errorMap: () => ({ message: "Please select a customer type" })
-  }),
+  customerType: z.enum(["wholesale", "distributor", "retail", "manufacturer"]),
   businessCategory: z.string().optional(),
   taxId: z.string()
     .regex(/^[A-Z0-9]{10,15}$/, "Please enter a valid tax ID")
@@ -87,15 +83,11 @@ export const enhancedCustomerSchema = z.object({
   
   // Credit & Terms
   creditLimit: currencySchema,
-  paymentTerms: z.enum(["net_15", "net_30", "net_45", "net_60", "cod", "advance"], {
-    errorMap: () => ({ message: "Please select payment terms" })
-  }),
+  paymentTerms: z.enum(["net_15", "net_30", "net_45", "net_60", "cod", "advance"]),
   creditRating: z.enum(["excellent", "good", "fair", "poor"]).optional(),
   
   // Preferences
-  preferredCommunication: z.enum(["email", "phone", "both"], {
-    errorMap: () => ({ message: "Please select communication preference" })
-  }),
+  preferredCommunication: z.enum(["email", "phone", "both"]),
   newsletter: z.boolean(),
   specialInstructions: z.string().max(500, createMaxLengthMessage(500)).optional(),
   
@@ -146,18 +138,12 @@ export const enhancedProductSchema = z.object({
   stockQuantity: z.number().int().min(0, "Stock quantity cannot be negative"),
   minStockLevel: z.number().int().min(0, "Minimum stock level cannot be negative"),
   maxStockLevel: z.number().int().min(0, "Maximum stock level cannot be negative"),
-  unit: z.enum(["piece", "kg", "meter", "liter", "box", "set"], {
-    errorMap: () => ({ message: "Please select a unit" })
-  }),
+  unit: z.enum(["piece", "kg", "meter", "liter", "box", "set"]),
   reorderPoint: z.number().int().min(0, "Reorder point cannot be negative").optional(),
   
   // Status & Availability
-  status: z.enum(["active", "inactive", "discontinued"], {
-    errorMap: () => ({ message: "Please select a status" })
-  }),
-  availability: z.enum(["in_stock", "out_of_stock", "pre_order", "backorder"], {
-    errorMap: () => ({ message: "Please select availability status" })
-  }),
+  status: z.enum(["active", "inactive", "discontinued"]),
+  availability: z.enum(["in_stock", "out_of_stock", "pre_order", "backorder"]),
   featured: z.boolean(),
   
   // Additional Info
@@ -213,9 +199,7 @@ export const enhancedQuotationSchema = z.object({
   referenceNumber: z.string().max(50, createMaxLengthMessage(50)).optional(),
   date: z.string().refine((date) => !isNaN(Date.parse(date)), "Please enter a valid date"),
   validUntil: futureDateSchema,
-  currency: z.enum(["USD", "EUR", "INR", "GBP"], {
-    errorMap: () => ({ message: "Please select a currency" })
-  }),
+  currency: z.enum(["USD", "EUR", "INR", "GBP"]),
   exchangeRate: z.number().min(0.01, "Exchange rate must be positive").optional(),
   
   // Items
@@ -231,9 +215,7 @@ export const enhancedQuotationSchema = z.object({
   grandTotal: currencySchema,
   
   // Terms & Conditions
-  paymentTerms: z.enum(["net_15", "net_30", "net_45", "net_60", "cod", "advance"], {
-    errorMap: () => ({ message: "Please select payment terms" })
-  }),
+  paymentTerms: z.enum(["net_15", "net_30", "net_45", "net_60", "cod", "advance"]),
   deliveryTerms: requiredStringSchema.max(200, createMaxLengthMessage(200)),
   warranty: z.string().max(200, createMaxLengthMessage(200)).optional(),
   notes: z.string().max(1000, createMaxLengthMessage(1000)).optional(),
@@ -243,9 +225,7 @@ export const enhancedQuotationSchema = z.object({
   }),
   
   // Status and Workflow
-  status: z.enum(["DRAFT", "SENT", "VIEWED", "APPROVED", "REJECTED", "EXPIRED", "CONVERTED"], {
-    errorMap: () => ({ message: "Please select a valid status" })
-  }),
+  status: z.enum(["DRAFT", "SENT", "VIEWED", "APPROVED", "REJECTED", "EXPIRED", "CONVERTED"]),
   priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
   assignedTo: z.string().optional(),
   

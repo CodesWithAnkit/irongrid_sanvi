@@ -68,7 +68,7 @@ export function useFormValidation<T extends Record<string, any>>({
       // Create a partial schema for the specific field
       const fieldSchema = schema.shape[field as keyof typeof schema.shape];
       if (fieldSchema) {
-        fieldSchema.parse(value);
+        (fieldSchema as z.ZodTypeAny).parse(value);
       }
       return undefined;
     } catch (error) {
@@ -292,17 +292,11 @@ export function useFormValidation<T extends Record<string, any>>({
     error: state.touchedFields[field] ? state.errors[field] : undefined,
     onChange: (value: any) => setFieldValue(field, value),
     onBlur: () => setFieldTouched(field, true),
-    required: schema.shape[field as keyof typeof schema.shape]?.isOptional?.() === false,
+    required: (() => {
+      const fieldSchema = schema.shape[field as keyof typeof schema.shape];
+      return fieldSchema ? (fieldSchema as any)._def.typeName !== 'ZodOptional' : false;
+    })(),
   }), [state.data, state.errors, state.touchedFields, setFieldValue, setFieldTouched, schema]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (autoSaveTimeoutRef.current) {
-        clearTimeout(autoSaveTimeoutRef.current);
-      }
-    };
-  }, []);
 
   return {
     // State

@@ -47,9 +47,9 @@ export const authService = {
     const response = await apiClient.post<LoginResponse>('/auth/register', data);
     
     // Store tokens
-    TokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
+    TokenManager.setTokens(response.accessToken, response.refreshToken);
     
-    return response.data;
+    return response;
   },
 
   async logout(): Promise<void> {
@@ -71,7 +71,7 @@ export const authService = {
 
   async getCurrentUser(): Promise<User> {
     const response = await apiClient.get<User>('/auth/me');
-    return response.data;
+    return response;
   },
 
   async forgotPassword(data: ForgotPasswordRequest): Promise<void> {
