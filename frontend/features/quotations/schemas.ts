@@ -25,12 +25,18 @@ export const emailQuotationSchema = z.object({
 // Enhanced schemas for multi-step wizard
 export const customerSelectionSchema = z.object({
   customer: z.object({
-    id: z.number().optional(),
+    id: z.string().optional(),
     name: z.string().min(1, "Customer name is required"),
     email: z.string().email("Invalid email address"),
     phone: z.string().min(1, "Phone number is required"),
     company: z.string().min(1, "Company name is required"),
-    address: z.string().min(1, "Address is required"),
+    address: z.object({
+      street: z.string().min(1, "Street is required"),
+      city: z.string().min(1, "City is required"),
+      state: z.string().min(1, "State is required"),
+      postalCode: z.string().min(1, "Postal code is required"),
+      country: z.string().min(1, "Country is required")
+    }),
     isNewCustomer: z.boolean().optional(),
   }),
 });
@@ -43,7 +49,7 @@ export const productConfigurationSchema = z.object({
     quantity: z.number().min(1, "Quantity must be at least 1"),
     unitPrice: z.number().min(0, "Unit price must be positive"),
     discount: z.number().min(0, "Discount must be positive").max(100, "Discount cannot exceed 100%").default(0),
-    customSpecifications: z.string().optional(),
+    customSpecifications: z.record(z.unknown()).optional(),
     total: z.number().min(0, "Total must be positive"),
   })).min(1, "At least one item is required"),
 });

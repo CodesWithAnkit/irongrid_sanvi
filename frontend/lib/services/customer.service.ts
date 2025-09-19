@@ -86,22 +86,22 @@ export const customerService = {
     const response = await apiClient.get<PaginatedResponse<Customer>>('/customers', {
       params
     });
-    return response.data;
+    return response;
   },
 
   async getCustomer(id: string): Promise<Customer> {
     const response = await apiClient.get<Customer>(`/customers/${id}`);
-    return response.data;
+    return response;
   },
 
   async createCustomer(data: CreateCustomerRequest): Promise<Customer> {
     const response = await apiClient.post<Customer>('/customers', data);
-    return response.data;
+    return response;
   },
 
   async updateCustomer(id: string, data: UpdateCustomerRequest): Promise<Customer> {
     const response = await apiClient.put<Customer>(`/customers/${id}`, data);
-    return response.data;
+    return response;
   },
 
   async deleteCustomer(id: string): Promise<void> {
@@ -112,17 +112,17 @@ export const customerService = {
     const response = await apiClient.get<Customer[]>('/customers/search', {
       params: { q: query }
     });
-    return response.data;
+    return response;
   },
 
   async getCustomerAnalytics(id: string): Promise<CustomerAnalytics> {
     const response = await apiClient.get<CustomerAnalytics>(`/customers/${id}/analytics`);
-    return response.data;
+    return response;
   },
 
   async getCustomerInteractions(id: string): Promise<CustomerInteraction[]> {
     const response = await apiClient.get<CustomerInteraction[]>(`/customers/${id}/interactions`);
-    return response.data;
+    return response;
   },
 
   async addCustomerInteraction(
@@ -133,14 +133,14 @@ export const customerService = {
       `/customers/${id}/interactions`, 
       interaction
     );
-    return response.data;
+    return response;
   },
 
   async updateCreditLimit(id: string, creditLimit: number): Promise<Customer> {
     const response = await apiClient.put<Customer>(`/customers/${id}/credit-limit`, {
       creditLimit
     });
-    return response.data;
+    return response;
   },
 
   async importCustomers(file: File): Promise<ImportResult> {
@@ -152,14 +152,13 @@ export const customerService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+    return response;
   },
 
   async exportCustomers(filters: CustomerFilters = {}): Promise<Blob> {
-    const response = await apiClient.get('/customers/export', {
+    return await apiClient.get('/customers/export', {
       params: filters,
       responseType: 'blob',
     });
-    return response.data;
   },
 };

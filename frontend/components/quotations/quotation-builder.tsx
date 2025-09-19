@@ -19,6 +19,7 @@ export interface QuotationBuilderProps {
   onSave?: (data: QuotationBuilderFormData) => Promise<void>;
   onCancel?: () => void;
   onComplete?: (quotationId: string) => void;
+  isLoading?: boolean;
 }
 
 const WIZARD_STEPS: QuotationWizardStep[] = [
@@ -57,25 +58,35 @@ export function QuotationBuilder({
   onSave,
   onCancel,
   onComplete,
+  isLoading: externalLoading,
 }: QuotationBuilderProps) {
   const [currentStepIndex, setCurrentStepIndex] = React.useState(0);
   const [steps, setSteps] = React.useState<QuotationWizardStep[]>(WIZARD_STEPS);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isInternalLoading, setIsInternalLoading] = React.useState(false);
+
+  const isLoading = externalLoading || isInternalLoading;
 
   const form = useForm<QuotationBuilderFormData>({
     resolver: zodResolver(quotationBuilderSchema),
     defaultValues: {
-      customer: initialData?.customer || {
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        address: "",
+      customer: {
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          postalCode: '',
+          country: ''
+        },
         isNewCustomer: false,
       },
       items: initialData?.items?.map(item => ({
         ...item,
-        discount: item.discount ?? 0, // Ensure discount is always a number
+        discount: item.discount ?? 0,
+        customSpecifications: item.customSpecifications || {},
       })) || [],
       pricing: initialData?.pricing || {
         subtotal: 0,
@@ -169,7 +180,7 @@ export function QuotationBuilder({
   };
 
   const handleSaveAsDraft = async () => {
-    setIsLoading(true);
+    setIsInternalLoading(true);
     try {
       const formData = form.getValues();
       formData.review.status = "DRAFT";
@@ -177,39 +188,28 @@ export function QuotationBuilder({
     } catch (error) {
       console.error("Failed to save draft:", error);
     } finally {
-      setIsLoading(false);
+      setIsInternalLoading(false);
     }
   };
 
-  const handleComplete = async (data: QuotationBuilderFormData) => {
-    console.log('dddd', data)
-    setIsLoading(true);
+  const handleComplete = async (formData: QuotationBuilderFormData) => {
+    setIsInternalLoading(true);
     try {
-      // Transform customSpecifications from stringified JSON to object if needed
       const transformedData = {
-        ...data,
-        items: data.items.map(item => {
-          let customSpecifications = item.customSpecifications;
-          // If customSpecifications is a stringified object, parse it
-          if (typeof customSpecifications === 'string') {
-            try {
-              customSpecifications = JSON.parse(customSpecifications);
-            } catch {
-              // fallback: treat as plain string
-            }
-          }
-          return {
-            ...item,
-            customSpecifications,
-          };
-        })
+        ...formData,
+        items: formData.items.map(item => ({
+          ...item,
+          customSpecifications: typeof item.customSpecifications === 'string' 
+            ? JSON.parse(item.customSpecifications) 
+            : item.customSpecifications
+        }))
       };
       await onSave?.(transformedData);
-      onComplete?.(data.review.quotationNumber);
+      onComplete?.(formData.review.quotationNumber);
     } catch (error) {
       console.error("Failed to complete quotation:", error);
     } finally {
-      setIsLoading(false);
+      setIsInternalLoading(false);
     }
   };
 

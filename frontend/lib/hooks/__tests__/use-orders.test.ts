@@ -17,19 +17,99 @@ import {
 import { ApiError, ErrorCodes } from '../../api';
 import { afterEach, describe, expect, it } from 'vitest';
 
-// Mock the order service
+// Mock the order service with proper response format
+const mockOrder = {
+    id: 'order-1',
+    orderNumber: 'ORD-2024-001',
+    customerId: 'customer-1',
+    quotationId: 'quotation-1',
+    status: 'PENDING',
+    paymentStatus: 'PENDING',
+    totalAmount: 15000,
+    items: [
+        {
+            id: 'item-1',
+            productId: 'product-1',
+            quantity: 2,
+            unitPrice: 7500,
+            total: 15000,
+        },
+    ],
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+};
+
+const mockOrderList = {
+    data: [mockOrder],
+    total: 1,
+    page: 1,
+    limit: 10,
+};
+
+const mockOrderResponse = {
+  success: true,
+  data: mockOrder,
+  message: 'Success',
+  timestamp: new Date().toISOString(),
+  requestId: 'req-123'
+};
+
+const mockOrderListResponse = {
+  success: true,
+  data: mockOrderList,
+  message: 'Success',
+  timestamp: new Date().toISOString(),
+  requestId: 'req-456'
+};
+
 const mockOrderService = {
-  getOrders: jest.fn(),
-  getOrder: jest.fn(),
-  createOrder: jest.fn(),
-  updateOrder: jest.fn(),
-  updateOrderStatus: jest.fn(),
-  processPayment: jest.fn(),
-  generateInvoice: jest.fn(),
-  cancelOrder: jest.fn(),
-  refundOrder: jest.fn(),
-  getOrderTracking: jest.fn(),
-  getOrderHistory: jest.fn(),
+  getOrders: jest.fn().mockResolvedValue(mockOrderListResponse),
+  getOrder: jest.fn().mockResolvedValue(mockOrderResponse),
+  createOrder: jest.fn().mockResolvedValue(mockOrderResponse),
+  updateOrder: jest.fn().mockResolvedValue(mockOrderResponse),
+  updateOrderStatus: jest.fn().mockResolvedValue(mockOrderResponse),
+  processPayment: jest.fn().mockResolvedValue({
+    success: true,
+    data: {
+      paymentId: 'payment-1',
+      status: 'SUCCESS',
+      transactionId: 'txn-123'
+    }
+  }),
+  generateInvoice: jest.fn().mockResolvedValue({
+    success: true,
+    data: {
+      invoiceUrl: 'https://example.com/invoice.pdf',
+      invoiceNumber: 'INV-2024-001'
+    }
+  }),
+  cancelOrder: jest.fn().mockResolvedValue({ success: true }),
+  refundOrder: jest.fn().mockResolvedValue({
+    success: true,
+    data: {
+      refundId: 'refund-1',
+      amount: 15000,
+      status: 'PROCESSING'
+    }
+  }),
+  getOrderTracking: jest.fn().mockResolvedValue({
+    success: true,
+    data: {
+      status: 'IN_TRANSIT',
+      trackingNumber: 'TRK-123456',
+      estimatedDelivery: '2024-01-15T00:00:00Z',
+      updates: []
+    }
+  }),
+  getOrderHistory: jest.fn().mockResolvedValue({
+    success: true,
+    data: {
+      orders: [mockOrder],
+      totalOrders: 1,
+      totalValue: 15000,
+      averageOrderValue: 15000
+    }
+  })
 };
 
 jest.mock('../../services/order.service', () => ({
@@ -41,34 +121,6 @@ import { orderService } from '../../services/order.service';
 describe('Order Hooks', () => {
     let queryClient: QueryClient;
     let wrapper: ({ children }: { children: ReactNode }) => React.ReactElement;
-
-    const mockOrder = {
-        id: 'order-1',
-        orderNumber: 'ORD-2024-001',
-        customerId: 'customer-1',
-        quotationId: 'quotation-1',
-        status: 'PENDING',
-        paymentStatus: 'PENDING',
-        totalAmount: 15000,
-        items: [
-            {
-                id: 'item-1',
-                productId: 'product-1',
-                quantity: 2,
-                unitPrice: 7500,
-                total: 15000,
-            },
-        ],
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z',
-    };
-
-    const mockOrderList = {
-        data: [mockOrder],
-        total: 1,
-        page: 1,
-        limit: 10,
-    };
 
     beforeEach(() => {
         queryClient = new QueryClient({
@@ -90,7 +142,7 @@ describe('Order Hooks', () => {
 
     describe('useOrders', () => {
         it('should fetch orders list successfully', async () => {
-            (orderService.getOrders as jest.Mock).mockResolvedValue(mockOrderList);
+            (orderService.getOrders as jest.Mock).mockResolvedValue(mockOrderListResponse);
 
             const { result } = renderHook(
                 () => useOrders({ page: 1, limit: 10, status: 'PENDING' }),
@@ -128,7 +180,7 @@ describe('Order Hooks', () => {
 
     describe('useOrder', () => {
         it('should fetch single order successfully', async () => {
-            (orderService.getOrder as jest.Mock).mockResolvedValue(mockOrder);
+            (orderService.getOrder as jest.Mock).mockResolvedValue(mockOrderResponse);
 
             const { result } = renderHook(
                 () => useOrder('order-1'),
@@ -173,7 +225,7 @@ describe('Order Hooks', () => {
     describe('useCreateOrder', () => {
         it('should create order and update cache', async () => {
             const newOrder = { ...mockOrder, id: 'order-2' };
-            (orderService.createOrder as jest.Mock).mockResolvedValue(newOrder);
+            (orderService.createOrder as jest.Mock).mockResolvedValue(mockOrderResponse);
 
             const { result } = renderHook(() => useCreateOrder(), { wrapper });
 
@@ -232,7 +284,7 @@ describe('Order Hooks', () => {
     describe('useUpdateOrder', () => {
         it('should update order with optimistic updates', async () => {
             const updatedOrder = { ...mockOrder, totalAmount: 18000 };
-            (orderService.updateOrder as jest.Mock).mockResolvedValue(updatedOrder);
+            (orderService.updateOrder as jest.Mock).mockResolvedValue(mockOrderResponse);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -284,7 +336,7 @@ describe('Order Hooks', () => {
     describe('useUpdateOrderStatus', () => {
         it('should update order status optimistically', async () => {
             const updatedOrder = { ...mockOrder, status: 'CONFIRMED' };
-            (orderService.updateOrderStatus as jest.Mock).mockResolvedValue(updatedOrder);
+            (orderService.updateOrderStatus as jest.Mock).mockResolvedValue(mockOrderResponse);
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -314,7 +366,10 @@ describe('Order Hooks', () => {
                 status: 'SUCCESS',
                 transactionId: 'txn-123',
             };
-            (orderService.processPayment as jest.Mock).mockResolvedValue(paymentResult);
+            (orderService.processPayment as jest.Mock).mockResolvedValue({
+                success: true,
+                data: paymentResult
+            });
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -369,7 +424,10 @@ describe('Order Hooks', () => {
                 invoiceUrl: 'https://example.com/invoice.pdf',
                 invoiceNumber: 'INV-2024-001',
             };
-            (orderService.generateInvoice as jest.Mock).mockResolvedValue(invoiceData);
+            (orderService.generateInvoice as jest.Mock).mockResolvedValue({
+                success: true,
+                data: invoiceData
+            });
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -391,7 +449,7 @@ describe('Order Hooks', () => {
 
     describe('useCancelOrder', () => {
         it('should cancel order with optimistic updates', async () => {
-            (orderService.cancelOrder as jest.Mock).mockResolvedValue(undefined);
+            (orderService.cancelOrder as jest.Mock).mockResolvedValue({ success: true });
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -419,7 +477,10 @@ describe('Order Hooks', () => {
                 amount: 15000,
                 status: 'PROCESSING',
             };
-            (orderService.refundOrder as jest.Mock).mockResolvedValue(refundResult);
+            (orderService.refundOrder as jest.Mock).mockResolvedValue({
+                success: true,
+                data: refundResult
+            });
 
             // Set initial data
             queryClient.setQueryData(['orders', 'detail', 'order-1'], mockOrder);
@@ -462,7 +523,10 @@ describe('Order Hooks', () => {
                 ],
             };
 
-            (orderService.getOrderTracking as jest.Mock).mockResolvedValue(trackingData);
+            (orderService.getOrderTracking as jest.Mock).mockResolvedValue({
+                success: true,
+                data: trackingData
+            });
 
             const { result } = renderHook(
                 () => useOrderTracking('order-1'),
@@ -487,7 +551,10 @@ describe('Order Hooks', () => {
                 averageOrderValue: 15000,
             };
 
-            (orderService.getOrderHistory as jest.Mock).mockResolvedValue(orderHistory);
+            (orderService.getOrderHistory as jest.Mock).mockResolvedValue({
+                success: true,
+                data: orderHistory
+            });
 
             const { result } = renderHook(
                 () => useOrderHistory('customer-1'),
@@ -506,7 +573,7 @@ describe('Order Hooks', () => {
     describe('Cache Invalidation', () => {
         it('should invalidate related caches on order creation', async () => {
             const newOrder = { ...mockOrder, id: 'order-2', quotationId: 'quotation-1' };
-            (orderService.createOrder as jest.Mock).mockResolvedValue(newOrder);
+            (orderService.createOrder as jest.Mock).mockResolvedValue(mockOrderResponse);
 
             const invalidateSpy = jest.spyOn(queryClient, 'invalidateQueries');
 

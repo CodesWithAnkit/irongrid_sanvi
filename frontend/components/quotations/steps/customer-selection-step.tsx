@@ -38,26 +38,30 @@ export function CustomerSelectionStep({
 
   // Filter customers based on search query
   const filteredCustomers = React.useMemo(() => {
-    if (!debouncedSearchQuery) return customers;
-    console.log(debouncedSearchQuery);
-    console.log(customers);
+    if (!debouncedSearchQuery) return customers || [];
     
-    return customers.data.filter(customer =>
-      customer.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+    return (customers || []).filter(customer =>
+      customer.contactPerson.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-      customer.company.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      customer.companyName.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
     );
   }, [customers, debouncedSearchQuery]);
 
   const handleCustomerSelect = (customer: Customer) => {
     setSelectedCustomerId(customer.id);
     setValue("customer", {
-      id: customer.id,
-      name: customer.name,
+      id: customer.id.toString(),
+      name: customer.contactPerson,
       email: customer.email,
       phone: customer.phone,
-      company: customer.company,
-      address: customer.address,
+      company: customer.companyName,
+      address: {
+        street: customer.address.street,
+        city: customer.address.city,
+        state: customer.address.state,
+        postalCode: customer.address.postalCode,
+        country: customer.address.country
+      },
       isNewCustomer: false,
     });
     setShowNewCustomerForm(false);
@@ -67,13 +71,18 @@ export function CustomerSelectionStep({
     setShowNewCustomerForm(!showNewCustomerForm);
     setSelectedCustomerId(null);
     if (!showNewCustomerForm) {
-      // Reset form when switching to new customer
       setValue("customer", {
         name: "",
         email: "",
         phone: "",
         company: "",
-        address: "",
+        address: {
+          street: "",
+          city: "",
+          state: "",
+          postalCode: "",
+          country: ""
+        },
         isNewCustomer: true,
       });
     }
@@ -142,12 +151,38 @@ export function CustomerSelectionStep({
               placeholder="ABC Manufacturing"
             />
           </div>
-          <Input
-            label="Address *"
-            {...register("customer.address")}
-            error={errors.customer?.address?.message}
-            placeholder="123 Industrial Area, City, State - 123456"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Street *"
+              {...register("customer.address.street")}
+              error={errors.customer?.address?.street?.message}
+              placeholder="123 Main St"
+            />
+            <Input
+              label="City *"
+              {...register("customer.address.city")}
+              error={errors.customer?.address?.city?.message}
+              placeholder="Anytown"
+            />
+            <Input
+              label="State *"
+              {...register("customer.address.state")}
+              error={errors.customer?.address?.state?.message}
+              placeholder="CA"
+            />
+            <Input
+              label="Postal Code *"
+              {...register("customer.address.postalCode")}
+              error={errors.customer?.address?.postalCode?.message}
+              placeholder="12345"
+            />
+            <Input
+              label="Country *"
+              {...register("customer.address.country")}
+              error={errors.customer?.address?.country?.message}
+              placeholder="USA"
+            />
+          </div>
         </FormSection>
       ) : (
         <div className="space-y-4">
@@ -244,7 +279,9 @@ export function CustomerSelectionStep({
               <div className="md:col-span-2">
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
-                  <span>{customerData.address}</span>
+                  <span>
+                    {customerData.address.street}, {customerData.address.city}, {customerData.address.state} {customerData.address.postalCode}, {customerData.address.country}
+                  </span>
                 </div>
               </div>
             </div>

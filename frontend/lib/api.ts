@@ -273,20 +273,17 @@ function normalizeResponse<T>(response: any): T {
   return response;
 }
 
-// Enhanced API client with retry logic
+// Enhanced API client with proper response typing
 export const apiClient = {
-  // GET request with retry
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response = await retryRequest(() => api.get(url, config).then(res => res.data));
+    const response = await retryRequest(() => api.get<ApiResponse<T>>(url, config));
     return normalizeResponse<T>(response);
   },
 
-  // POST request with retry
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await retryRequest(() => api.post(url, data, config).then(res => res.data), {
+    const response = await retryRequest(() => api.post<ApiResponse<T>>(url, data, config), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
-        // Don't retry POST requests on 4xx errors (except 408, 429)
         if (error.response && error.response.status >= 400 && error.response.status < 500) {
           return error.response.status === 408 || error.response.status === 429;
         }
@@ -296,12 +293,10 @@ export const apiClient = {
     return normalizeResponse<T>(response);
   },
 
-  // PUT request with retry
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await retryRequest(() => api.put(url, data, config).then(res => res.data), {
+    const response = await retryRequest(() => api.put<ApiResponse<T>>(url, data, config), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
-        // Don't retry PUT requests on 4xx errors (except 408, 429)
         if (error.response && error.response.status >= 400 && error.response.status < 500) {
           return error.response.status === 408 || error.response.status === 429;
         }
@@ -311,12 +306,10 @@ export const apiClient = {
     return normalizeResponse<T>(response);
   },
 
-  // DELETE request with retry
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response = await retryRequest(() => api.delete(url, config).then(res => res.data), {
+    const response = await retryRequest(() => api.delete<ApiResponse<T>>(url, config), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
-        // Don't retry DELETE requests on 4xx errors (except 408, 429)
         if (error.response && error.response.status >= 400 && error.response.status < 500) {
           return error.response.status === 408 || error.response.status === 429;
         }
@@ -326,12 +319,10 @@ export const apiClient = {
     return normalizeResponse<T>(response);
   },
 
-  // PATCH request with retry
   async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await retryRequest(() => api.patch(url, data, config).then(res => res.data), {
+    const response = await retryRequest(() => api.patch<ApiResponse<T>>(url, data, config), {
       ...defaultRetryConfig,
       retryCondition: (error) => {
-        // Don't retry PATCH requests on 4xx errors (except 408, 429)
         if (error.response && error.response.status >= 400 && error.response.status < 500) {
           return error.response.status === 408 || error.response.status === 429;
         }

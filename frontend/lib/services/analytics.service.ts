@@ -97,47 +97,47 @@ class AnalyticsService {
     const response = await apiClient.get<DashboardMetrics>('/analytics/dashboard', {
       params: filters,
     });
-    return response.data;
+    return response;
   }
 
   async getBusinessMetrics(filters: AnalyticsFilters = {}): Promise<BusinessMetrics> {
     const response = await apiClient.get<BusinessMetrics>('/analytics/business', {
       params: filters,
     });
-    return response.data;
+    return response;
   }
 
   async getSalesAnalytics(dateRange: { startDate: string; endDate: string }): Promise<SalesAnalytics> {
     const response = await apiClient.get<SalesAnalytics>('/analytics/sales', {
       params: dateRange,
     });
-    return response.data;
+    return response;
   }
 
   async getCustomerAnalytics(dateRange: { startDate: string; endDate: string }): Promise<CustomerAnalytics> {
     const response = await apiClient.get<CustomerAnalytics>('/analytics/customers', {
       params: dateRange,
     });
-    return response.data;
+    return response;
   }
 
   async getProductAnalytics(dateRange: { startDate: string; endDate: string }): Promise<ProductAnalytics> {
     const response = await apiClient.get<ProductAnalytics>('/analytics/products', {
       params: dateRange,
     });
-    return response.data;
+    return response;
   }
 
   async getConversionAnalytics(filters: AnalyticsFilters = {}): Promise<ConversionAnalytics> {
     const response = await apiClient.get<ConversionAnalytics>('/analytics/conversion', {
       params: filters,
     });
-    return response.data;
+    return response;
   }
 
   async getPerformanceMetrics(): Promise<PerformanceMetrics> {
     const response = await apiClient.get<PerformanceMetrics>('/analytics/performance');
-    return response.data;
+    return response;
   }
 
   async getRevenueForecast(params: { 
@@ -148,12 +148,12 @@ class AnalyticsService {
     const response = await apiClient.get<RevenueForecast>('/analytics/forecast', {
       params,
     });
-    return response.data;
+    return response;
   }
 
   async getRealTimeMetrics(): Promise<RealTimeMetrics> {
     const response = await apiClient.get<RealTimeMetrics>('/analytics/realtime');
-    return response.data;
+    return response;
   }
 }
 

@@ -8,24 +8,39 @@ import { type QuotationBuilderFormData } from '@/features/quotations/schemas';
 // Mock the hooks
 vi.mock('@/features/customers/hooks', () => ({
   useCustomers: () => ({
-    data: [
-      {
-        id: 1,
-        name: 'John Doe',
-        email: 'john@example.com',
-        phone: '+91 98765 43210',
-        company: 'ABC Corp',
-        address: '123 Main St',
-      },
-      {
-        id: 2,
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        phone: '+91 98765 43211',
-        company: 'XYZ Ltd',
-        address: '456 Oak Ave',
-      },
-    ],
+    data: {
+      data: [
+        {
+          id: '1',
+          contactPerson: 'John Doe',
+          email: 'john@example.com',
+          phone: '+91 98765 43210',
+          companyName: 'ABC Corp',
+          address: {
+            street: '123 Main St',
+            city: 'Mumbai',
+            state: 'Maharashtra',
+            postalCode: '400001',
+            country: 'India'
+          },
+        },
+        {
+          id: '2',
+          contactPerson: 'Jane Smith',
+          email: 'jane@example.com',
+          phone: '+91 98765 43211',
+          companyName: 'XYZ Ltd',
+          address: {
+            street: '456 Oak Ave',
+            city: 'Bangalore',
+            state: 'Karnataka',
+            postalCode: '560001',
+            country: 'India'
+          },
+        },
+      ],
+      pagination: {}
+    },
     isLoading: false,
   }),
 }));
@@ -62,7 +77,13 @@ function TestCustomerSelectionStep() {
         email: '',
         phone: '',
         company: '',
-        address: '',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          postalCode: '',
+          country: ''
+        },
         isNewCustomer: false,
       },
     },

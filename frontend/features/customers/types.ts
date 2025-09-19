@@ -5,7 +5,7 @@ export interface Customer {
   email: string;
   phone: string;
   alternatePhone?: string;
-  address: string;
+  address: Address;
   city?: string;
   state?: string;
   country: string;
@@ -24,6 +24,14 @@ export interface Customer {
   interactions: any[];
   totalQuotations: number;
   totalOrders: number;
+}
+
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
 }
 
 export interface PaginatedCustomersResponse {
