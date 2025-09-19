@@ -88,7 +88,7 @@ export default function QuotationBuilderPage() {
             customerId: defaultCustomer.id,
             customerName: defaultCustomer.companyName,
             customerContact: defaultCustomer.contactPerson,
-            customerAddress: `${defaultCustomer.address.street}, ${defaultCustomer.address.city}, ${defaultCustomer.address.state} ${defaultCustomer.address.postalCode}`,
+            customerAddress: `${defaultCustomer.address.street}, ${defaultCustomer.address.city}, ${defaultCustomer.address.state} ${defaultCustomer.address.pincode}`,
             // Map products to items
             items: productsResponse.data.slice(0, 6).map(product => ({
               id: product.id,

@@ -148,10 +148,7 @@ export function AnalyticsDashboard({
               <DashboardChart
                 title=""
                 type="line"
-                data={{
-                  revenueByMonth: metrics?.revenueMetrics.revenueByMonth || [],
-                  forecastedRevenue: metrics?.revenueMetrics.forecastedRevenue || 0,
-                }}
+                data={metrics}
                 isLoading={isLoading}
               />
             )}
@@ -167,9 +164,7 @@ export function AnalyticsDashboard({
               <DashboardChart
                 title=""
                 type="doughnut"
-                data={{
-                  statusBreakdown: metrics?.quotationMetrics.statusBreakdown || {},
-                }}
+                data={metrics}
                 isLoading={isLoading}
               />
             )}

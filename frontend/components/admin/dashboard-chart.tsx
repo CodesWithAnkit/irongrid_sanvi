@@ -14,7 +14,7 @@ import {
   BarElement,
 } from 'chart.js';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
-import type { BusinessMetrics } from './dashboard';
+import type { BusinessMetrics } from '../../lib/services/analytics';
 
 ChartJS.register(
   CategoryScale,
@@ -42,19 +42,24 @@ export function DashboardChart({ title, type, data, isLoading = false, className
 
     switch (type) {
       case 'line':
+        const revenueData = data.revenueMetrics.revenueByMonth || [];
+        const labels = revenueData.map(item => item.month);
+        const revenueValues = revenueData.map(item => item.revenue);
+        const forecastValue = data.revenueMetrics.forecastedRevenue;
+
         return {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          labels: labels,
           datasets: [
             {
               label: 'Revenue (₹)',
-              data: [2200000, 2400000, 2100000, 2600000, 2800000, 2850000],
+              data: revenueValues,
               borderColor: 'rgb(37, 99, 235)',
               backgroundColor: 'rgba(37, 99, 235, 0.1)',
               tension: 0.4,
             },
             {
               label: 'Forecast (₹)',
-              data: [null, null, null, null, null, 2850000, 3000000, 3200000],
+              data: [...revenueValues, forecastValue].map((_, i) => i === revenueValues.length ? forecastValue : null),
               borderColor: 'rgb(249, 115, 22)',
               backgroundColor: 'rgba(249, 115, 22, 0.1)',
               borderDash: [5, 5],
@@ -65,15 +70,10 @@ export function DashboardChart({ title, type, data, isLoading = false, className
 
       case 'doughnut':
         return {
-          labels: ['Sent', 'Draft', 'Approved', 'Expired'],
+          labels: Object.keys(data.quotationMetrics.statusBreakdown || {}),
           datasets: [
             {
-              data: [
-                data.quotationMetrics.totalQuotations * 0.4, // Sent
-                data.quotationMetrics.pendingQuotations, // Draft
-                data.quotationMetrics.convertedQuotations, // Approved
-                data.quotationMetrics.totalQuotations * 0.1, // Expired
-              ],
+              data: Object.values(data.quotationMetrics.statusBreakdown || {}),
               backgroundColor: [
                 'rgb(59, 130, 246)', // Blue for Sent
                 'rgb(251, 191, 36)', // Yellow for Draft
