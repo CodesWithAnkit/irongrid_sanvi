@@ -21,12 +21,12 @@ export async function createQuotation(data: CreateQuotationRequest): Promise<Quo
   return res.data;
 }
 
-export async function updateQuotation(id: string, data: UpdateQuotationRequest): Promise<Quotation> {
+export async function updateQuotation(id: string | number, data: UpdateQuotationRequest): Promise<Quotation> {
   const res = await api.patch<Quotation>(`/quotations/${id}`, data);
   return res.data;
 }
 
-export async function deleteQuotation(id: string): Promise<Quotation> {
+export async function deleteQuotation(id: string | number): Promise<Quotation> {
   const res = await api.delete<Quotation>(`/quotations/${id}`);
   return res.data;
 }

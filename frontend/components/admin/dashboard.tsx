@@ -6,40 +6,8 @@ import { MetricCard } from "./metric-card";
 import { DashboardChart } from "./dashboard-chart";
 import { RecentActivity } from "./recent-activity";
 import { QuickActions } from "./quick-actions";
+import { BusinessMetrics } from "@/lib/services/analytics";
 
-
-export interface BusinessMetrics {
-  quotationMetrics: {
-    totalQuotations: number;
-    conversionRate: number;
-    averageValue: number;
-    responseTime: number;
-    pendingQuotations: number;
-    convertedQuotations: number;
-  };
-  customerMetrics: {
-    totalCustomers: number;
-    activeCustomers: number;
-    newCustomers: number;
-    customerLifetimeValue: number;
-  };
-  revenueMetrics: {
-    totalRevenue: number;
-    monthlyGrowth: number;
-    forecastedRevenue: number;
-    topProducts: Array<{
-      id: string;
-      name: string;
-      revenue: number;
-      growth: number;
-    }>;
-  };
-  systemMetrics: {
-    apiResponseTime: number;
-    uptime: number;
-    errorRate: number;
-  };
-}
 
 export interface DashboardProps {
   refreshInterval?: number;
@@ -57,29 +25,44 @@ const fetchDashboardMetrics = async (): Promise<BusinessMetrics> => {
       conversionRate: 28.8,
       averageValue: 125000,
       responseTime: 2.3,
-      pendingQuotations: 23,
-      convertedQuotations: 45,
+      statusBreakdown: {
+        "Sent": 23,
+        "Draft": 45,
+        "Approved": 67,
+        "Expired": 89,
+      },
     },
     customerMetrics: {
       totalCustomers: 89,
       activeCustomers: 67,
       newCustomers: 12,
       customerLifetimeValue: 450000,
+      topCustomers: [
+        { id: '1', name: 'John Doe', totalValue: 125000, quotationCount: 23 },
+        { id: '2', name: 'Jane Smith', totalValue: 150000, quotationCount: 45 },
+        { id: '3', name: 'Bob Johnson', totalValue: 200000, quotationCount: 67 },
+      ],
     },
     revenueMetrics: {
       totalRevenue: 2850000,
       monthlyGrowth: 12.5,
       forecastedRevenue: 3200000,
+      revenueByMonth: [
+        { month: 'Jan', revenue: 125000, quotations: 23 },
+        { month: 'Feb', revenue: 150000, quotations: 45 },
+        { month: 'Mar', revenue: 200000, quotations: 67 },
+      ],
       topProducts: [
-        { id: '1', name: 'Industrial Lathe Machine', revenue: 850000, growth: 15.2 },
-        { id: '2', name: 'CNC Milling Machine', revenue: 720000, growth: 8.7 },
-        { id: '3', name: 'Hydraulic Press', revenue: 650000, growth: 22.1 },
+        { id: '1', name: 'Industrial Lathe Machine', revenue: 850000, quantity: 15 },
+        { id: '2', name: 'CNC Milling Machine', revenue: 720000, quantity: 10 },
+        { id: '3', name: 'Hydraulic Press', revenue: 650000, quantity: 20 },
       ],
     },
-    systemMetrics: {
+    performanceMetrics: {
+      averageQuotationTime: 180,
+      emailDeliveryRate: 99.8,
+      systemUptime: 0.2,
       apiResponseTime: 180,
-      uptime: 99.8,
-      errorRate: 0.2,
     },
   };
 };
@@ -144,7 +127,7 @@ export function Dashboard({ refreshInterval = 30000, className }: DashboardProps
 
         <MetricCard
           title="Pending Approval"
-          value={metrics?.quotationMetrics.pendingQuotations || 0}
+          value={metrics?.quotationMetrics.statusBreakdown?.Draft || 0}
           icon={
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -213,7 +196,7 @@ export function Dashboard({ refreshInterval = 30000, className }: DashboardProps
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <MetricCard
           title="API Response Time"
-          value={`${metrics?.systemMetrics.apiResponseTime || 0}ms`}
+          value={`${metrics?.performanceMetrics.apiResponseTime || 0}ms`}
           icon={
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -227,7 +210,7 @@ export function Dashboard({ refreshInterval = 30000, className }: DashboardProps
 
         <MetricCard
           title="System Uptime"
-          value={formatPercentage(metrics?.systemMetrics.uptime || 0)}
+          value={formatPercentage(metrics?.performanceMetrics.systemUptime || 0)}
           icon={
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -241,7 +224,7 @@ export function Dashboard({ refreshInterval = 30000, className }: DashboardProps
 
         <MetricCard
           title="Error Rate"
-          value={formatPercentage(metrics?.systemMetrics.errorRate || 0)}
+          value={formatPercentage(metrics?.performanceMetrics.emailDeliveryRate || 0)}
           icon={
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />

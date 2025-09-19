@@ -111,8 +111,8 @@ export const queryKeys = {
     details: () => [...queryKeys.products.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.products.details(), id] as const,
     categories: ['products', 'categories'] as const,
-    search: (query: string, filters: ProductFilters) => 
-      [...queryKeys.products.all, 'search', query, filters] as const,
+    search: (query: string) => 
+      [...queryKeys.products.all, 'search', query] as const,
     pricingRules: (productId: string, customerId?: string) => 
       [...queryKeys.products.detail(productId), 'pricing-rules', customerId] as const,
   },

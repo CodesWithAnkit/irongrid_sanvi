@@ -3,14 +3,12 @@ import { productService } from '../services/product.service';
 import { queryKeys, invalidateQueries } from '../query-client';
 import { ApiError } from '../api';
 import type { 
-  CreateProductRequest, 
   UpdateProductRequest, 
   ProductFilters,
-  SearchFilters,
-  PaginationParams 
+  SearchFilters, 
 } from '../services/product.service';
 
-export function useProducts(params: PaginationParams & ProductFilters = {}) {
+export function useProducts(params: ProductFilters = {}) {
   return useQuery({
     queryKey: queryKeys.products.list(params),
     queryFn: () => productService.getProducts(params),
@@ -27,10 +25,10 @@ export function useProduct(id: string, enabled = true) {
   });
 }
 
-export function useProductSearch(query: string, filters: SearchFilters = {}, enabled = true) {
+export function useProductSearch(query: string, enabled = true) {
   return useQuery({
-    queryKey: queryKeys.products.search(query, filters),
-    queryFn: () => productService.searchProducts(query, filters),
+    queryKey: queryKeys.products.search(query),
+    queryFn: () => productService.searchProducts(query),
     enabled: enabled && query.length > 2,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });

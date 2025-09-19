@@ -80,7 +80,7 @@ export interface CreateQuotationRequest {
 }
 
 export interface UpdateQuotationRequest {
-  status?: "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED";
+  status?: "DRAFT" | "SENT" | "REJECTED" | "APPROVED" | "EXPIRED";
   validUntil?: string;
   items?: Array<{
     productId: string;
