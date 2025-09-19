@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
   // Calculate dashboard metrics
   const metrics = React.useMemo(() => {
-    const totalCustomers = customers?.length || 0;
+    const totalCustomers = customers?.data?.length || 0;
     const totalQuotations = quotations?.length || 0;
     
     const quotationsByStatus = quotations?.reduce((acc, quotation) => {
@@ -24,10 +24,10 @@ export default function DashboardPage() {
     }, {} as Record<string, number>) || {};
 
     const totalQuotationValue = quotations?.reduce((sum, quotation) => {
-      return sum + parseFloat(quotation.total);
+      return sum + parseFloat(quotation?.totalAmount || "0");
     }, 0) || 0;
 
-    const recentCustomers = customers?.slice(0, 5) || [];
+    const recentCustomers = customers?.data?.slice(0, 5) || [];
     const recentQuotations = quotations?.slice(0, 5) || [];
 
     return {
@@ -219,11 +219,11 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-[var(--color-sanvi-primary-100)] rounded-full flex items-center justify-center">
                         <span className="text-[var(--color-sanvi-primary-700)] font-medium text-xs">
-                          {customer.name[0].toUpperCase()}
+                          {(customer.companyName?.[0] || 'C').toUpperCase()}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{customer.name}</p>
+                        <p className="text-sm font-medium text-gray-900">{customer.companyName || 'Unnamed Customer'}</p>
                         <p className="text-xs text-gray-500">{customer.email}</p>
                       </div>
                     </div>
@@ -257,7 +257,7 @@ export default function DashboardPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-900">{quotation.quotationNumber}</p>
-                        <p className="text-xs text-gray-500">₹{parseFloat(quotation.total).toLocaleString()}</p>
+                        <p className="text-xs text-gray-500">₹{parseFloat(quotation.totalAmount).toLocaleString()}</p>
                       </div>
                     </div>
                     <div className="text-right">

@@ -19,7 +19,7 @@ export function useQuotations(skip = 0, take = 20) {
   });
 }
 
-export function useQuotation(id: string) {
+export function useQuotation(id: string | number) {
   return useQuery({
     queryKey: ["quotations", id],
     queryFn: () => getQuotation(id),

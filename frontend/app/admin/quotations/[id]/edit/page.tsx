@@ -72,9 +72,9 @@ export default function EditQuotationPage() {
   // Transform quotation data to form format
   const initialData = {
     customerId: quotation.customerId.toString(),
-    customerName: quotation.customer?.name || "",
+    customerName: quotation.customer?.companyName || "",
     customerEmail: quotation.customer?.email || "",
-    customerPhone: quotation.customer?.phone || "",
+    customerPhone: quotation.customer?.contactPerson || "",
     quotationNumber: quotation.quotationNumber,
     date: new Date(quotation.createdAt).toISOString().split('T')[0],
     validUntil: quotation.validUntil,
@@ -85,15 +85,15 @@ export default function EditQuotationPage() {
       productName: `Product ${item.productId}`, // You might want to fetch product names
       quantity: item.quantity,
       unitPrice: parseFloat(item.unitPrice.toString()),
-      discount: parseFloat(item.discount.toString()),
-      total: parseFloat(item.total)
+      discount: parseFloat(item.discountAmount.toString()),
+      total: parseFloat(item.lineTotal)
     })) || [],
     subtotal: parseFloat(quotation.subtotal),
     taxRate: 18, // Default tax rate, you might want to store this
-    taxAmount: parseFloat(quotation.taxTotal),
+    taxAmount: parseFloat(quotation.taxAmount),
     shippingCost: 0, // Default shipping cost
-    totalDiscount: parseFloat(quotation.discountTotal),
-    grandTotal: parseFloat(quotation.total),
+    totalDiscount: parseFloat(quotation.discountAmount),
+    grandTotal: parseFloat(quotation.totalAmount),
     paymentTerms: "net30", // Default payment terms
     deliveryTerms: "FOB Origin", // Default delivery terms
     notes: "",
@@ -114,7 +114,7 @@ export default function EditQuotationPage() {
         <div className="px-6">
           <Card className="p-6">
             <QuotationForm
-              initialData={initialData}
+              initialData={initialData as any}
               quotationId={quotationId}
               onSuccess={handleSuccess}
               onCancel={handleCancel}

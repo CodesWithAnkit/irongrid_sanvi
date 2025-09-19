@@ -30,11 +30,11 @@ export default function QuotationDetailPage() {
     }
   };
 
-  const handleStatusUpdate = async (status: "SENT" | "APPROVED" | "REJECTED") => {
+  const handleStatusUpdate = async (status: "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED") => {
     try {
       await updateQuotation.mutateAsync({ 
         id: quotationId, 
-        data: { status } 
+        data: { status  } 
       });
     } catch (error) {
       console.error("Failed to update status:", error);
@@ -148,7 +148,7 @@ export default function QuotationDetailPage() {
         <AdminPageHeader
           title={quotation.quotationNumber}
           subtitle="Quotation Details"
-          description={`Total: ₹${parseFloat(quotation.total).toLocaleString()} • Valid until: ${new Date(quotation.validUntil).toLocaleDateString()}`}
+          description={`Total: ₹${parseFloat(quotation.totalAmount).toLocaleString()} • Valid until: ${new Date(quotation.validUntil).toLocaleDateString()}`}
           actions={headerActions}
           compact
         />
@@ -175,11 +175,11 @@ export default function QuotationDetailPage() {
               {quotation.status === "SENT" && (
                 <>
                   <Button 
-                    onClick={() => handleStatusUpdate("APPROVED")}
+                    onClick={() => handleStatusUpdate("ACCEPTED")}
                     disabled={updateQuotation.isPending}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    Mark as Approved
+                    Mark as Accepted
                   </Button>
                   <Button 
                     onClick={() => handleStatusUpdate("REJECTED")}
@@ -209,11 +209,11 @@ export default function QuotationDetailPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">Customer Name</label>
-                  <p className="text-gray-900">{quotation.customer.name}</p>
+                  <p className="text-gray-900">{quotation.customer.companyName}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">Company</label>
-                  <p className="text-gray-900">{quotation.customer.company || "—"}</p>
+                  <p className="text-gray-900">{quotation.customer.companyName || "—"}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
@@ -221,7 +221,7 @@ export default function QuotationDetailPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-500 mb-1">Phone</label>
-                  <p className="text-gray-900">{quotation.customer.phone || "—"}</p>
+                  <p className="text-gray-900">{quotation.customer.contactPerson || "—"}</p>
                 </div>
               </div>
             ) : (
@@ -250,8 +250,8 @@ export default function QuotationDetailPage() {
                         <td className="px-4 py-2 text-sm text-gray-900">Product ID: {item.productId}</td>
                         <td className="px-4 py-2 text-sm text-gray-900">{item.quantity}</td>
                         <td className="px-4 py-2 text-sm text-gray-900">₹{parseFloat(item.unitPrice.toString()).toLocaleString()}</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">{item.discount}%</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">₹{parseFloat(item.total).toLocaleString()}</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{item.discountPercentage}%</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">₹{parseFloat(item.lineTotal).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -272,15 +272,15 @@ export default function QuotationDetailPage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span>Discount:</span>
-                <span>-₹{parseFloat(quotation.discountTotal).toLocaleString()}</span>
+                <span>-₹{parseFloat(quotation.discountAmount).toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Tax:</span>
-                <span>₹{parseFloat(quotation.taxTotal).toLocaleString()}</span>
+                <span>₹{parseFloat(quotation.taxAmount).toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-lg font-semibold border-t pt-2">
                 <span>Total Amount:</span>
-                <span>₹{parseFloat(quotation.total).toLocaleString()}</span>
+                <span>₹{parseFloat(quotation.totalAmount).toLocaleString()}</span>
               </div>
             </div>
           </Card>

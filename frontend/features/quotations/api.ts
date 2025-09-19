@@ -11,7 +11,7 @@ export async function getQuotations(skip = 0, take = 20): Promise<Quotation[]> {
   return res.data;
 }
 
-export async function getQuotation(id: string): Promise<Quotation | null> {
+export async function getQuotation(id: string | number): Promise<Quotation | null> {
   const res = await api.get<Quotation | null>(`/quotations/${id}`);
   return res.data;
 }
