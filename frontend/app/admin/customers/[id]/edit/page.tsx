@@ -70,31 +70,40 @@ export default function EditCustomerPage() {
   }
 
   // Transform customer data to form format
+  const paymentTermsMap: Record<string, "NET_15" | "NET_30" | "NET_45" | "NET_60" | "IMMEDIATE" | "ADVANCE"> = {
+    net15: "NET_15",
+    net30: "NET_30",
+    net45: "NET_45",
+    net60: "NET_60",
+    immediate: "IMMEDIATE",
+    advance: "ADVANCE",
+  };
+
   const initialData = {
-    companyName: customer.company || "",
-    contactPerson: customer.name,
+    companyName: customer.companyName || "",
+    contactPerson: customer.contactPerson,
     email: customer.email,
     phone: customer.phone || "",
-    address: customer.address || "",
-    city: "",
-    state: "",
-    zipCode: "",
-    country: "India",
-    customerType: "wholesale" as const,
+    address: customer.address?.street || "",
+    city: customer.address?.city || "",
+    state: customer.address?.state || "",
+    zipCode: customer.address?.postalCode || "",
+    country: customer.country || "India",
+    customerType: (customer.customerType as "INDIVIDUAL" | "SMALL_BUSINESS" | "ENTERPRISE" | "GOVERNMENT") || "INDIVIDUAL",
     businessCategory: "",
-    taxId: "",
-    creditLimit: 0,
-    paymentTerms: "net30",
+    taxId: customer.taxId || "",
+    creditLimit: parseInt(customer.creditLimit) || 0,
+    paymentTerms: paymentTermsMap[customer.paymentTerms?.toLowerCase()] || "NET_30",
     preferredCommunication: "email" as const,
     newsletter: false,
-    specialInstructions: "",
+    specialInstructions: customer.notes || "",
   };
 
   return (
     <AdminLayout>
       <div className="space-y-6">
         <AdminPageHeader
-          title={`Edit ${customer.name}`}
+          title={`Edit ${customer.companyName}`}
           subtitle="Customer Management"
           description="Update customer information for Sanvi Machinery"
           compact

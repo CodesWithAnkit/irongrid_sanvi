@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "./button";
 
 interface ProductCardProps {
@@ -35,7 +36,7 @@ export default function ProductCard({
     <div className={`bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden hover:shadow-2xl transition-shadow duration-300 group ${className}`}>
       <div className="h-64 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center group-hover:from-teal-50 group-hover:to-teal-100 transition-colors duration-300">
         {image ? (
-          <img src={image} alt={name} className="w-full h-full object-cover" />
+          <Image src={image} alt={name} className="w-full h-full object-cover" />
         ) : (
           <svg className="w-16 h-16 text-slate-400 group-hover:text-teal-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />

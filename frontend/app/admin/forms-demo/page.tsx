@@ -11,29 +11,6 @@ type DemoForm = "customer" | "product" | "quotation";
 
 export default function FormsDemo() {
   const [activeForm, setActiveForm] = React.useState<DemoForm>("customer");
-  const [isLoading, setIsLoading] = React.useState(false);
-
-  const handleFormSubmit = <T extends object>(data: T) => {
-    setIsLoading(true);
-    console.log("Form submitted:", data);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Form submitted successfully! Check console for data.");
-    }, 2000);
-  };
-
-  const mockCustomers = [
-    { id: "1", name: "ABC Manufacturing", email: "contact@abc.com", phone: "+91 98765 43210" },
-    { id: "2", name: "XYZ Industries", email: "info@xyz.com", phone: "+91 87654 32109" }
-  ];
-
-  const mockProducts = [
-    { id: "1", name: "Industrial Drill Machine", price: 25000 },
-    { id: "2", name: "Welding Equipment Set", price: 45000 },
-    { id: "3", name: "Precision Cutting Tool", price: 8500 }
-  ];
 
   return (
   <AdminLayout>
@@ -98,7 +75,7 @@ export default function FormsDemo() {
           <div className="text-blue-800 space-y-2">
             <p>• All form components are located in <code className="bg-blue-100 px-1 rounded">components/ui/</code></p>
             <p>• Form examples are in <code className="bg-blue-100 px-1 rounded">components/examples/</code></p>
-            <p>• Import components: <code className="bg-blue-100 px-1 rounded">import {`{ Input, Select, Form }`} from "@/components/ui"</code></p>
+            <p>• Import components: <code className="bg-blue-100 px-1 rounded">import {`{ Input, Select, Form }`} from &quot;@/components/ui&quot;</code></p>
             <p>• All forms include validation, error handling, and consistent styling</p>
             <p>• Components follow Sanvi Machinery design system with proper branding colors</p>
           </div>

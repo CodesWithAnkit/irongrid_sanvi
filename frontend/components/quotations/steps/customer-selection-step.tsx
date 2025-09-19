@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { UseFormReturn } from "react-hook-form";
-import { Search, Plus, User, Building, Mail, Phone, MapPin } from "lucide-react";
+import { Search, Plus, User, Building, Mail, Phone, MapPin, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormSection, FormActions } from "@/components/ui/form";
-import { type QuotationBuilderFormData } from "@/features/quotations/schemas";
+import { type QuotationBuilderForm } from "@/features/quotations/schemas";
 import { type Customer } from "@/features/customers/types";
 import { useCustomers } from "@/features/customers/hooks";
 import { useDebounce } from "@/lib/hooks/use-debounce";
@@ -15,7 +14,7 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 export interface CustomerSelectionStepProps {
-  form: UseFormReturn<QuotationBuilderFormData>;
+  form: QuotationBuilderForm;
   onNext: () => void;
   onPrevious: () => void;
   isValid: boolean;
@@ -24,6 +23,7 @@ export interface CustomerSelectionStepProps {
 export function CustomerSelectionStep({
   form,
   onNext,
+  onPrevious,
   isValid,
 }: CustomerSelectionStepProps) {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -31,21 +31,21 @@ export function CustomerSelectionStep({
   const [selectedCustomerId, setSelectedCustomerId] = React.useState<number | null>(null);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
+  const { data: customersData, isLoading: isLoadingCustomers } = useCustomers();
 
   const { register, setValue, watch, formState: { errors } } = form;
   const customerData = watch("customer");
 
   // Filter customers based on search query
   const filteredCustomers = React.useMemo(() => {
-    if (!debouncedSearchQuery) return customers || [];
+    if (!debouncedSearchQuery) return customersData?.data || [];
     
-    return (customers || []).filter(customer =>
+    return (customersData?.data || []).filter(customer =>
       customer.contactPerson.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
       customer.companyName.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
     );
-  }, [customers, debouncedSearchQuery]);
+  }, [customersData, debouncedSearchQuery]);
 
   const handleCustomerSelect = (customer: Customer) => {
     setSelectedCustomerId(customer.id);
@@ -206,11 +206,11 @@ export function CustomerSelectionStep({
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-500" />
-                        <span className="font-medium text-gray-900">{customer.name}</span>
+                        <span className="font-medium text-gray-900">{customer.contactPerson}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Building className="w-4 h-4" />
-                        <span>{customer.company}</span>
+                        <span>{customer.companyName}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Mail className="w-4 h-4" />
@@ -299,6 +299,15 @@ export function CustomerSelectionStep({
         >
           Continue to Products
           <ChevronRight className="w-4 h-4" />
+        </Button>
+        <Button
+          type="button"
+          onClick={onPrevious}
+          disabled={!isValid}
+          className="flex items-center gap-2"
+        >
+          Previous
+          <ChevronLeft className="w-4 h-4" />
         </Button>
       </FormActions>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { z } from "zod";
+import { z, ZodObject, ZodRawShape } from "zod";
 
 export interface ValidationError {
   field: string;
@@ -18,7 +18,7 @@ export interface FormValidationState<T> {
 }
 
 export interface UseFormValidationOptions<T> {
-  schema: z.ZodSchema<T>;
+  schema: ZodObject<ZodRawShape>;
   initialData: T;
   onSubmit?: (data: T) => Promise<void> | void;
   validateOnChange?: boolean;
@@ -47,7 +47,7 @@ export function useFormValidation<T extends Record<string, any>>({
     isSubmitting: false,
   });
 
-  const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialDataRef = useRef(initialData);
 
   // Update initial data reference when it changes
@@ -73,7 +73,7 @@ export function useFormValidation<T extends Record<string, any>>({
       return undefined;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return error.errors[0]?.message;
+        return error.issues[0]?.message;
       }
       return "Invalid value";
     }
@@ -87,7 +87,7 @@ export function useFormValidation<T extends Record<string, any>>({
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors: Record<string, string> = {};
-        error.errors.forEach((err) => {
+        error.issues.forEach((err) => {
           const field = err.path.join('.');
           if (!errors[field]) {
             errors[field] = err.message;
@@ -105,7 +105,7 @@ export function useFormValidation<T extends Record<string, any>>({
       const newData = { ...prev.data, [field]: value };
       const isDirty = JSON.stringify(newData) !== JSON.stringify(initialDataRef.current);
       
-      let newErrors = { ...prev.errors };
+      const newErrors = { ...prev.errors };
       
       if (validateOnChange) {
         const fieldError = validateField(field, value);
@@ -148,7 +148,7 @@ export function useFormValidation<T extends Record<string, any>>({
   const setFieldTouched = useCallback((field: string, touched = true) => {
     setState(prev => {
       const newTouchedFields = { ...prev.touchedFields, [field]: touched };
-      let newErrors = { ...prev.errors };
+      const newErrors = { ...prev.errors };
 
       if (validateOnBlur && touched) {
         const fieldError = validateField(field, prev.data[field]);
@@ -176,7 +176,7 @@ export function useFormValidation<T extends Record<string, any>>({
       const newData = { ...prev.data, ...values };
       const isDirty = JSON.stringify(newData) !== JSON.stringify(initialDataRef.current);
       
-      let newErrors = { ...prev.errors };
+      const newErrors = { ...prev.errors };
       
       if (validateOnChange) {
         Object.entries(values).forEach(([field, value]) => {

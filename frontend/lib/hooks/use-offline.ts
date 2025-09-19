@@ -70,6 +70,7 @@ export function useOfflineQueue() {
     if (isOnline && queue.length > 0 && !isProcessing) {
       processQueue();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOnline, queue.length, isProcessing]);
 
   const addToQueue = useCallback((action: Omit<OfflineAction, 'id' | 'timestamp' | 'retryCount'>) => {

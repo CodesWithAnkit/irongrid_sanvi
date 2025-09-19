@@ -43,7 +43,7 @@ export const transformCustomerToAPI = (data: CustomerFormData) => ({
   country: data.country,
   postalCode: data.zipCode,
   customerType: data.customerType,
-  creditLimit: data.creditLimit,
+  creditLimit: data.creditLimit.toString(),
   paymentTerms: data.paymentTerms,
   taxId: data.taxId,
   notes: data.specialInstructions,

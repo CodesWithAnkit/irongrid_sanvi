@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { UseFormReturn } from "react-hook-form";
 
 export const quotationItemSchema = z.object({
   productId: z.number().min(1, "Product is required"),
@@ -49,7 +50,7 @@ export const productConfigurationSchema = z.object({
     quantity: z.number().min(1, "Quantity must be at least 1"),
     unitPrice: z.number().min(0, "Unit price must be positive"),
     discount: z.number().min(0, "Discount must be positive").max(100, "Discount cannot exceed 100%").default(0),
-    customSpecifications: z.record(z.unknown()).optional(),
+    customSpecifications: z.record(z.any()).optional(),
     total: z.number().min(0, "Total must be positive"),
   })).min(1, "At least one item is required"),
 });
@@ -101,3 +102,6 @@ export type ProductConfigurationFormData = z.infer<typeof productConfigurationSc
 export type PricingTermsFormData = z.infer<typeof pricingTermsSchema>;
 export type ReviewSendFormData = z.infer<typeof reviewSendSchema>;
 export type QuotationBuilderFormData = z.infer<typeof quotationBuilderSchema>;
+
+// Form return type alias for consistent typing
+export type QuotationBuilderForm = UseFormReturn<QuotationBuilderFormData>;

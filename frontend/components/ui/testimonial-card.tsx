@@ -1,6 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
+import Image from "next/image";
 
 interface TestimonialCardProps {
   name: string;
@@ -32,11 +33,11 @@ export default function TestimonialCard({
         ))}
       </div>
       <p className="text-slate-700 mb-6 text-lg leading-relaxed italic">
-        "{text}"
+      &quot;{text}&quot;
       </p>
       <div className="flex items-center">
         {avatar ? (
-          <img 
+          <Image 
             src={avatar} 
             alt={name} 
             className="w-12 h-12 rounded-full mr-4 object-cover"

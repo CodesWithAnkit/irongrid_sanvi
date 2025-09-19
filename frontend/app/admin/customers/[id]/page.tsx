@@ -93,7 +93,7 @@ export default function CustomerDetailPage() {
     <AdminLayout>
       <div className="space-y-6">
         <AdminPageHeader
-          title={customer.name}
+          title={customer.companyName}
           subtitle="Customer Details"
           description={`Customer ID: ${customer.id} • Created: ${new Date(customer.createdAt).toLocaleDateString()}`}
           actions={headerActions}
@@ -107,11 +107,11 @@ export default function CustomerDetailPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-500 mb-1">Customer Name</label>
-                <p className="text-gray-900">{customer.name}</p>
+                <p className="text-gray-900">{customer.contactPerson}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500 mb-1">Company</label>
-                <p className="text-gray-900">{customer.company || "—"}</p>
+                <p className="text-gray-900">{customer.companyName || "—"}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500 mb-1">Email Address</label>
@@ -129,7 +129,7 @@ export default function CustomerDetailPage() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Address Information</h3>
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">Address</label>
-              <p className="text-gray-900">{customer.address || "No address provided"}</p>
+              <p className="text-gray-900">{customer.address?.street || "No address provided"}</p>
             </div>
           </Card>
 

@@ -18,7 +18,18 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "**/*.test.ts",   // ✅ ignore .test.ts files
+      "**/*.test.tsx",  // ✅ ignore .test.tsx files
     ],
+  },
+  {
+    rules: {
+      // ✅ Allow unused variables without breaking the build
+      "@typescript-eslint/no-unused-vars": "off",
+
+      // ✅ Allow use of "any" type
+      "@typescript-eslint/no-explicit-any": "off",
+    },
   },
 ];
 

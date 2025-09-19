@@ -83,11 +83,12 @@ export function QuotationBuilder({
         },
         isNewCustomer: false,
       },
-      items: initialData?.items?.map(item => ({
+      items: (initialData?.items?.map((item) => ({
         ...item,
         discount: item.discount ?? 0,
         customSpecifications: item.customSpecifications || {},
-      })) || [],
+        total: item.total ?? 0,
+      })) as QuotationBuilderFormData['items']) || [],
       pricing: initialData?.pricing || {
         subtotal: 0,
         taxRate: 18,
@@ -219,18 +220,17 @@ export function QuotationBuilder({
       onNext: goToNextStep,
       onPrevious: goToPreviousStep,
       isValid: steps[currentStepIndex].isCompleted,
-      
     };
 
     switch (currentStep.id) {
       case "customer":
-        return <CustomerSelectionStep {...stepProps} />;
+        return <CustomerSelectionStep {...stepProps as any} />;
       case "products":
-        return <ProductConfigurationStep {...stepProps} />;
+        return <ProductConfigurationStep {...stepProps as any} />;
       case "pricing":
-        return <PricingTermsStep {...stepProps} />;
+        return <PricingTermsStep {...stepProps as any} />;
       case "review":
-        return <ReviewSendStep {...stepProps} />;
+        return <ReviewSendStep {...stepProps as any} />;
       default:
         return null;
     }

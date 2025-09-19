@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cn } from "@/lib/cn";
 import { FormField } from "./form-field";
+import Image from "next/image";
 
 export interface FileUploadProps {
   label?: string;
@@ -204,7 +205,7 @@ const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
                 )}>
                   <div className="flex items-center space-x-3">
                     {file.preview ? (
-                      <img src={file.preview} alt={file.name} className="h-10 w-10 object-cover rounded" />
+                      <Image src={file.preview} alt={file.name} className="h-10 w-10 object-cover rounded" />
                     ) : (
                       <div className="h-10 w-10 bg-gray-200 rounded flex items-center justify-center">
                         <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -11,6 +11,7 @@ import { FormSection, FormActions } from "@/components/ui/form";
 import { type QuotationBuilderFormData } from "@/features/quotations/schemas";
 import { type TermsTemplate } from "@/features/quotations/types";
 import { cn } from "@/lib/cn";
+import { useMemo } from "react";
 
 export interface PricingTermsStepProps {
   form: UseFormReturn<QuotationBuilderFormData>;
@@ -67,7 +68,7 @@ export function PricingTermsStep({
 }: PricingTermsStepProps) {
   const { register, setValue, watch, formState: { errors } } = form;
   
-  const items = watch("items") || [];
+  const items = useMemo(() => watch("items") || [], [watch]);
   const pricing = watch("pricing");
   const terms = watch("terms");
 
