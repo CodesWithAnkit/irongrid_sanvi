@@ -33,7 +33,8 @@ export function QuotationForm({
 }: QuotationFormProps) {
     const createQuotation = useCreateQuotation();
     const updateQuotation = useUpdateQuotation();
-    const { data: customers = [] } = useCustomers();
+    const { data: customersResponse } = useCustomers();
+    const customers = customersResponse?.data || [];
     const { data: products = [] } = useProducts();
 
     const form = useForm<QuotationFormData>({
@@ -126,7 +127,7 @@ export function QuotationForm({
         const customer = customers.find(c => c.id.toString() === customerId);
         if (customer) {
             setValue("customerId", customerId);
-            setValue("customerName", customer.name);
+            setValue("customerName", customer.companyName);
             setValue("customerEmail", customer.email);
             setValue("customerPhone", customer.phone || "");
         }
@@ -170,7 +171,7 @@ export function QuotationForm({
 
     const customerOptions = customers.map(customer => ({
         value: customer.id.toString(),
-        label: `${customer.name} (${customer.email})`
+        label: `${customer.companyName} (${customer.email})`
     }));
 
     const productOptions = Array.isArray(products) ? products?.map(product => ({
