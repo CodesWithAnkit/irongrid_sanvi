@@ -7,7 +7,7 @@ interface CTAAction {
   label: string;
   href?: string;
   onClick?: () => void;
-  variant?: "default" | "outline" | "secondary";
+  variant?: 'link' | 'outline' | 'primary' | 'secondary' | 'ghost' | 'destructive' | undefined;
   icon?: ReactNode;
 }
 

@@ -259,7 +259,7 @@ export default function CustomersPage() {
                 data={filteredCustomers}
                 columns={columns}
                 keyField="id"
-                bulkActions={bulkActions}
+                bulkActions={ bulkActions }
                 onRowClick={(customer) => router.push(`/admin/customers/${customer.id}`)}
                 loading={isLoading}
                 emptyMessage={

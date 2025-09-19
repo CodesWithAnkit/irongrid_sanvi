@@ -4,7 +4,7 @@ import * as React from "react";
 import { cn } from "@/lib/cn";
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "link";
+  variant?: 'link' | 'outline' | 'primary' | 'secondary' | 'ghost' | 'destructive' | undefined;
   size?: "sm" | "md" | "lg" | "icon";
   isLoading?: boolean;
 };
@@ -20,6 +20,8 @@ const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
     "text-[var(--color-sanvi-neutral-900)] hover:bg-[var(--color-sanvi-neutral-100)]",
   link:
     "text-[var(--color-sanvi-primary-700)] underline-offset-4 hover:underline bg-transparent p-0 h-auto",
+  destructive:
+    "bg-red-600 text-white hover:bg-red-700 border-red-600",
 };
 
 const sizeClasses: Record<NonNullable<ButtonProps["size"]>, string> = {

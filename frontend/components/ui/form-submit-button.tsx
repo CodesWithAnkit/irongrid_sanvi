@@ -12,7 +12,7 @@ export interface FormSubmitButtonProps extends React.ButtonHTMLAttributes<HTMLBu
   showSuccess?: boolean;
   showError?: boolean;
   successDuration?: number;
-  variant?: "primary" | "secondary" | "outline" | "ghost";
+  variant?: 'link' | 'outline' | 'primary' | 'secondary' | 'ghost' | 'destructive' | undefined;
   size?: "sm" | "md" | "lg";
 }
 

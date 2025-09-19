@@ -165,7 +165,7 @@ export function ReviewSendStep({
                 <span>{customer.email}</span>
               </div>
               <div className="text-sm text-gray-600">
-                <strong>Address:</strong> {customer.address}
+                <strong>Address:</strong> {customer.address.street || "-"}, {customer.address.city || "-"}, {customer.address.state || "-"}, {customer.address.postalCode || "-"}, {customer.address.country || "-"}
               </div>
             </CardContent>
           </Card>

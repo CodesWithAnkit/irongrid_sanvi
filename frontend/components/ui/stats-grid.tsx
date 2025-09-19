@@ -10,14 +10,14 @@ interface StatsGridProps {
   stats: Stat[];
   columns?: 2 | 3 | 4;
   className?: string;
-  variant?: "default" | "card" | "hero";
+  variant?: 'link' | 'outline' | 'primary' | 'secondary' | 'ghost' | 'destructive' | undefined;
 }
 
 export default function StatsGrid({
   stats,
   columns = 4,
   className = "",
-  variant = "default",
+  variant = "outline",
 }: StatsGridProps) {
   const gridCols = {
     2: "grid-cols-1 md:grid-cols-2",
@@ -25,7 +25,7 @@ export default function StatsGrid({
     4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
   };
 
-  if (variant === "hero") {
+  if (variant === "outline") {
     return (
       <div className={`grid ${gridCols[columns]} gap-8 text-center ${className}`}>
         {stats.map((stat, index) => (
@@ -41,7 +41,7 @@ export default function StatsGrid({
     );
   }
 
-  if (variant === "card") {
+  if (variant === "destructive") {
     return (
       <div className={`grid ${gridCols[columns]} gap-8 ${className}`}>
         {stats.map((stat, index) => (

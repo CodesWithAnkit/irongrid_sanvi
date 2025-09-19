@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 interface QuickActionButtonProps {
   icon: ReactNode;
   label: string;
-  variant?: "primary" | "outline";
+  variant?: "link" | "outline" | "primary" | "secondary" | "ghost" | "destructive" | undefined;
   onClick?: () => void;
 }
 
