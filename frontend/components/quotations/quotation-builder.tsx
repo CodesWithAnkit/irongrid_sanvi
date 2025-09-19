@@ -288,7 +288,7 @@ export function QuotationBuilder({
         </CardHeader>
         <CardContent>
           {/* @ts-ignore */}
-          <form onSubmit={handleSubmit(handleComplete)} className="space-y-6">
+          <form onSubmit={handleSubmit(handleComplete as any)} className="space-y-6">
             {renderCurrentStep()}
           </form>
         </CardContent>

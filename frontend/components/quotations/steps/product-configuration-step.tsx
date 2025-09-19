@@ -88,7 +88,7 @@ export function ProductConfigurationStep({
       total: product.price,
     };
 
-    setValue("items", [...items, newItem]);
+    setValue("items", [ ...items, newItem]);
     setShowProductCatalog(false);
   };
 

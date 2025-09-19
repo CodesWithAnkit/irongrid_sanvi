@@ -50,7 +50,7 @@ export const productConfigurationSchema = z.object({
     quantity: z.number().min(1, "Quantity must be at least 1"),
     unitPrice: z.number().min(0, "Unit price must be positive"),
     discount: z.number().min(0, "Discount must be positive").max(100, "Discount cannot exceed 100%").optional().default(0),
-    customSpecifications: z.record(z.any(), z.any()).optional(),
+    customSpecifications: z.string().optional(),
     total: z.number().min(0, "Total must be positive"),
   })).min(1, "At least one item is required"),
 });
