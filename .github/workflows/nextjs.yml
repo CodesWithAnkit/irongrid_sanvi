@@ -65,10 +65,9 @@ jobs:
           static_site_generator: next
       - name: Restore cache
         uses: actions/cache@v4
-        working-directory: frontend
         with:
           path: |
-            .next/cache
+            frontend/.next/cache
           # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('frontend/**/package-lock.json', 'frontend/**/yarn.lock') }}-${{ hashFiles('frontend/**.[jt]s', 'frontend/**.[jt]sx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
@@ -82,9 +81,8 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-        working-directory: frontend
         with:
-          path: ./out
+          path: frontend/out
 
   # Deployment job
   deploy:
