@@ -30,7 +30,7 @@ export default function QuotationDetailPage() {
     }
   };
 
-  const handleStatusUpdate = async (status: "DRAFT" | "SENT" | "ACCEPTED" | "REJECTED") => {
+  const handleStatusUpdate = async (status: "DRAFT" | "SENT" | "REJECTED" | "APPROVED" | "EXPIRED") => {
     try {
       await updateQuotation.mutateAsync({ 
         id: quotationId, 
@@ -175,11 +175,11 @@ export default function QuotationDetailPage() {
               {quotation.status === "SENT" && (
                 <>
                   <Button 
-                    onClick={() => handleStatusUpdate("ACCEPTED")}
+                    onClick={() => handleStatusUpdate("APPROVED")}
                     disabled={updateQuotation.isPending}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    Mark as Accepted
+                    Mark as Approved
                   </Button>
                   <Button 
                     onClick={() => handleStatusUpdate("REJECTED")}

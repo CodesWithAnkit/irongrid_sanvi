@@ -1,5 +1,5 @@
+// setupTests.ts
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
-// Make vi available globally as jest
-global.jest = vi
+globalThis.jest = vi as unknown as typeof jest

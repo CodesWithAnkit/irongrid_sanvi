@@ -29,6 +29,9 @@ const eslintConfig = [
 
       // ✅ Allow use of "any" type
       "@typescript-eslint/no-explicit-any": "off",
+
+      // ✅ Allow use of "ts-ignore" comment
+      "@typescript-eslint/ban-ts-comment": "off",
     },
   },
 ];

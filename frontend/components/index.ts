@@ -1,10 +1,7 @@
 // Layout Components
 export { default as PublicLayout } from './layout/public-layout';
 export { default as PublicHeader } from './layout/public-header';
-export { default as PublicFooter } from './layout/public-footer';
-export { SanviAdminLayout } from './layout/sanvi-admin-layout';
-export { AdminHeader } from './layout/admin-header';
-export { AdminSidebar } from './layout/admin-sidebar';
+
 
 // Auth Components
 export { AdminGuard } from './auth/admin-guard';

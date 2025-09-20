@@ -19,7 +19,7 @@ export function useErrorHandler() {
     } = options;
 
     let errorMessage = fallbackMessage;
-    let errorCode = ErrorCodes.INTERNAL_SERVER_ERROR;
+    let errorCode: string = ErrorCodes.INTERNAL_SERVER_ERROR;
 
     if (error instanceof ApiError) {
       errorMessage = error.message;

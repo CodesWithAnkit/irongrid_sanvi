@@ -3,13 +3,11 @@ import { customerService } from '../services/customer.service';
 import { queryKeys, invalidateQueries } from '../query-client';
 import { ApiError } from '../api';
 import type { 
-  CreateCustomerRequest, 
   UpdateCustomerRequest, 
-  CustomerFilters,
-  PaginationParams 
+  CustomerFilters 
 } from '../services/customer.service';
 
-export function useCustomers(params: PaginationParams & CustomerFilters = {}) {
+export function useCustomers(params: CustomerFilters = {}) {
   return useQuery({
     queryKey: queryKeys.customers.list(params),
     queryFn: () => customerService.getCustomers(params),

@@ -5,7 +5,7 @@ export const quotationItemSchema = z.object({
   productId: z.number().min(1, "Product is required"),
   quantity: z.number().min(1, "Quantity must be at least 1"),
   unitPrice: z.number().min(0, "Unit price must be positive"),
-  discount: z.number().min(0, "Discount must be positive").default(0),
+  discount: z.number().min(0, "Discount must be positive").optional().default(0),
 });
 
 export const createQuotationSchema = z.object({
@@ -49,8 +49,8 @@ export const productConfigurationSchema = z.object({
     productName: z.string().min(1, "Product name is required"),
     quantity: z.number().min(1, "Quantity must be at least 1"),
     unitPrice: z.number().min(0, "Unit price must be positive"),
-    discount: z.number().min(0, "Discount must be positive").max(100, "Discount cannot exceed 100%").default(0),
-    customSpecifications: z.record(z.any()).optional(),
+    discount: z.number().min(0, "Discount must be positive").max(100, "Discount cannot exceed 100%").optional().default(0),
+    customSpecifications: z.string().optional(),
     total: z.number().min(0, "Total must be positive"),
   })).min(1, "At least one item is required"),
 });

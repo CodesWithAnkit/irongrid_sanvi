@@ -8,8 +8,8 @@ export type BulkAction = {
   id: string;
   label: string;
   icon?: React.ReactNode;
-  variant?: "default" | "outline" | "destructive";
-  onClick: (selectedIds: string[]) => void;
+  variant?: "link" | "outline" | "primary" | "secondary" | "ghost" | "destructive" | undefined;
+  onClick: (selectedIds: string[]) => void | Promise<void>;
 };
 
 export type BulkActionsProps = {
@@ -56,7 +56,7 @@ export function BulkActions({
           {actions.map((action) => (
             <Button
               key={action.id}
-              variant={action.variant || "outline"}
+              variant={action.variant || undefined}
               size="sm"
               onClick={() => action.onClick(selectedIds)}
             >

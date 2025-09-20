@@ -7,7 +7,7 @@ interface HeroAction {
   label: string;
   href?: string;
   onClick?: () => void;
-  variant?: "default" | "outline" | "secondary";
+  variant?: 'link' | 'outline' | 'primary' | 'secondary' | 'ghost' | 'destructive' | undefined;
   icon?: ReactNode;
 }
 
@@ -51,7 +51,7 @@ export default function HeroSection({
                   <Button
                     key={index}
                     size="lg"
-                    variant={action.variant || "default"}
+                    variant={action.variant || "outline"}
                     className={
                       action.variant === "outline"
                         ? "border-2 border-white text-white hover:bg-white hover:text-teal-700 font-semibold text-lg px-8 py-4"

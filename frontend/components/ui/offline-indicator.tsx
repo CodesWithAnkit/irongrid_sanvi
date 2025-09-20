@@ -37,7 +37,7 @@ export function OfflineIndicator() {
 
 export function OfflineQueueManager() {
   const { queue, isProcessing, clearQueue, processQueue } = useOfflineQueue();
-  const { isOnline } = useOnlineStatus();
+  const isOnline = useOnlineStatus();
 
   if (queue.length === 0) return null;
 

@@ -58,10 +58,10 @@ export type QuotationItemFormData = z.infer<typeof quotationItemSchema>;
 
 // Transform to API format
 export const transformQuotationToAPI = (data: QuotationFormData) => ({
-  customerId: parseInt(data.customerId),
+  customerId: data.customerId,
   validUntil: data.validUntil,
   items: data.items.map(item => ({
-    productId: parseInt(item.productId),
+    productId: item.productId,
     quantity: item.quantity,
     unitPrice: item.unitPrice,
     discount: item.discount,

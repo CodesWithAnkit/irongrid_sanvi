@@ -97,7 +97,7 @@ export default function AboutPage() {
             title="Our Impact"
             className="text-white mb-8"
           />
-          <StatsGrid stats={companyStats} columns={4} variant="hero" />
+          <StatsGrid stats={companyStats} columns={4} variant="outline" />
         </div>
 
         {/* Values */}

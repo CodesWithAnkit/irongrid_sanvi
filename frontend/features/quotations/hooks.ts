@@ -40,7 +40,7 @@ export function useCreateQuotation() {
 export function useUpdateQuotation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateQuotationRequest }) => 
+    mutationFn: ({ id, data }: { id: string | number; data: UpdateQuotationRequest }) => 
       updateQuotation(id, data),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["quotations"] });

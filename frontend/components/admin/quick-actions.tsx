@@ -9,7 +9,7 @@ export interface QuickAction {
   description: string;
   icon: React.ReactNode;
   href: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'link' | 'outline' | 'primary' | 'secondary' | 'ghost' | 'destructive' | undefined;
   badge?: string;
 }
 

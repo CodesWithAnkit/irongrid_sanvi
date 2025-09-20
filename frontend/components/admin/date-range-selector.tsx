@@ -27,11 +27,11 @@ export function DateRangeSelector({ value, onChange, className }: DateRangeSelec
     if (isCustom) {
       onChange({
         ...value,
-        dateRange: dateRange as keyof typeof dateRangeOptions,
+        dateRange: dateRange,
       });
     } else {
       onChange({
-        dateRange: dateRange as keyof typeof dateRangeOptions,
+        dateRange: "CUSTOM",
         startDate: undefined,
         endDate: undefined,
       });

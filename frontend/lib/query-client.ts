@@ -23,7 +23,7 @@ interface ProductFilters {
 interface QuotationFilters {
   status?: string;
   customerId?: string;
-  dateRange?: { from: string; to: string };
+  dateRange?: { startDate: string; endDate: string };
   search?: string;
   limit?: number;
   offset?: number;
@@ -32,14 +32,14 @@ interface QuotationFilters {
 interface OrderFilters {
   status?: string;
   customerId?: string;
-  dateRange?: { from: string; to: string };
+  dateRange?: { startDate: string; endDate: string };
   search?: string;
   limit?: number;
   offset?: number;
 }
 
 interface AnalyticsFilters {
-  dateRange?: { from: string; to: string };
+  dateRange?: { startDate: string; endDate: string };
   customerId?: string;
   productId?: string;
   groupBy?: string;
@@ -111,8 +111,8 @@ export const queryKeys = {
     details: () => [...queryKeys.products.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.products.details(), id] as const,
     categories: ['products', 'categories'] as const,
-    search: (query: string, filters: ProductFilters) => 
-      [...queryKeys.products.all, 'search', query, filters] as const,
+    search: (query: string) => 
+      [...queryKeys.products.all, 'search', query] as const,
     pricingRules: (productId: string, customerId?: string) => 
       [...queryKeys.products.detail(productId), 'pricing-rules', customerId] as const,
   },
@@ -145,11 +145,11 @@ export const queryKeys = {
       [...queryKeys.analytics.all, 'dashboard', filters] as const,
     business: (filters: AnalyticsFilters) => 
       [...queryKeys.analytics.all, 'business', filters] as const,
-    sales: (dateRange: { from: string; to: string }) =>
+    sales: (dateRange: { startDate: string; endDate: string }) =>
       [...queryKeys.analytics.all, 'sales', dateRange] as const,
-    customers: (dateRange: { from: string; to: string }) =>
+    customers: (dateRange: { startDate: string; endDate: string }) =>
       [...queryKeys.analytics.all, 'customers', dateRange] as const,
-    products: (dateRange: { from: string; to: string }) =>
+    products: (dateRange: { startDate: string; endDate: string }) =>
       [...queryKeys.analytics.all, 'products', dateRange] as const,
     conversion: (filters: AnalyticsFilters) =>
       [...queryKeys.analytics.all, 'conversion', filters] as const,
