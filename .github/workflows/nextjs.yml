@@ -64,8 +64,8 @@ jobs:
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
       - name: Restore cache
-        working-directory: frontend
         uses: actions/cache@v4
+        working-directory: frontend
         with:
           path: |
             .next/cache
@@ -82,9 +82,9 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        working-directory: frontend
         with:
           path: ./out
-        working-directory: frontend
 
   # Deployment job
   deploy:
