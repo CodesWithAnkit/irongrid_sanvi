@@ -16,7 +16,7 @@ import { useProducts } from "@/features/products/hooks";
 
 export type QuotationFormProps = {
     initialData?: Partial<QuotationFormData>;
-    quotationId?: number;
+    quotationId?: string;
     onSuccess?: () => void;
     onCancel?: () => void;
     preSelectedCustomerId?: string;

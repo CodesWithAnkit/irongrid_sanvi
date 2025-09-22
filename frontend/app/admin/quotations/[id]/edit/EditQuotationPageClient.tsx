@@ -10,7 +10,7 @@ import { useQuotation } from "@/features/quotations/hooks";
 
 export default function EditQuotationPageClient({ id }: { id: string }) {
   const router = useRouter();
-  const quotationId = parseInt(id);
+  const quotationId = id;
   
   const { data: quotation, isLoading, error } = useQuotation(quotationId);
 
