@@ -277,7 +277,7 @@ function normalizeResponse<T>(response: any): T {
 export const apiClient = {
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await retryRequest(() => api.get<ApiResponse<T>>(url, config));
-    return normalizeResponse<T>(response);
+    return normalizeResponse<T>(response.data);
   },
 
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
@@ -290,7 +290,7 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
-    return normalizeResponse<T>(response);
+    return normalizeResponse<T>(response.data);
   },
 
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
@@ -303,7 +303,7 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
-    return normalizeResponse<T>(response);
+    return normalizeResponse<T>(response.data);
   },
 
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
@@ -316,7 +316,7 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
-    return normalizeResponse<T>(response);
+    return normalizeResponse<T>(response.data);
   },
 
   async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
@@ -329,7 +329,7 @@ export const apiClient = {
         return defaultRetryConfig.retryCondition(error);
       }
     });
-    return normalizeResponse<T>(response);
+    return normalizeResponse<T>(response.data);
   }
 };
 

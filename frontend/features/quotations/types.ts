@@ -64,13 +64,8 @@ export interface QuotationResponse {
   timestamp: string;
 }
 
-export interface PaginatedQuotationResponse {
-  data: Quotation[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
+// Use the shared pagination types from lib/types/api to avoid duplication
+export type { PaginatedResponse } from "@/lib/types/api";
 
 export interface CreateQuotationRequest {
   customerId: string;

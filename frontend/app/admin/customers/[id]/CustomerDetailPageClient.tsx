@@ -2,17 +2,16 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useCustomer, useDeleteCustomer } from "@/features/customers/hooks";
 
-export default function CustomerDetailPageClient() {
+export default function CustomerDetailPageClient({ id }: { id: string }) {
   const router = useRouter();
-  const params = useParams();
-  const customerId = parseInt(params.id as string);
+  const customerId = parseInt(id);
   
   const { data: customer, isLoading, error } = useCustomer(customerId);
   const deleteCustomer = useDeleteCustomer();

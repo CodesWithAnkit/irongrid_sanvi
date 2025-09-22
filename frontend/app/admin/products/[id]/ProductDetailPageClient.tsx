@@ -2,17 +2,16 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProduct, useDeleteProduct } from "@/features/products/hooks";
 
-export default function ProductDetailPageClient() {
+export default function ProductDetailPageClient({ id }: { id: string }) {
   const router = useRouter();
-  const params = useParams();
-  const productId = parseInt(params.id as string);
+  const productId = parseInt(id);
   
   const { data: product, isLoading, error } = useProduct(productId);
   const deleteProduct = useDeleteProduct();

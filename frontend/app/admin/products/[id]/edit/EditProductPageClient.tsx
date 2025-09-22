@@ -1,17 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { ProductForm } from "@/components/forms/product-form";
 import { Card } from "@/components/ui/card";
 import { useProduct } from "@/features/products/hooks";
 
-export default function EditProductPageClient() {
+export default function EditProductPageClient({ id }: { id: string }) {
   const router = useRouter();
-  const params = useParams();
-  const productId = parseInt(params.id as string);
+  const productId = parseInt(id);
   
   const { data: product, isLoading, error } = useProduct(productId);
 

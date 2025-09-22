@@ -1,17 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { QuotationForm } from "@/components/forms/quotation-form";
 import { Card } from "@/components/ui/card";
 import { useQuotation } from "@/features/quotations/hooks";
 
-export default function EditQuotationPageClient() {
+export default function EditQuotationPageClient({ id }: { id: string }) {
   const router = useRouter();
-  const params = useParams();
-  const quotationId = parseInt(params.id as string);
+  const quotationId = id;
   
   const { data: quotation, isLoading, error } = useQuotation(quotationId);
 

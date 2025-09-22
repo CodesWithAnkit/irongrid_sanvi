@@ -1,7 +1,7 @@
+import { PaginatedResponse } from '../types/api';
 import { apiClient } from '../api';
 import type { 
   Customer, 
-  PaginatedResponse, 
   PaginationParams, 
   FilterParams,
   CustomerType,

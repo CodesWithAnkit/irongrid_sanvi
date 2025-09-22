@@ -70,6 +70,7 @@ export const quotationService = {
     const response = await apiClient.get<PaginatedResponse<Quotation>>('/quotations', {
       params
     });
+    console.log(response.data);
     return response;
   },
 

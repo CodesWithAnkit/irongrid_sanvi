@@ -1,9 +1,8 @@
 import EditProductPageClient from "./EditProductPageClient";
 
 // Exclude this dynamic route from static export
-export const dynamic = 'error';
-export function generateStaticParams(): Array<{ id: string }> { return []; }
+export function generateStaticParams(): Array<{ id: string }> { return [{ id: "1" }]; }
 
-export default function Page() {
-  return <EditProductPageClient />;
+export default function Page({ params }: { params: { id: string } }) {
+  return <EditProductPageClient id={params.id} />;
 }

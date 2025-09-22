@@ -1,8 +1,8 @@
+import { PaginatedResponse } from '@/features/quotations/types';
 import { apiClient } from '../api';
 import type { 
   Product, 
   Category,
-  PaginatedResponse, 
   PaginationParams, 
   FilterParams,
   ProductSpecification 
