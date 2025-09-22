@@ -1,12 +1,17 @@
 import QuotationDetailPageClient from "./QuotationDetailPageClient";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export const dynamic = 'force-static'
-export function generateStaticParams(): Array<{ id: string }> { return []; }
-
-export default function Page({ params }: PageProps) {
-  return <QuotationDetailPageClient id={params.id} />;
+// IMPORTANT: Do not use client hooks in server functions.
+// Use the server-safe API function to fetch quotation IDs for static params.
+export  async function generateStaticParams(): Promise<Array<{ id: string }>> {
+    return [{ id: "cmfv7emkn000cnpd79f02wqir" }];
 }
+
+async function Page({ params }: PageProps) {
+  return <QuotationDetailPageClient id={(await params).id} />;
+}
+
+export default Page;

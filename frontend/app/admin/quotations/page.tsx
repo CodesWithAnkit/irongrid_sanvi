@@ -10,8 +10,10 @@ import { useQuotations, useDeleteQuotation } from "@/features/quotations/hooks";
 import { Quotation } from "@/features/quotations/types";
 
 export default function QuotationsPage() {
-  const { data: quotations, isLoading, error } = useQuotations();
+  const { data: quotationsResponse, isLoading, error } = useQuotations();
   const deleteQuotation = useDeleteQuotation();
+
+  const quotations = quotationsResponse?.data;
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this quotation?")) {

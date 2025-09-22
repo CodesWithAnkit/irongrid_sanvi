@@ -1,17 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { CustomerForm } from "@/components/forms/customer-form";
 import { Card } from "@/components/ui/card";
 import { useCustomer } from "@/features/customers/hooks";
 
-export default function EditCustomerPageClient() {
+export default function EditCustomerPageClient({ id }: { id: string }) {
   const router = useRouter();
-  const params = useParams();
-  const customerId = parseInt(params.id as string);
+  const customerId = parseInt(id);
   
   const { data: customer, isLoading, error } = useCustomer(customerId);
 
