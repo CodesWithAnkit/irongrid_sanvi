@@ -2,18 +2,17 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/components/layout/enhanced-admin-layout";
 import AdminPageHeader from "@/components/ui/admin-page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useQuotation, useDeleteQuotation, useUpdateQuotation, useEmailQuotation } from "@/features/quotations/hooks";
 
-export default function QuotationDetailPageClient() {
+export default function QuotationDetailPageClient( { id }: { id: string }) {
   const router = useRouter();
-  const params = useParams();
-  const quotationId = params.id as string;
-  
+  const quotationId = id;
+
   const { data: quotation, isLoading, error } = useQuotation(quotationId);
   const deleteQuotation = useDeleteQuotation();
   const updateQuotation = useUpdateQuotation();

@@ -1,9 +1,12 @@
 import QuotationDetailPageClient from "./QuotationDetailPageClient";
 
-// Exclude this dynamic route from static export
-export const dynamic = 'error';
+interface PageProps {
+  params: { id: string };
+}
+
+export const dynamic = 'force-static'
 export function generateStaticParams(): Array<{ id: string }> { return []; }
 
-export default function Page() {
-  return <QuotationDetailPageClient />;
+export default function Page({ params }: PageProps) {
+  return <QuotationDetailPageClient id={params.id} />;
 }

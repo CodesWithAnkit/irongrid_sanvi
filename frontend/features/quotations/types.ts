@@ -64,6 +64,14 @@ export interface QuotationResponse {
   timestamp: string;
 }
 
+export interface PaginatedQuotationResponse {
+  data: Quotation[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export interface CreateQuotationRequest {
   customerId: string;
   validUntil: string;

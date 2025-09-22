@@ -3,11 +3,12 @@ import type {
   Quotation, 
   CreateQuotationRequest, 
   UpdateQuotationRequest, 
-  EmailQuotationRequest
+  EmailQuotationRequest,
+  PaginatedQuotationResponse
 } from "./types";
 
-export async function getQuotations(skip = 0, take = 20): Promise<Quotation[]> {
-  const res = await api.get<Quotation[]>(`/quotations?skip=${skip}&take=${take}`);
+export async function getQuotations(skip = 0, take = 20): Promise<PaginatedQuotationResponse> {
+  const res = await api.get<PaginatedQuotationResponse>(`/quotations?skip=${skip}&take=${take}`);
   return res.data;
 }
 

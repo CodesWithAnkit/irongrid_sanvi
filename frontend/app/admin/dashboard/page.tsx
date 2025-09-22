@@ -16,19 +16,19 @@ export default function DashboardPage() {
   // Calculate dashboard metrics
   const metrics = React.useMemo(() => {
     const totalCustomers = customers?.data?.length || 0;
-    const totalQuotations = quotations?.length || 0;
-    
-    const quotationsByStatus = quotations?.reduce((acc, quotation) => {
+    const totalQuotations = quotations?.data?.length || 0;
+
+    const quotationsByStatus = quotations?.data?.reduce((acc, quotation) => {
       acc[quotation.status] = (acc[quotation.status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>) || {};
 
-    const totalQuotationValue = quotations?.reduce((sum, quotation) => {
+    const totalQuotationValue = quotations?.data?.reduce((sum, quotation) => {
       return sum + parseFloat(quotation?.totalAmount || "0");
     }, 0) || 0;
 
     const recentCustomers = customers?.data?.slice(0, 5) || [];
-    const recentQuotations = quotations?.slice(0, 5) || [];
+    const recentQuotations = quotations?.data?.slice(0, 5) || [];
 
     return {
       totalCustomers,
