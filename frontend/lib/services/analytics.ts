@@ -150,26 +150,26 @@ export interface RevenueForecasting {
 export const analyticsService = {
   async getDashboardMetrics(query: AnalyticsQuery = {}): Promise<BusinessMetrics> {
     const response = await api.get('/analytics/dashboard', { params: query });
-    return response.data.data;
+    return response.data;
   },
 
   async getSalesPerformance(query: AnalyticsQuery = {}): Promise<SalesPerformanceMetrics> {
     const response = await api.get('/analytics/sales-performance', { params: query });
-    return response.data.data;
+    return response.data;
   },
 
   async getCustomerLifetimeValue(query: AnalyticsQuery = {}): Promise<CustomerLifetimeValueMetrics> {
     const response = await api.get('/analytics/customer-lifetime-value', { params: query });
-    return response.data.data;
+    return response.data;
   },
 
   async getProductPerformance(query: AnalyticsQuery = {}): Promise<ProductPerformanceMetrics> {
     const response = await api.get('/analytics/product-performance', { params: query });
-    return response.data.data;
+    return response.data;
   },
 
   async getRevenueForecasting(query: AnalyticsQuery = {}): Promise<RevenueForecasting> {
     const response = await api.get('/analytics/revenue-forecasting', { params: query });
-    return response.data.data;
+    return response.data;
   },
 };

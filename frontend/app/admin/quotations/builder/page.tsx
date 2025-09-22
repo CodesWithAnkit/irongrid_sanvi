@@ -72,16 +72,17 @@ export default function QuotationBuilderPage() {
     const loadData = async () => {
       try {
         // Load customers and products
-        const [customersResponse, productsResponse] = await Promise.all([
+        const [customersPaginated, productsPaginated] = await Promise.all([
           customerService.getCustomers({ limit: 100 }),
           productService.getProducts({ limit: 100 })
         ]);
 
-        // setCustomers(customersResponse.data);
-        // setProducts(productsResponse.data);
+        const customers = customersPaginated.data;
+        const products = productsPaginated.data;
 
-        // Set initial data with real customer and product info
-        const defaultCustomer = customersResponse.data.find(c => c.id === "cmfjeun5o0000od2x5uv8f4o9") || customersResponse.data[0];
+        console.log(customers, products);
+
+        const defaultCustomer = customers.find(c => c.id === "cmfjeun5o0000od2x5uv8f4o9") || customers[0];
         
         if (defaultCustomer) {
           setInitialData({
@@ -90,7 +91,7 @@ export default function QuotationBuilderPage() {
             customerContact: defaultCustomer.contactPerson,
             customerAddress: `${defaultCustomer.address.street}, ${defaultCustomer.address.city}, ${defaultCustomer.address.state} ${defaultCustomer.address.pincode}`,
             // Map products to items
-            items: productsResponse.data.slice(0, 6).map(product => ({
+            items: products.slice(0, 6).map(product => ({
               id: product.id,
               description: product.name,
               quantity: 1,
