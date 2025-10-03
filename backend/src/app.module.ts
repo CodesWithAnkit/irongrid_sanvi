@@ -27,6 +27,7 @@ import { RateLimitMiddleware } from './common/middleware/rate-limit.middleware';
 import { SecurityMiddleware } from './common/middleware/security.middleware';
 import { DatabaseAdminController } from './common/controllers/database-admin.controller';
 import { CacheAdminController } from './common/controllers/cache-admin.controller';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { CacheAdminController } from './common/controllers/cache-admin.controlle
     AnalyticsModule,
     DatabaseModule,
     CacheModule,
+    HealthModule,
   ],
   controllers: [AppController, DatabaseAdminController, CacheAdminController],
   providers: [AppService, PrismaService],
