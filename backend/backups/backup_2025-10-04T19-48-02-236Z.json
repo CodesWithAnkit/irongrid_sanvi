@@ -1,0 +1,857 @@
+{
+  "timestamp": "2025-10-04T19:48:02.237Z",
+  "users": [
+    {
+      "id": "cmesnoxel003yp5fzbrnwzt35",
+      "email": "admin@sanvi-machinery.com",
+      "passwordHash": "$2a$12$ecv3YEXTG8gtnFhwCbuK/O.aVJa1pLY8d4spFfLLd8HvWLqVgDTIa",
+      "firstName": "System",
+      "lastName": "Administrator",
+      "isActive": true,
+      "lastLoginAt": "2025-09-22T19:21:38.092Z",
+      "passwordResetToken": null,
+      "passwordResetExpires": null,
+      "emailVerified": true,
+      "emailVerificationToken": null,
+      "createdAt": "2025-08-26T14:43:29.949Z",
+      "updatedAt": "2025-09-22T19:21:38.094Z"
+    },
+    {
+      "id": "1",
+      "email": "admin@sanvi.local",
+      "passwordHash": "$2a$10$QwmEYRbuGyhMql8EtUkhlutscsf27bfdbtFQM4n6TXisicVwUqHeS",
+      "firstName": "System",
+      "lastName": "Admin",
+      "isActive": true,
+      "lastLoginAt": "2025-09-14T08:07:00.132Z",
+      "passwordResetToken": null,
+      "passwordResetExpires": null,
+      "emailVerified": false,
+      "emailVerificationToken": null,
+      "createdAt": "2025-08-24T04:48:56.044Z",
+      "updatedAt": "2025-09-14T08:07:00.134Z"
+    }
+  ],
+  "customers": [
+    {
+      "id": "1",
+      "companyName": "acme",
+      "contactPerson": "Ankit",
+      "email": "kalkd@gg.com",
+      "phone": "0999 999 9999",
+      "alternatePhone": null,
+      "address": "My Home",
+      "city": null,
+      "state": null,
+      "country": "India",
+      "postalCode": null,
+      "customerType": "SMALL_BUSINESS",
+      "creditLimit": "0",
+      "paymentTerms": "NET_30",
+      "taxId": null,
+      "gstNumber": null,
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2025-08-24T11:34:45.458Z",
+      "updatedAt": "2025-08-24T11:34:45.458Z"
+    },
+    {
+      "id": "2",
+      "companyName": "aaa",
+      "contactPerson": "lasjdlkj",
+      "email": "asd@kdk.com",
+      "phone": "+919999999999",
+      "alternatePhone": null,
+      "address": "aksjlkj",
+      "city": null,
+      "state": null,
+      "country": "India",
+      "postalCode": null,
+      "customerType": "SMALL_BUSINESS",
+      "creditLimit": "0",
+      "paymentTerms": "NET_30",
+      "taxId": null,
+      "gstNumber": null,
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2025-08-24T11:35:13.982Z",
+      "updatedAt": "2025-08-24T11:35:13.982Z"
+    },
+    {
+      "id": "3",
+      "companyName": "ABC Manufacturing Pvt Ltd",
+      "contactPerson": "Rajesh Kumar",
+      "email": "rajesh.kumar@abcmfg.com",
+      "phone": "+91 98765 43210",
+      "alternatePhone": null,
+      "address": "Plot No. 45, Industrial Area, Sector 8, Gurgaon, Haryana, 122001, India",
+      "city": null,
+      "state": null,
+      "country": "India",
+      "postalCode": null,
+      "customerType": "SMALL_BUSINESS",
+      "creditLimit": "0",
+      "paymentTerms": "NET_30",
+      "taxId": null,
+      "gstNumber": null,
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2025-08-24T16:17:07.149Z",
+      "updatedAt": "2025-08-24T16:17:07.149Z"
+    },
+    {
+      "id": "cmfjeun5o0000od2x5uv8f4o9",
+      "companyName": "MS ARADHYA MINERAL WATER",
+      "contactPerson": "VIKASH KUMAR",
+      "email": "default@quotationbuilder.local",
+      "phone": "+91-9876543210",
+      "alternatePhone": null,
+      "address": "VIKASH NAGER, BIHARSHARIF NALANDA 803101",
+      "city": "BIHARSHARIF",
+      "state": "BIHAR",
+      "country": "India",
+      "postalCode": "803101",
+      "customerType": "SMALL_BUSINESS",
+      "creditLimit": "500000",
+      "paymentTerms": "NET_30",
+      "taxId": null,
+      "gstNumber": null,
+      "notes": null,
+      "isActive": true,
+      "createdAt": "2025-09-14T08:05:46.811Z",
+      "updatedAt": "2025-09-14T08:05:46.811Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "sku": "HD-2500",
+      "name": "Industrial Drill Machine HD-2500",
+      "description": "Heavy-duty industrial drill machine with 2500W motor, suitable for metal and concrete drilling",
+      "categoryId": null,
+      "basePrice": "25000",
+      "currency": "INR",
+      "specifications": null,
+      "images": [
+        "drill-hd2500-1.jpg",
+        "drill-hd2500-2.jpg"
+      ],
+      "inventoryCount": null,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-08-24T16:39:32.040Z",
+      "updatedAt": "2025-08-24T16:39:32.040Z"
+    },
+    {
+      "id": "2",
+      "sku": "WS-300",
+      "name": "Welding Equipment Set WS-300",
+      "description": "Complete welding equipment set with 300A capacity, includes electrodes and safety gear",
+      "categoryId": null,
+      "basePrice": "45000",
+      "currency": "INR",
+      "specifications": null,
+      "images": [
+        "welding-ws300-1.jpg",
+        "welding-ws300-2.jpg"
+      ],
+      "inventoryCount": null,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-08-24T16:39:32.051Z",
+      "updatedAt": "2025-08-24T16:39:32.051Z"
+    },
+    {
+      "id": "3",
+      "sku": "CNC-1000",
+      "name": "CNC Milling Machine CNC-1000",
+      "description": "Precision CNC milling machine with 1000mm travel, 3-axis control",
+      "categoryId": null,
+      "basePrice": "150000",
+      "currency": "INR",
+      "specifications": null,
+      "images": [
+        "cnc-1000-1.jpg",
+        "cnc-1000-2.jpg"
+      ],
+      "inventoryCount": null,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-08-24T16:39:32.055Z",
+      "updatedAt": "2025-08-24T16:39:32.055Z"
+    },
+    {
+      "id": "4",
+      "sku": "LP-500",
+      "name": "Lathe Machine LP-500",
+      "description": "Heavy-duty lathe machine with 500mm swing, digital readout",
+      "categoryId": null,
+      "basePrice": "85000",
+      "currency": "INR",
+      "specifications": null,
+      "images": [
+        "lathe-lp500-1.jpg",
+        "lathe-lp500-2.jpg"
+      ],
+      "inventoryCount": null,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-08-24T16:39:32.060Z",
+      "updatedAt": "2025-08-24T16:39:32.060Z"
+    },
+    {
+      "id": "cmfjeun660001od2xl94oskdx",
+      "sku": "QB-RO-SYSTEM",
+      "name": "RO SYSTEM",
+      "description": "RO SYSTEM",
+      "categoryId": null,
+      "basePrice": "434120",
+      "currency": "INR",
+      "specifications": null,
+      "images": [],
+      "inventoryCount": 100,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-09-14T08:05:46.830Z",
+      "updatedAt": "2025-09-14T08:05:46.830Z"
+    },
+    {
+      "id": "cmfjeun6h0002od2xw7acw2oy",
+      "sku": "QB-SAND-FILTER",
+      "name": "SAND FILTER",
+      "description": "SAND FILTER",
+      "categoryId": null,
+      "basePrice": "52082",
+      "currency": "INR",
+      "specifications": null,
+      "images": [],
+      "inventoryCount": 100,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-09-14T08:05:46.841Z",
+      "updatedAt": "2025-09-14T08:05:46.841Z"
+    },
+    {
+      "id": "cmfjeun6l0003od2xfo3wtn70",
+      "sku": "QB-RAW-WATER-PUMP",
+      "name": "RAW WATER PUMP",
+      "description": "RAW WATER PUMP",
+      "categoryId": null,
+      "basePrice": "43412",
+      "currency": "INR",
+      "specifications": null,
+      "images": [],
+      "inventoryCount": 100,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-09-14T08:05:46.846Z",
+      "updatedAt": "2025-09-14T08:05:46.846Z"
+    },
+    {
+      "id": "cmfjeun6q0004od2xyevmua12",
+      "sku": "QB-CARBON-FILTER",
+      "name": "CARBON FILTER",
+      "description": "CARBON FILTER",
+      "categoryId": null,
+      "basePrice": "60737",
+      "currency": "INR",
+      "specifications": null,
+      "images": [],
+      "inventoryCount": 100,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-09-14T08:05:46.850Z",
+      "updatedAt": "2025-09-14T08:05:46.850Z"
+    },
+    {
+      "id": "cmfjeun6u0005od2xjuojvkre",
+      "sku": "QB-RAW-WATER-TANK",
+      "name": "RAW WATER TANK",
+      "description": "RAW WATER TANK",
+      "categoryId": null,
+      "basePrice": "86846",
+      "currency": "INR",
+      "specifications": null,
+      "images": [],
+      "inventoryCount": 100,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-09-14T08:05:46.854Z",
+      "updatedAt": "2025-09-14T08:05:46.854Z"
+    },
+    {
+      "id": "cmfjeun6y0006od2xutsoc08p",
+      "sku": "QB-UV-STERILIZER",
+      "name": "UV STERILIZER",
+      "description": "UV STERILIZER",
+      "categoryId": null,
+      "basePrice": "43141",
+      "currency": "INR",
+      "specifications": null,
+      "images": [],
+      "inventoryCount": 100,
+      "minOrderQty": 1,
+      "isActive": true,
+      "createdAt": "2025-09-14T08:05:46.859Z",
+      "updatedAt": "2025-09-14T08:05:46.859Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cmesnoxf30041p5fzw5rlu9o3",
+      "name": "Heavy Machinery",
+      "description": "Large industrial machinery and equipment",
+      "parentId": null,
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.968Z",
+      "updatedAt": "2025-08-26T14:43:29.968Z"
+    },
+    {
+      "id": "cmesnoxf90042p5fz63vn2959",
+      "name": "Construction Equipment",
+      "description": "Equipment for construction and building",
+      "parentId": null,
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.973Z",
+      "updatedAt": "2025-08-26T14:43:29.973Z"
+    },
+    {
+      "id": "cmesnoxfc0043p5fzv9v5f65c",
+      "name": "Manufacturing Tools",
+      "description": "Tools and equipment for manufacturing processes",
+      "parentId": null,
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.976Z",
+      "updatedAt": "2025-08-26T14:43:29.976Z"
+    },
+    {
+      "id": "cmesnoxfe0044p5fzwosuwrdl",
+      "name": "Agricultural Machinery",
+      "description": "Machinery for agricultural operations",
+      "parentId": null,
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.978Z",
+      "updatedAt": "2025-08-26T14:43:29.978Z"
+    },
+    {
+      "id": "cmesnoxfh0045p5fz9j93zed7",
+      "name": "Mining Equipment",
+      "description": "Equipment for mining and extraction operations",
+      "parentId": null,
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.982Z",
+      "updatedAt": "2025-08-26T14:43:29.982Z"
+    }
+  ],
+  "quotations": [
+    {
+      "id": "cmfjghqqu0002k61n2wn0cz77",
+      "quotationNumber": "QUO-2025-000001",
+      "customerId": "cmfjeun5o0000od2x5uv8f4o9",
+      "status": "DRAFT",
+      "subtotal": "720338",
+      "discountAmount": "0.06",
+      "taxAmount": "129660.83",
+      "totalAmount": "849998.77",
+      "validUntil": "2025-10-14T08:51:43.967Z",
+      "termsConditions": null,
+      "notes": null,
+      "pdfUrl": null,
+      "emailSentAt": null,
+      "customerViewedAt": null,
+      "customerRespondedAt": null,
+      "createdAt": "2025-09-14T08:51:44.163Z",
+      "updatedAt": "2025-09-14T08:51:44.163Z",
+      "createdByUserId": "cmesnoxel003yp5fzbrnwzt35",
+      "items": [
+        {
+          "id": "cmfjghqqu0004k61nfop8whx9",
+          "quotationId": "cmfjghqqu0002k61n2wn0cz77",
+          "productId": "cmfjeun660001od2xl94oskdx",
+          "quantity": 1,
+          "unitPrice": "434120",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "434119.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfjghqqu0005k61nv6igxg59",
+          "quotationId": "cmfjghqqu0002k61n2wn0cz77",
+          "productId": "cmfjeun6h0002od2xw7acw2oy",
+          "quantity": 1,
+          "unitPrice": "52082",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "52081.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfjghqqu0006k61nrqd0u6al",
+          "quotationId": "cmfjghqqu0002k61n2wn0cz77",
+          "productId": "cmfjeun6l0003od2xfo3wtn70",
+          "quantity": 1,
+          "unitPrice": "43412",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "43411.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfjghqqu0007k61n7pll680p",
+          "quotationId": "cmfjghqqu0002k61n2wn0cz77",
+          "productId": "cmfjeun6q0004od2xyevmua12",
+          "quantity": 1,
+          "unitPrice": "60737",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "60736.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfjghqqu0008k61n44mubsk8",
+          "quotationId": "cmfjghqqu0002k61n2wn0cz77",
+          "productId": "cmfjeun6u0005od2xjuojvkre",
+          "quantity": 1,
+          "unitPrice": "86846",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "86845.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfjghqqu0009k61na7222zjl",
+          "quotationId": "cmfjghqqu0002k61n2wn0cz77",
+          "productId": "cmfjeun6y0006od2xutsoc08p",
+          "quantity": 1,
+          "unitPrice": "43141",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "43140.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        }
+      ]
+    },
+    {
+      "id": "cmfv751nb0003npd7u11c0ft5",
+      "quotationNumber": "QUO-2025-000002",
+      "customerId": "cmfjeun5o0000od2x5uv8f4o9",
+      "status": "DRAFT",
+      "subtotal": "286218",
+      "discountAmount": "0.05",
+      "taxAmount": "51519.23",
+      "totalAmount": "337737.18",
+      "validUntil": "2025-10-22T14:03:09.214Z",
+      "termsConditions": null,
+      "notes": null,
+      "pdfUrl": null,
+      "emailSentAt": null,
+      "customerViewedAt": null,
+      "customerRespondedAt": null,
+      "createdAt": "2025-09-22T14:03:09.334Z",
+      "updatedAt": "2025-09-22T14:03:09.334Z",
+      "createdByUserId": "cmesnoxel003yp5fzbrnwzt35",
+      "items": [
+        {
+          "id": "cmfv751nb0005npd7wey1u1w0",
+          "quotationId": "cmfv751nb0003npd7u11c0ft5",
+          "productId": "cmfjeun6h0002od2xw7acw2oy",
+          "quantity": 1,
+          "unitPrice": "52082",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "52081.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv751nb0006npd7xtcmflp4",
+          "quotationId": "cmfv751nb0003npd7u11c0ft5",
+          "productId": "cmfjeun6l0003od2xfo3wtn70",
+          "quantity": 1,
+          "unitPrice": "43412",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "43411.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv751nb0007npd736wx51au",
+          "quotationId": "cmfv751nb0003npd7u11c0ft5",
+          "productId": "cmfjeun6q0004od2xyevmua12",
+          "quantity": 1,
+          "unitPrice": "60737",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "60736.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv751nb0008npd7lnclazbg",
+          "quotationId": "cmfv751nb0003npd7u11c0ft5",
+          "productId": "cmfjeun6u0005od2xjuojvkre",
+          "quantity": 1,
+          "unitPrice": "86846",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "86845.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv751nb0009npd704fgeqxl",
+          "quotationId": "cmfv751nb0003npd7u11c0ft5",
+          "productId": "cmfjeun6y0006od2xutsoc08p",
+          "quantity": 1,
+          "unitPrice": "43141",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "43140.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        }
+      ]
+    },
+    {
+      "id": "cmfv7emkn000cnpd79f02wqir",
+      "quotationNumber": "QUO-2025-000003",
+      "customerId": "cmfjeun5o0000od2x5uv8f4o9",
+      "status": "APPROVED",
+      "subtotal": "720338",
+      "discountAmount": "0.06",
+      "taxAmount": "129660.83",
+      "totalAmount": "849998.77",
+      "validUntil": "2025-10-22T14:10:36.225Z",
+      "termsConditions": null,
+      "notes": null,
+      "pdfUrl": null,
+      "emailSentAt": null,
+      "customerViewedAt": null,
+      "customerRespondedAt": null,
+      "createdAt": "2025-09-22T14:10:36.359Z",
+      "updatedAt": "2025-09-22T18:34:47.256Z",
+      "createdByUserId": "cmesnoxel003yp5fzbrnwzt35",
+      "items": [
+        {
+          "id": "cmfv7emkn000enpd78bedbtc9",
+          "quotationId": "cmfv7emkn000cnpd79f02wqir",
+          "productId": "cmfjeun660001od2xl94oskdx",
+          "quantity": 1,
+          "unitPrice": "434120",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "434119.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv7emkn000fnpd7r7nx9qgu",
+          "quotationId": "cmfv7emkn000cnpd79f02wqir",
+          "productId": "cmfjeun6h0002od2xw7acw2oy",
+          "quantity": 1,
+          "unitPrice": "52082",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "52081.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv7emkn000gnpd75r33stp2",
+          "quotationId": "cmfv7emkn000cnpd79f02wqir",
+          "productId": "cmfjeun6l0003od2xfo3wtn70",
+          "quantity": 1,
+          "unitPrice": "43412",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "43411.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv7emkn000hnpd7gxtk1wdj",
+          "quotationId": "cmfv7emkn000cnpd79f02wqir",
+          "productId": "cmfjeun6q0004od2xyevmua12",
+          "quantity": 1,
+          "unitPrice": "60737",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "60736.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv7emko000inpd7tichxcc9",
+          "quotationId": "cmfv7emkn000cnpd79f02wqir",
+          "productId": "cmfjeun6u0005od2xjuojvkre",
+          "quantity": 1,
+          "unitPrice": "86846",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "86845.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        },
+        {
+          "id": "cmfv7emko000jnpd7lv5k4rlr",
+          "quotationId": "cmfv7emkn000cnpd79f02wqir",
+          "productId": "cmfjeun6y0006od2xutsoc08p",
+          "quantity": 1,
+          "unitPrice": "43141",
+          "discountPercentage": "0",
+          "discountAmount": "0.01",
+          "lineTotal": "43140.99",
+          "customSpecifications": null,
+          "deliveryTimeline": null
+        }
+      ]
+    }
+  ],
+  "orders": [],
+  "roles": [
+    {
+      "id": 1,
+      "name": "admin",
+      "description": "System administrator",
+      "createdAt": "2025-08-24T04:35:01.778Z",
+      "updatedAt": "2025-08-24T04:35:01.778Z"
+    },
+    {
+      "id": 2,
+      "name": "manager",
+      "description": "Business manager",
+      "createdAt": "2025-08-24T04:35:01.787Z",
+      "updatedAt": "2025-08-24T04:35:01.787Z"
+    },
+    {
+      "id": 3,
+      "name": "sales",
+      "description": "Sales representative",
+      "createdAt": "2025-08-24T04:35:01.789Z",
+      "updatedAt": "2025-08-24T04:35:01.789Z"
+    },
+    {
+      "id": 4,
+      "name": "viewer",
+      "description": "Read-only access to system data",
+      "createdAt": "2025-08-26T14:43:29.155Z",
+      "updatedAt": "2025-08-26T14:43:29.155Z"
+    }
+  ],
+  "permissions": [
+    {
+      "id": 1,
+      "resource": "users",
+      "action": "create",
+      "description": "Create new users"
+    },
+    {
+      "id": 2,
+      "resource": "users",
+      "action": "read",
+      "description": "View users"
+    },
+    {
+      "id": 3,
+      "resource": "users",
+      "action": "update",
+      "description": "Update user information"
+    },
+    {
+      "id": 4,
+      "resource": "users",
+      "action": "delete",
+      "description": "Delete users"
+    },
+    {
+      "id": 5,
+      "resource": "customers",
+      "action": "create",
+      "description": "Create new customers"
+    },
+    {
+      "id": 6,
+      "resource": "customers",
+      "action": "read",
+      "description": "View customers"
+    },
+    {
+      "id": 7,
+      "resource": "customers",
+      "action": "update",
+      "description": "Update customer information"
+    },
+    {
+      "id": 8,
+      "resource": "customers",
+      "action": "delete",
+      "description": "Delete customers"
+    },
+    {
+      "id": 9,
+      "resource": "products",
+      "action": "create",
+      "description": "Create new products"
+    },
+    {
+      "id": 10,
+      "resource": "products",
+      "action": "read",
+      "description": "View products"
+    },
+    {
+      "id": 11,
+      "resource": "products",
+      "action": "update",
+      "description": "Update product information"
+    },
+    {
+      "id": 12,
+      "resource": "products",
+      "action": "delete",
+      "description": "Delete products"
+    },
+    {
+      "id": 13,
+      "resource": "quotations",
+      "action": "create",
+      "description": "Create new quotations"
+    },
+    {
+      "id": 14,
+      "resource": "quotations",
+      "action": "read",
+      "description": "View quotations"
+    },
+    {
+      "id": 15,
+      "resource": "quotations",
+      "action": "update",
+      "description": "Update quotations"
+    },
+    {
+      "id": 16,
+      "resource": "quotations",
+      "action": "delete",
+      "description": "Delete quotations"
+    },
+    {
+      "id": 17,
+      "resource": "quotations",
+      "action": "send",
+      "description": "Send quotations to customers"
+    },
+    {
+      "id": 18,
+      "resource": "quotations",
+      "action": "approve",
+      "description": "Approve quotations"
+    },
+    {
+      "id": 19,
+      "resource": "orders",
+      "action": "create",
+      "description": "Create new orders"
+    },
+    {
+      "id": 20,
+      "resource": "orders",
+      "action": "read",
+      "description": "View orders"
+    },
+    {
+      "id": 21,
+      "resource": "orders",
+      "action": "update",
+      "description": "Update orders"
+    },
+    {
+      "id": 22,
+      "resource": "orders",
+      "action": "delete",
+      "description": "Delete orders"
+    },
+    {
+      "id": 23,
+      "resource": "orders",
+      "action": "process",
+      "description": "Process orders"
+    },
+    {
+      "id": 24,
+      "resource": "analytics",
+      "action": "read",
+      "description": "View analytics and reports"
+    },
+    {
+      "id": 25,
+      "resource": "reports",
+      "action": "create",
+      "description": "Generate reports"
+    },
+    {
+      "id": 26,
+      "resource": "reports",
+      "action": "export",
+      "description": "Export reports"
+    },
+    {
+      "id": 27,
+      "resource": "system",
+      "action": "configure",
+      "description": "Configure system settings"
+    },
+    {
+      "id": 28,
+      "resource": "audit",
+      "action": "read",
+      "description": "View audit logs"
+    }
+  ],
+  "emailTemplates": [
+    {
+      "id": "cmesnoxfl0046p5fzufetwqwj",
+      "name": "quotation_sent",
+      "subject": "Your Quotation from Sanvi Machinery - {{quotationNumber}}",
+      "htmlContent": "\n        <h2>Dear {{customerName}},</h2>\n        <p>Thank you for your interest in our products. Please find attached your quotation <strong>{{quotationNumber}}</strong>.</p>\n        <p><strong>Quotation Details:</strong></p>\n        <ul>\n          <li>Total Amount: {{totalAmount}}</li>\n          <li>Valid Until: {{validUntil}}</li>\n        </ul>\n        <p>If you have any questions, please don't hesitate to contact us.</p>\n        <p>Best regards,<br>Sanvi Machinery Team</p>\n      ",
+      "textContent": "Dear {{customerName}}, Thank you for your interest in our products. Please find attached your quotation {{quotationNumber}}. Total Amount: {{totalAmount}}, Valid Until: {{validUntil}}. Best regards, Sanvi Machinery Team",
+      "variables": "[\"customerName\",\"quotationNumber\",\"totalAmount\",\"validUntil\"]",
+      "category": "QUOTATION",
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.985Z",
+      "updatedAt": "2025-08-26T14:43:29.985Z"
+    },
+    {
+      "id": "cmesnoxft0047p5fzmoe1fuc5",
+      "name": "quotation_reminder",
+      "subject": "Reminder: Your Quotation {{quotationNumber}} Expires Soon",
+      "htmlContent": "\n        <h2>Dear {{customerName}},</h2>\n        <p>This is a friendly reminder that your quotation <strong>{{quotationNumber}}</strong> will expire on {{validUntil}}.</p>\n        <p>To proceed with your order, please contact us as soon as possible.</p>\n        <p>Best regards,<br>Sanvi Machinery Team</p>\n      ",
+      "textContent": "Dear {{customerName}}, This is a reminder that your quotation {{quotationNumber}} expires on {{validUntil}}. Please contact us to proceed. Best regards, Sanvi Machinery Team",
+      "variables": "[\"customerName\",\"quotationNumber\",\"validUntil\"]",
+      "category": "REMINDER",
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.994Z",
+      "updatedAt": "2025-08-26T14:43:29.994Z"
+    },
+    {
+      "id": "cmesnoxfx0048p5fzvgaz11hl",
+      "name": "password_reset",
+      "subject": "Reset Your Sanvi Machinery Account Password",
+      "htmlContent": "\n        <h2>Password Reset Request</h2>\n        <p>You have requested to reset your password for your Sanvi Machinery account.</p>\n        <p>Click the link below to reset your password:</p>\n        <p><a href=\"{{resetLink}}\">Reset Password</a></p>\n        <p>This link will expire in 1 hour.</p>\n        <p>If you didn't request this, please ignore this email.</p>\n      ",
+      "textContent": "Password Reset Request. Click this link to reset your password: {{resetLink}}. This link expires in 1 hour.",
+      "variables": "[\"resetLink\"]",
+      "category": "SYSTEM",
+      "isActive": true,
+      "createdAt": "2025-08-26T14:43:29.997Z",
+      "updatedAt": "2025-08-26T14:43:29.997Z"
+    }
+  ]
+}

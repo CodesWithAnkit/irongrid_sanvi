@@ -28,8 +28,14 @@
     "docker:up": "docker compose -f docker/docker-compose.yml up -d",
     "docker:down": "docker compose -f docker/docker-compose.yml down",
     "prisma:generate": "prisma generate",
+    "prisma:generate:prod": "node scripts/generate-prisma-client.js",
     "prisma:migrate": "prisma migrate dev --name init",
-    "db:seed": "prisma db seed"
+    "prisma:migrate:prod": "node scripts/run-migrations.js",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:seed:prod": "node scripts/seed-production.js",
+    "db:verify": "node scripts/verify-database.js",
+    "db:setup:prod": "node scripts/setup-production-database.js"
   },
   "dependencies": {
     "@nestjs/bull": "^11.0.3",
