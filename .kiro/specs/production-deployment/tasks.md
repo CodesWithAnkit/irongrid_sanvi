@@ -48,7 +48,11 @@ This implementation plan provides a step-by-step approach to deploy IronGrid B2B
   - Add optional AWS S3 and SendGrid configurations
   - _Requirements: 4.1, 4.2, 4.3, 2.2, 2.3_
 
-- [ ] 1.4 Deploy backend to Railway
+- [x] 1.4 Deploy backend to Railway
+
+
+
+
   - Deploy backend code using Railway CLI
   - Verify deployment success and health check endpoint
   - Test API endpoints and Swagger documentation

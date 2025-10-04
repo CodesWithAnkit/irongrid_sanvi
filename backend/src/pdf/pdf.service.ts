@@ -1,6 +1,4 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import * as puppeteer from 'puppeteer';
-import * as Handlebars from 'handlebars';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   PdfGenerationOptions,
@@ -15,7 +13,8 @@ import * as path from 'path';
 @Injectable()
 export class PdfService {
   private readonly logger = new Logger(PdfService.name);
-  private browser: puppeteer.Browser;
+  private browser: any;
+  private puppeteerAvailable = false;
 
   constructor(
     private prisma: PrismaService,
@@ -25,14 +24,24 @@ export class PdfService {
   }
 
   private async initializeBrowser() {
+    const disablePuppeteer = this.configService.get('DISABLE_PUPPETEER') === 'true';
+
+    if (disablePuppeteer) {
+      this.logger.warn('Puppeteer is disabled via configuration');
+      return;
+    }
+
     try {
+      const puppeteer = await import('puppeteer');
       this.browser = await puppeteer.launch({
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
+      this.puppeteerAvailable = true;
       this.logger.log('Puppeteer browser initialized successfully');
     } catch (error) {
       this.logger.error('Failed to initialize Puppeteer browser', error);
+      this.puppeteerAvailable = false;
     }
   }
 
@@ -40,10 +49,10 @@ export class PdfService {
     try {
       // Fetch quotation data from database
       const quotationData = await this.getQuotationData(quotationId);
-      
+
       // Get the quotation template
       const template = await this.getTemplate('quotation');
-      
+
       // Generate PDF
       const pdfBuffer = await this.generatePdf({
         template: template.htmlContent,
@@ -66,6 +75,10 @@ export class PdfService {
   }
 
   async generatePdf(options: PdfGenerationOptions): Promise<Buffer> {
+    if (!this.puppeteerAvailable) {
+      throw new BadRequestException('PDF generation is not available. Puppeteer is disabled or not installed.');
+    }
+
     if (!this.browser) {
       await this.initializeBrowser();
     }
@@ -74,6 +87,7 @@ export class PdfService {
 
     try {
       // Compile Handlebars template
+      const Handlebars = await import('handlebars');
       const template = Handlebars.compile(options.template);
       const html = template(options.data);
 
@@ -130,7 +144,7 @@ export class PdfService {
 
       // Store file path separately (not in schema, so we'll use a simple approach)
       // In production, you might want to add a path field to the File model
-      
+
       return {
         url: `/api/files/${fileRecord.id}`,
         key: fileRecord.id,

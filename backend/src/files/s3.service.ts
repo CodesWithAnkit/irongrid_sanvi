@@ -13,7 +13,7 @@ export class S3Service {
         const accessKeyId = this.configService.get('AWS_ACCESS_KEY_ID');
         const secretAccessKey = this.configService.get('AWS_SECRET_ACCESS_KEY');
         const region = this.configService.get('AWS_REGION', 'us-east-1');
-        this.bucketName = this.configService.get('AWS_S3_BUCKET');
+        this.bucketName = this.configService.get('AWS_S3_BUCKET') || '';
 
         if (accessKeyId && secretAccessKey && this.bucketName) {
             this.s3 = new S3({
